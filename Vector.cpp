@@ -1,6 +1,12 @@
 #include "Vector.hpp"
 
-Vector::Vector(double x = 0, double y = 0, double z = 0) :
+Vector::Vector() :
+	x_(0),
+	y_(0),
+	z_(0)
+{}
+
+Vector::Vector(double x, double y, double z) :
 	x_(x),
 	y_(y),
 	z_(z)

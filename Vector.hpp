@@ -5,7 +5,8 @@ class Vector
 public:
 	double x_, y_, z_;
 
-	Vector(double x = 0, double y = 0, double z = 0);
+	Vector();
+	Vector(double x, double y, double z);
 	Vector(double num);
 
 	Vector operator  *  (const Vector& vec) const;

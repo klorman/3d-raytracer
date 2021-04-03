@@ -1,6 +1,7 @@
 #pragma once
 #include "TXLib.h"
-#include "Vector.hpp"
+#include "Ray.hpp"
+#include <cassert>
 
 class Sphere {
 public:
@@ -11,5 +12,5 @@ public:
 
     Vector norm (const Vector& p  );
     Vector color(const Vector& p  );
-    Vector trace(const Vector& ray);
+    Vector trace(const Ray&    ray);
 };
