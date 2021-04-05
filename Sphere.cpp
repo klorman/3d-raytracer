@@ -1,7 +1,14 @@
 #include "Sphere.hpp"
 #include <cmath>
 
-Sphere::Sphere(const Vector& center, const double& radius) :
+Sphere::Sphere() :
+    Object({ 0, 0, 0 }),
+    center_({ 0, 0, 0 }),
+    radius_(0)
+{}
+
+Sphere::Sphere(const Vector& center, const Vector& color, const double& radius) :
+    Object(color),
     center_(center),
     radius_(radius)
 {}

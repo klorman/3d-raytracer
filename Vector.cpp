@@ -1,4 +1,5 @@
 #include "Vector.hpp"
+#include <cmath>
 
 Vector::Vector() :
 	x_(0),
@@ -43,5 +44,14 @@ Vector& Vector::operator += (const Vector& vec) {
 	x_ += vec.x_;
 	y_ += vec.y_;
 	z_ += vec.z_;
+	return (*this);
+}
+
+double Vector::length() {
+	return sqrt((*this) ^ (*this));
+}
+
+Vector& Vector::norm() {
+	(*this) = (*this) / length();
 	return (*this);
 }

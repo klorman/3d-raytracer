@@ -15,6 +15,9 @@ public:
 	Vector operator  -  (const Vector& vec) const;
 	double operator  ^  (const Vector& vec) const;
 	Vector& operator += (const Vector& vec);
+
+	double length();
+	Vector& norm();
 };
 
 

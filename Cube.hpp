@@ -3,16 +3,18 @@
 #include "Object.hpp"
 #include <cassert>
 
-class Sphere : public Object {
+class Cube : public Object {
 public:
-    Vector center_;
-    double radius_;
+    Vector* vertexes_;
+    double size_;
 
-    Sphere();
-    Sphere(const Vector& center, const Vector& color, const double& radius);
-    ~Sphere() {};
+    Cube(Vector* vertexes, const Vector& color, const double& size);
+    ~Cube() {};
 
     virtual Vector norm (const Vector& p  ) override;
     virtual Vector color(const Vector& p  ) override;
     virtual Vector trace(const Ray&    ray) override;
+
+    Cube (const Cube&) = delete;
+    Cube& operator=(const Cube&) = delete;
 };
