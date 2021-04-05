@@ -47,11 +47,19 @@ Vector& Vector::operator += (const Vector& vec) {
 	return (*this);
 }
 
+bool Vector::operator == (const Vector& vec) const {
+	return vec.x_ == x_ && vec.y_ == y_ && vec.z_ == z_ ? true : false;
+}
+
 double Vector::length() {
-	return sqrt((*this) ^ (*this));
+	return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 }
 
 Vector& Vector::norm() {
-	(*this) = (*this) / length();
+	double len = length();
+	x_ = x_ / len;
+	y_ = y_ / len;
+	z_ = z_ / len;
+
 	return (*this);
 }

@@ -8,7 +8,7 @@ public:
 	RGBQUAD* Video_memory_;
 	Window(int width, int height);
 
-	void draw_pixel(Vector coords, Vector color_of_point);
+	void draw_pixel(Vector coords, Vector color);
 
 };
 

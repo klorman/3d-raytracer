@@ -2,6 +2,8 @@
 #include "Sphere.hpp"
 #include "Light.hpp"
 
+const Vector background_color = { 0, 128 , 0 };
+
 class Raytracer {
 public:
     int object_count_, light_count_;

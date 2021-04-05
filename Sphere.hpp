@@ -1,18 +1,21 @@
 #pragma once
 #include "TXLib.h"
-#include "Object.hpp"
+#include "Ray.hpp"
 #include <cassert>
 
-class Sphere : public Object {
+struct Material {
+    Vector reflection, transparency, surface;
+};
+class Sphere {
 public:
-    Vector center_;
+    Vector center_, color_;
     double radius_;
+    Material mat_;
 
     Sphere();
-    Sphere(const Vector& center, const Vector& color, const double& radius);
-    ~Sphere() {};
+    Sphere(const Vector& center, const Vector& color, const double& radius, Material mat);
 
-    virtual Vector norm (const Vector& p  ) override;
-    virtual Vector color(const Vector& p  ) override;
-    virtual Vector trace(const Ray&    ray) override;
+    Vector norm (const Vector& p  );
+    Vector color();
+    Vector trace(const Ray&    ray);
 };

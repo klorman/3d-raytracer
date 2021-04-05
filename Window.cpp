@@ -8,9 +8,10 @@ Window::Window(int width, int height) :
 	Video_memory_(NULL)
 {}
 
-void Window::draw_pixel(Vector coords, Vector color_of_point) {
+void Window::draw_pixel(Vector coords, Vector color) {
+	//std::cout << coords.x_ << " " << coords.y_ << std::endl;
 	RGBQUAD* pixel = &Video_memory_[(height_ - (int)coords.y_) * width_ + (int)coords.x_];
-	pixel->rgbRed =   (BYTE) color_of_point.x_;
-	pixel->rgbGreen = (BYTE) color_of_point.y_;
-	pixel->rgbBlue =  (BYTE) color_of_point.z_;
+	pixel->rgbRed   = (BYTE) color.x_;
+	pixel->rgbGreen = (BYTE) color.y_;
+	pixel->rgbBlue  = (BYTE) color.z_;
 }

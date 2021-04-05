@@ -1,10 +1,10 @@
 #include "Raytracer.hpp"
 
 Raytracer::Raytracer(int object_count, Sphere* objects, int light_count, Light* lights) :
-    objects_(objects),
-    lights_(lights),
     object_count_(object_count),
-    light_count_(light_count)
+    light_count_(light_count),
+    objects_(objects),
+    lights_(lights)
 {}
 
 Vector Raytracer::trace(Ray ray, Sphere* object) {
@@ -27,7 +27,7 @@ Vector Raytracer::trace(Ray ray, Sphere* object) {
 
 bool Raytracer::inshadow(Vector p, Vector lightpos) {
     Vector q = trace({ lightpos, p - lightpos });
-    if (q.length() < 0.0001) {
+    if (q.length() == 0) {
         return true;
     }
 
@@ -35,10 +35,17 @@ bool Raytracer::inshadow(Vector p, Vector lightpos) {
 }
 
 Vector Raytracer::color(Ray ray) {
-    Sphere obj;
-    Vector hit = trace(ray, &obj);
+    return background_color;
+    Sphere obj = objects_[0];
+    Vector hit = obj.trace(ray);
 
-    if (hit.length() < 0.0001) {
+    if (hit == NULL) {
+        return background_color;
+    }
+    //Vector hit = trace(ray, &obj);
+    
+
+    if (hit.length() == 0) {
         return { 0, 0, 0 };
     }
 
@@ -53,9 +60,9 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
     double sumlight = 0;
 
     for (int light = 0; light < light_count_; ++light) {
-        if (inshadow(hit, lights_[light].pos_)) {
-            continue;
-        }
+        //if (inshadow(hit, lights_[light].pos_)) {
+        //    continue;
+        //}
 
         Vector dir = (hit - lights_[light].pos_).norm();
         double cos = -(dir ^ norm);
@@ -67,9 +74,15 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
 }
 
 Vector Raytracer::reflection(Sphere obj, Vector hit, Vector norm) {
+    (void)obj;
+    (void)hit;
+    (void)norm;
     return { 0, 0, 0 };
 }
 
 Vector Raytracer::refraction(Sphere obj, Vector hit, Vector norm) {
+    (void)obj;
+    (void)hit;
+    (void)norm;
     return { 0, 0, 0 };
 }
