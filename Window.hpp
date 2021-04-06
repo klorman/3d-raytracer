@@ -1,14 +1,16 @@
 #pragma once
 #include "TXLib.h"
-#include "Vector.hpp"
+#include "Raytracer.hpp"
+#include "Camera.hpp"
 
 class Window {
 public:
 	int width_, height_;
 	RGBQUAD* Video_memory_;
 	Window(int width, int height);
+	~Window();
 
 	void draw_pixel(Vector coords, Vector color);
-
+	void update(Raytracer rt, Camera cam);
 };
 

@@ -50,6 +50,13 @@ Vector& Vector::operator += (const Vector& vec) {
 	return (*this);
 }
 
+Vector& Vector::operator -= (const Vector& vec) {
+	x_ -= vec.x_;
+	y_ -= vec.y_;
+	z_ -= vec.z_;
+	return (*this);
+}
+
 bool Vector::operator == (const Vector& vec) const {
 	return vec.x_ == x_ && vec.y_ == y_ && vec.z_ == z_ ? true : false;
 }

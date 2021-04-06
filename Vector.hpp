@@ -17,6 +17,7 @@ public:
 	Vector operator  -  (const Vector& vec) const;
 	double operator  ^  (const Vector& vec) const;
 	Vector& operator += (const Vector& vec);
+	Vector& operator -= (const Vector& vec);
 
 	bool operator == (const Vector& vec) const;
 

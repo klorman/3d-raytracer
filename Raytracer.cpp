@@ -8,40 +8,47 @@ Raytracer::Raytracer(int object_count, Sphere* objects, int light_count, Light* 
 {}
 
 Vector Raytracer::trace(Ray ray, Sphere* object) {
-    Vector p_near, p;
-    double min_length = 9999;
+    Vector hit_near = NULL, hit;
+    double min_length = 99999;
 
     for (int obj = 0; obj < object_count_; ++obj) {
-        p = objects_[obj].trace(ray);
-        double length = p.length();
+        hit = objects_[obj].trace(ray);
+        if (hit == NULL) {
+            continue;
+        } 
+
+        double length = hit.length();
 
         if (length < min_length) {
             min_length = length;
-            p_near = p;
-            *object = objects_[obj];
+            hit_near = hit;
+            if (object != nullptr) {
+                *object = objects_[obj];
+            }
         }
     }
 
-    return p_near;
+    return hit_near;
 }
 
 bool Raytracer::inshadow(Vector p, Vector lightpos) {
-    Vector q = trace({ lightpos, p - lightpos });
-    if (q.length() == 0) {
-        return true;
+    Vector hit = trace({ lightpos, (p - lightpos).norm() });
+
+    if (hit == NULL) {
+        return false;
     }
 
-    return (q - lightpos).length() < (p - lightpos).length();
+    return ((hit - lightpos).length() + 0.1 <= (p - lightpos).length() - 0.1);
 }
 
 Vector Raytracer::color(Ray ray) {
-    Sphere obj = objects_[0];
-    Vector hit = obj.trace(ray);
+    Sphere obj;
+    //Vector hit = obj.trace(ray);
+    Vector hit = trace(ray, &obj);
 
     if (hit == NULL) {
         return background_color;
     }
-    //Vector hit = trace(ray, &obj);
 
     Vector norm = obj.norm(hit);
 
@@ -51,22 +58,22 @@ Vector Raytracer::color(Ray ray) {
 }
 
 Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
-    double sumlight = 0;
+    double k = 1, sumlight = 0;
 
     for (int light = 0; light < light_count_; ++light) {
-        //if (inshadow(hit, lights_[light].pos_)) {
-        //    continue;
-        //}
+        if (inshadow(hit, lights_[light].pos_)) {
+            //continue;
+            k = 0.2;
+        }
 
         Vector dir = (hit - lights_[light].pos_).norm();
         double cos = -(dir ^ norm);
         if (cos < 0) cos = 0;
-        
+
         sumlight += lights_[light].power_ * cos;
     }
 
-    assert((obj.color_ * sumlight).length() < 256);
-    return obj.color_ * sumlight;
+    return obj.color_ * sumlight * k;
 }
 
 Vector Raytracer::reflection(Sphere obj, Vector hit, Vector norm) {
