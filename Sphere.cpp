@@ -40,16 +40,4 @@ Vector Sphere::trace(const Ray&    ray) {
     }
 
     return ray.start_ + ray.dir_ * (projection - sqrt(r2 - h2));
-/*
-    Vector OS = ray.start_ - center_;
-    double dot = ray.dir_ ^ OS;
-    
-    //assert(dot <= 0);
-
-    double qd = (OS ^ OS) - radius_ * radius_, D = dot * dot - qd;
-    assert(D > 0);
-    double t = qd > 0 ? -dot - sqrt(D) : -dot + sqrt(D);
-
-    return ray.start_ + ray.dir_ * t;
-*/
 }

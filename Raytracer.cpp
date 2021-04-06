@@ -35,7 +35,6 @@ bool Raytracer::inshadow(Vector p, Vector lightpos) {
 }
 
 Vector Raytracer::color(Ray ray) {
-    return background_color;
     Sphere obj = objects_[0];
     Vector hit = obj.trace(ray);
 
@@ -43,11 +42,6 @@ Vector Raytracer::color(Ray ray) {
         return background_color;
     }
     //Vector hit = trace(ray, &obj);
-    
-
-    if (hit.length() == 0) {
-        return { 0, 0, 0 };
-    }
 
     Vector norm = obj.norm(hit);
 
@@ -66,10 +60,12 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
 
         Vector dir = (hit - lights_[light].pos_).norm();
         double cos = -(dir ^ norm);
-
+        if (cos < 0) cos = 0;
+        
         sumlight += lights_[light].power_ * cos;
     }
 
+    assert((obj.color_ * sumlight).length() < 256);
     return obj.color_ * sumlight;
 }
 

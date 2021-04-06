@@ -19,6 +19,9 @@ Vector::Vector(double num):
 	z_(num)
 {}
 
+Vector Vector::operator  -  () const { 
+	return { -x_, -y_, -z_ };
+}
 
 Vector Vector::operator  *  (const Vector& vec) const {
 	return{ x_ * vec.x_, y_ * vec.y_, z_ * vec.z_ };
@@ -33,7 +36,7 @@ Vector Vector::operator  +  (const Vector& vec) const {
 }
 
 Vector Vector::operator  -  (const Vector& vec) const {
-	return{ vec.x_ - x_, vec.y_ - y_, vec.z_ - z_ };
+	return{ x_ - vec.x_, y_ - vec.y_, z_ - vec.z_ };
 }
 
 double Vector::operator  ^  (const Vector& vec) const {
