@@ -2,7 +2,7 @@
 #include "Sphere.hpp"
 #include "Light.hpp"
 
-const Vector background_color = { 0, 128 , 0 };
+const Vector background_color = { 0, 128, 0 };
 
 class Raytracer {
 public:
@@ -17,6 +17,6 @@ public:
     Vector color(Ray ray);
 
     Vector diffuse   (Sphere obj, Vector hit, Vector norm);
-    Vector reflection(Sphere obj, Vector hit, Vector norm);
+    Vector reflection(Sphere obj, Vector hit, Vector norm, Ray ray);
     Vector refraction(Sphere obj, Vector hit, Vector norm);
 };

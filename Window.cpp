@@ -43,7 +43,7 @@ void Window::update(Raytracer rt, Camera cam) {
 			}
 
 			Vector dir = (cam.dir_ * 1000 + px).norm();
-            draw_pixel({x,y,0}, rt.color({cam.pos_, dir}));
+            draw_pixel({x,y,0}, rt.color({cam.pos_, dir, 1}));
         }
     }
 	txEnd();

@@ -43,7 +43,6 @@ bool Raytracer::inshadow(Vector p, Vector lightpos) {
 
 Vector Raytracer::color(Ray ray) {
     Sphere obj;
-    //Vector hit = obj.trace(ray);
     Vector hit = trace(ray, &obj);
 
     if (hit == NULL) {
@@ -52,9 +51,9 @@ Vector Raytracer::color(Ray ray) {
 
     Vector norm = obj.norm(hit);
 
-    return  (obj.mat_.reflection   * reflection(obj, hit, norm)) +
-            (obj.mat_.transparency * refraction(obj, hit, norm)) +
-            (obj.mat_.surface      * diffuse   (obj, hit, norm));
+    return  (reflection(obj, hit, norm, ray) * obj.mat_.reflection  ) +
+            (refraction(obj, hit, norm)      * obj.mat_.transparency) +
+            (diffuse   (obj, hit, norm)      * obj.mat_.surface     );
 }
 
 Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
@@ -76,11 +75,16 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
     return obj.color_ * sumlight * k;
 }
 
-Vector Raytracer::reflection(Sphere obj, Vector hit, Vector norm) {
-    (void)obj;
-    (void)hit;
-    (void)norm;
-    return { 0, 0, 0 };
+Vector Raytracer::reflection(Sphere obj, Vector hit, Vector norm, Ray ray) {
+    //return background_color;
+
+    if (obj.mat_.reflection * ray.power_ < 0.2) {
+        return { 0, 0, 0 };
+    }
+
+    Ray reflected = ray.reflect(norm, hit, obj.mat_.reflection);
+
+    return color(reflected);
 }
 
 Vector Raytracer::refraction(Sphere obj, Vector hit, Vector norm) {

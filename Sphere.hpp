@@ -4,7 +4,7 @@
 #include <cassert>
 
 struct Material {
-    Vector reflection, transparency, surface;
+    double reflection, transparency, surface;
 };
 class Sphere {
 public:

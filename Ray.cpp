@@ -1,7 +1,11 @@
 #include "Ray.hpp"
-#include "Vector.hpp"
 
-Ray::Ray(Vector start, Vector dir) :
+Ray::Ray(Vector start, Vector dir, double power) :
     start_(start),
-    dir_  (dir)
+    dir_  (dir),
+    power_(power)
 {}
+
+Ray Ray::reflect(const Vector& norm, const Vector& hit, double refl) const {
+    return { hit + norm, dir_ + norm * ((dir_ ^ norm) * (-2)), refl * power_ };
+}
