@@ -17,11 +17,12 @@ int main() {
 
     Raytracer rt = {3, sphere, 1, light};
 
-    Camera cam = {{500,300,-200}, {0,0,1}};
+    Camera cam = {10, {600,385,-300}, {0,0,1}};
 
     
     while (!GetAsyncKeyState(VK_ESCAPE)) {  
-        cam.move();      
+        cam.move();     
+        rt.lights_[0].pos_ += {10,0,0}; 
         wnd.update(rt, cam);
     }
 }

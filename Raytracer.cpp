@@ -17,9 +17,9 @@ Vector Raytracer::trace(Ray ray, Sphere* object) {
             continue;
         } 
 
-        double length = hit.length();
+        double length = (hit - ray.start_).length();
 
-        if (length < min_length) {
+        if (length <= min_length) {
             min_length = length;
             hit_near = hit;
             if (object != nullptr) {
@@ -63,7 +63,7 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
     for (int light = 0; light < light_count_; ++light) {
         if (inshadow(hit, lights_[light].pos_)) {
             //continue;
-            k = 0.2;
+            k = 0.3;
         }
 
         Vector dir = (hit - lights_[light].pos_).norm();
