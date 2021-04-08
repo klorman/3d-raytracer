@@ -12,5 +12,8 @@ public:
 
 	void draw_pixel(const Vector& coords, const Vector& color);
 	void update(Raytracer& rt, const Camera& cam);
+
+	Window(const Window&) = delete;
+	Window& operator=(const Window&) = delete;
 };
 

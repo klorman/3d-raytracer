@@ -7,19 +7,21 @@
 
 #define LEN(arr) sizeof(arr) / sizeof(arr[0])
 
+void start(Window& wnd);
+
 void start(Window& wnd) {
     Object* objects[] = {
-        new Sphere{{300,400,60}, {0,  0,  255},    50,    {0.0, 1.5,  0.5, 0.5}},
-        new Sphere{{560,400,80}, {255,255,255},    50,    {0.9, 5  , -1.0, 0.5}},
-        new Sphere{{600,385,10}, {255,0,  0  },    30,    {0.0, 5  , -1.0, 0.5}},
-        new Plane {{0,  450,0 }, {255,255,0  }, {0,-1,0}, {0.0, 5  , -1.0, 0.5}}
+        new Sphere{{300,400,60}, {0,  0,  255},    50,    {0.0, 1.5, 1.0, 0.5}},
+        new Sphere{{560,400,80}, {255,255,255},    50,    {0.9, 5  , 0.0, 0.5}},
+        new Sphere{{600,385,10}, {255,0,  0  },    30,    {0.0, 5  , 0.0, 0.5}},
+        new Plane {{0,  450,0 }, {255,255,0  }, {0,-1,0}, {0.2, 5  , 0.0, 0.5}}
     };
 
     Light light[] = {{{300, 0, -200}, 1}};
 
     Raytracer rt = {LEN(objects), objects, LEN(light), light};
 
-    Camera cam = {10, {600 ,300, -300}, {0, 0, 1}};
+    Camera cam = {10, {600 ,0, 10}, {0, 0, 1}};
     
     while (!GetAsyncKeyState(VK_ESCAPE)) {  
         cam.move();     

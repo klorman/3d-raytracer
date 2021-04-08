@@ -7,13 +7,15 @@ Plane::Plane(const Vector& center, const Vector& color, const Vector& dir, const
 {}
 
 Vector Plane::norm (const Vector& p  ) {
+    (void)p;
     return dir_;
 }
 
 Vector Plane::color(const Vector& hit) {
-    //if (abs((int) hit.x_ % 50) > 25 ^
-    //    abs((int) hit.z_ % 50) > 25)
-    //    return {0,0,0}; //рисуем черным
+    if (((int) hit.x_ % 50 > 25 || (int) hit.x_ % 50 > -25) ^
+        ((int) hit.z_ % 50 > 25 || (int) hit.z_ % 50 > -25))
+        return { 0, 0, 0 };
+
     return color_;
 }
 
@@ -25,5 +27,5 @@ Vector Plane::trace(const Ray&    ray) {
         return ray.start_ + ray.dir_ * dist;
     }
 
-    return NULL;
+    return NULLVEC;
 }

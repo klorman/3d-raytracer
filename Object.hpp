@@ -13,6 +13,7 @@ public:
 
     Object();
     Object(const Vector& center, const Vector& color, const Material& mat);
+    virtual ~Object() = default;
 
     virtual Vector norm (const Vector& p  ) = 0;
     virtual Vector color(const Vector& hit) = 0;

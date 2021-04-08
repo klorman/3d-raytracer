@@ -11,6 +11,7 @@ Vector Sphere::norm (const Vector& p  ) {
 }
 
 Vector Sphere::color(const Vector& hit) {
+    (void) hit;
     return color_;
 }
 
@@ -20,13 +21,13 @@ Vector Sphere::trace(const Ray&    ray) {
     double projection = (center_ - ray.start_) ^ ray.dir_;
 
     if (dist2 > r2 && projection < 0) {
-        return NULL;
+        return NULLVEC;
     }
 
     double h2 = dist2 - projection * projection;
 
     if (h2 > r2) {
-        return NULL;
+        return NULLVEC;
     }
 
     if ((center_ - ray.start_).length() <= radius_) return ray.start_ + ray.dir_ * (projection + sqrt(r2 - h2)); //костыль для преломления

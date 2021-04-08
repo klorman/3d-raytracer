@@ -1,5 +1,7 @@
 #pragma once
 
+#define NULLVEC Vector { 0, 0, 0 }
+
 class Vector
 {
 public:
@@ -25,5 +27,3 @@ public:
 	Vector& norm();
 	Vector& limit(double lim);
 };
-
-

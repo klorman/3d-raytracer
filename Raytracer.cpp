@@ -8,12 +8,12 @@ Raytracer::Raytracer(int object_count, Object** objects, int light_count, Light*
 {}
 
 Vector Raytracer::trace(const Ray& ray, int* object) {
-    Vector hit_near = NULL, hit;
+    Vector hit_near = NULLVEC, hit;
     double min_length = 99999;
 
     for (int obj = 0; obj < object_count_; ++obj) {
         hit = objects_[obj]->trace(ray);
-        if (hit == NULL) {
+        if (hit == NULLVEC) {
             continue;
         }
 
@@ -34,7 +34,7 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
 bool Raytracer::inshadow(const Vector& p, const Vector& lightpos) {
     Vector hit = trace({ lightpos, (p - lightpos).norm() });
 
-    if (hit == NULL) {
+    if (hit == NULLVEC) {
         return false;
     }
 
@@ -45,7 +45,7 @@ Vector Raytracer::color(const Ray& ray) {
     int obj;
     Vector hit = trace(ray, &obj);
 
-    if (hit == NULL) {
+    if (hit == NULLVEC) {
         return background_color;
     }
 
@@ -88,13 +88,13 @@ Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm,
 Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
     //return {0,0,0};
     if (obj->mat_.transparency * ray.power_ <= 0) {
-        return NULL;
+        return NULLVEC;
     }
 
     Ray refracted = ray.refract(norm, hit, obj->mat_.refraction, obj->mat_.transparency);
     
-    if (refracted.dir_ == NULL) {
-        return NULL;
+    if (refracted.dir_ == NULLVEC) {
+        return NULLVEC;
     }
 
     return color(refracted);
