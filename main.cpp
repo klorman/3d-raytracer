@@ -1,24 +1,28 @@
 #include "TXLib.h"
 #include "Window.hpp"
-#include <iostream>
 #include "Raytracer.hpp"
 #include "Camera.hpp"
+#include "Sphere.hpp"
+#include "Plane.hpp"
 
-int main() {
-    Window wnd(800, 600);
+#include <iostream>
+#include <vector>
 
-    Sphere sphere[] = {
-        {{500,200,60}, {0,  0,  255}, 50, {0.4, 1, 0.5}},
-        {{560,400,80}, {0,  255,255}, 50, {0.9, 1, 0.5}},
-        {{600,385,10}, {255,0,  0  }, 30, {0.0, 1, 0.5}}
+#define LEN(arr) sizeof(arr) / sizeof(arr[0])
+
+void start(Window wnd) {
+    Object* objects[] = {
+        new Sphere{{500,200,60}, {0,  0,  255},    50,    {0.4, 1, 0.5}},
+        new Sphere{{560,400,80}, {0,  255,255},    50,    {0.9, 1, 0.5}},
+        new Sphere{{600,385,10}, {255,0,  0  },    30,    {0.0, 1, 0.5}},
+        new Plane {{0,  450,0 }, {200,200,200}, {0,-1,0}, {0.0, 1, 1.0}}
     };
 
-    Light light[] = {{{600, 300, -2000}, 1}};
+    Light light[] = {{{600, 200, -2000}, 1}};
 
-    Raytracer rt = {3, sphere, 1, light};
+    Raytracer rt = {LEN(objects), objects, LEN(light), light};
 
     Camera cam = {10, {600 ,385, -300}, {0, 0, 1}};
-
     
     while (!GetAsyncKeyState(VK_ESCAPE)) {  
         cam.move();     
@@ -27,4 +31,10 @@ int main() {
     }
 }
 
+int main() {
+    
+    Window wnd(800, 600);
+    
+    start(wnd);
 
+}

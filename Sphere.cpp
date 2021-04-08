@@ -1,19 +1,9 @@
 #include "Sphere.hpp"
 #include <cmath>
 
-
-Sphere::Sphere() :
-    center_({ 0, 0, 0 }),
-    color_({ 0, 0, 0 }),
-    radius_(0),
-    mat_({ 0, 0, 0 })
-{}
-
-Sphere::Sphere(const Vector& center, const Vector& color, const double& radius, Material mat) :
-    center_(center),
-    color_(color),
-    radius_(radius),
-    mat_(mat)
+Sphere::Sphere(const Vector& center, const Vector& color, const double& radius, const Material& mat) :
+    Object(center, color, mat),
+    radius_(radius)
 {}
 
 Vector Sphere::norm (const Vector& p  ) {

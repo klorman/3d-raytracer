@@ -1,6 +1,6 @@
 #include "Ray.hpp"
 
-Ray::Ray(Vector start, Vector dir, double power) :
+Ray::Ray(const Vector& start, const Vector& dir, double power) :
     start_(start),
     dir_  (dir),
     power_(power)

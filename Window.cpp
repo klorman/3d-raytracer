@@ -14,14 +14,14 @@ Window::~Window() {
 	//txDestroyWindow();
 }
 
-void Window::draw_pixel(Vector coords, Vector color) {
+void Window::draw_pixel(const Vector& coords, const Vector& color) {
 	RGBQUAD* pixel = &Video_memory_[(height_ - 1 - (int)coords.y_) * width_ + (int)coords.x_];
 	pixel->rgbRed   = (BYTE) color.x_;
 	pixel->rgbGreen = (BYTE) color.y_;
 	pixel->rgbBlue  = (BYTE) color.z_;
 }
 
-void Window::update(Raytracer rt, Camera cam) {
+void Window::update(Raytracer& rt, const Camera& cam) {
 	txBegin();
     for (double x = 0; x < width_; ++x) {
         for (double y = 0; y < height_; ++y) {

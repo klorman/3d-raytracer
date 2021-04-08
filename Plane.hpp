@@ -1,12 +1,12 @@
 #pragma once
+
 #include "Object.hpp"
-#include <cassert>
 
-class Sphere : public Object {
+class Plane : public Object {
 public:
-    double radius_;
+    Vector dir_;
 
-    Sphere(const Vector& center, const Vector& color, const double& radius, const Material& mat);
+    Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat);
 
     virtual Vector norm (const Vector& p  ) override;
     virtual Vector color() override;

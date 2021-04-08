@@ -1,21 +1,21 @@
 #include "Raytracer.hpp"
 
-Raytracer::Raytracer(int object_count, Sphere* objects, int light_count, Light* lights) :
+Raytracer::Raytracer(int object_count, Object** objects, int light_count, Light* lights) :
     object_count_(object_count),
     light_count_(light_count),
     objects_(objects),
     lights_(lights)
 {}
 
-Vector Raytracer::trace(Ray ray, Sphere* object) {
+Vector Raytracer::trace(const Ray& ray, int* object) {
     Vector hit_near = NULL, hit;
     double min_length = 99999;
 
     for (int obj = 0; obj < object_count_; ++obj) {
-        hit = objects_[obj].trace(ray);
+        hit = objects_[obj]->trace(ray);
         if (hit == NULL) {
             continue;
-        } 
+        }
 
         double length = (hit - ray.start_).length();
 
@@ -23,7 +23,7 @@ Vector Raytracer::trace(Ray ray, Sphere* object) {
             min_length = length;
             hit_near = hit;
             if (object != nullptr) {
-                *object = objects_[obj];
+                *object = obj;
             }
         }
     }
@@ -31,7 +31,7 @@ Vector Raytracer::trace(Ray ray, Sphere* object) {
     return hit_near;
 }
 
-bool Raytracer::inshadow(Vector p, Vector lightpos) {
+bool Raytracer::inshadow(const Vector& p, const Vector& lightpos) {
     Vector hit = trace({ lightpos, (p - lightpos).norm() });
 
     if (hit == NULL) {
@@ -41,22 +41,22 @@ bool Raytracer::inshadow(Vector p, Vector lightpos) {
     return ((hit - lightpos).length() + 0.1 <= (p - lightpos).length() - 0.1);
 }
 
-Vector Raytracer::color(Ray ray) {
-    Sphere obj;
+Vector Raytracer::color(const Ray& ray) {
+    int obj;
     Vector hit = trace(ray, &obj);
 
     if (hit == NULL) {
         return background_color;
     }
 
-    Vector norm = obj.norm(hit);
+    Vector norm = objects_[obj]->norm(hit);
 
-    return  (reflection(obj, hit, norm, ray) * obj.mat_.reflection  ) +
-            (refraction(obj, hit, norm)      * obj.mat_.transparency) +
-            (diffuse   (obj, hit, norm)      * obj.mat_.surface     );
+    return  (reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection) +
+        (refraction(objects_[obj], hit, norm) * objects_[obj]->mat_.transparency) +
+        (diffuse(objects_[obj], hit, norm) * objects_[obj]->mat_.surface);
 }
 
-Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
+Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
     double k = 1, sumlight = 0;
 
     for (int light = 0; light < light_count_; ++light) {
@@ -72,22 +72,20 @@ Vector Raytracer::diffuse   (Sphere obj, Vector hit, Vector norm) {
         sumlight += lights_[light].power_ * cos;
     }
 
-    return obj.color_ * sumlight * k;
+    return obj->color_ * sumlight * k;
 }
 
-Vector Raytracer::reflection(Sphere obj, Vector hit, Vector norm, Ray ray) {
-    //return background_color;
-
-    if (obj.mat_.reflection * ray.power_ < 0.2) {
+Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+    if (obj->mat_.reflection * ray.power_ < 0.2) {
         return { 0, 0, 0 };
     }
 
-    Ray reflected = ray.reflect(norm, hit, obj.mat_.reflection);
+    Ray reflected = ray.reflect(norm, hit, obj->mat_.reflection);
 
     return color(reflected);
 }
 
-Vector Raytracer::refraction(Sphere obj, Vector hit, Vector norm) {
+Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm) {
     (void)obj;
     (void)hit;
     (void)norm;

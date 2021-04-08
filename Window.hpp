@@ -10,7 +10,7 @@ public:
 	Window(int width, int height);
 	~Window();
 
-	void draw_pixel(Vector coords, Vector color);
-	void update(Raytracer rt, Camera cam);
+	void draw_pixel(const Vector& coords, const Vector& color);
+	void update(Raytracer& rt, const Camera& cam);
 };
 
