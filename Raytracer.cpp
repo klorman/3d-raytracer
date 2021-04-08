@@ -51,9 +51,9 @@ Vector Raytracer::color(const Ray& ray) {
 
     Vector norm = objects_[obj]->norm(hit);
 
-    return  (reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection) +
-        (refraction(objects_[obj], hit, norm) * objects_[obj]->mat_.transparency) +
-        (diffuse(objects_[obj], hit, norm) * objects_[obj]->mat_.surface);
+    return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection  ) +
+            (refraction(objects_[obj], hit, norm     ) * objects_[obj]->mat_.transparency) +
+            (diffuse   (objects_[obj], hit, norm     ) * objects_[obj]->mat_.surface     )).limit(255);
 }
 
 Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {

@@ -21,8 +21,9 @@ public:
 
 	bool operator == (const Vector& vec) const;
 
-	double length();
+	double length() const;
 	Vector& norm();
+	Vector& limit(double lim);
 };
 
 

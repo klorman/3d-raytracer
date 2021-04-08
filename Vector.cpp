@@ -1,5 +1,6 @@
 #include "Vector.hpp"
 #include <cmath>
+#include <algorithm>
 
 Vector::Vector() :
 	x_(0),
@@ -61,15 +62,26 @@ bool Vector::operator == (const Vector& vec) const {
 	return vec.x_ == x_ && vec.y_ == y_ && vec.z_ == z_ ? true : false;
 }
 
-double Vector::length() {
+double Vector::length() const {
 	return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 }
 
 Vector& Vector::norm() {
 	double len = length();
-	x_ = x_ / len;
-	y_ = y_ / len;
-	z_ = z_ / len;
+
+	if (len != 0) {
+		x_ = x_ / len;
+		y_ = y_ / len;
+		z_ = z_ / len;
+	}
+
+	return (*this);
+}
+
+Vector& Vector::limit(double lim) {
+	x_ = std::min(x_, lim);
+	y_ = std::min(y_, lim);
+	z_ = std::min(z_, lim);
 
 	return (*this);
 }

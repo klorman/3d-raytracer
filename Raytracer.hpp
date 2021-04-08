@@ -2,7 +2,7 @@
 #include "Object.hpp"
 #include "Light.hpp"
 
-const Vector background_color = { 0, 128, 0 };
+const Vector background_color = { 50, 50, 255 };
 
 class Raytracer {
 public:

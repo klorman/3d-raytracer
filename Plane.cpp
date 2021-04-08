@@ -15,10 +15,10 @@ Vector Plane::color() {
 }
 
 Vector Plane::trace(const Ray&    ray) {
-    double d = -center_ ^ dir_, proj = ray.dir_ ^ dir_;
+    double D = -center_ ^ dir_, den = ray.dir_ ^ dir_;
     
-    if (proj < 0) {
-        double dist = -(d + (ray.start_ ^ dir_)) / (ray.dir_ ^ dir_);
+    if (den < 0) {
+        double dist = -(D + (ray.start_ ^ dir_)) / den;
         return ray.start_ + ray.dir_ * dist;
     }
 
