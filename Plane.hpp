@@ -9,6 +9,6 @@ public:
     Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat);
 
     virtual Vector norm (const Vector& p  ) override;
-    virtual Vector color() override;
+    virtual Vector color(const Vector& hit) override;
     virtual Vector trace(const Ray&    ray) override;
 };

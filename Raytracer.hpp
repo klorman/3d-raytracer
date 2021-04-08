@@ -18,5 +18,5 @@ public:
 
     Vector diffuse   (Object* obj, const Vector& hit, const Vector& norm);
     Vector reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
-    Vector refraction(Object* obj, const Vector& hit, const Vector& norm);
+    Vector refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
 };

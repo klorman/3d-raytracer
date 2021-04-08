@@ -52,7 +52,7 @@ Vector Raytracer::color(const Ray& ray) {
     Vector norm = objects_[obj]->norm(hit);
 
     return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection  ) +
-            (refraction(objects_[obj], hit, norm     ) * objects_[obj]->mat_.transparency) +
+            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency) +
             (diffuse   (objects_[obj], hit, norm     ) * objects_[obj]->mat_.surface     )).limit(255);
 }
 
@@ -72,7 +72,7 @@ Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
         sumlight += lights_[light].power_ * cos;
     }
 
-    return obj->color_ * sumlight * k;
+    return obj->color(hit) * sumlight * k;
 }
 
 Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
@@ -85,9 +85,17 @@ Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm,
     return color(reflected);
 }
 
-Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm) {
-    (void)obj;
-    (void)hit;
-    (void)norm;
-    return { 0, 0, 0 };
+Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+    //return {0,0,0};
+    if (obj->mat_.transparency * ray.power_ <= 0) {
+        return NULL;
+    }
+
+    Ray refracted = ray.refract(norm, hit, obj->mat_.refraction, obj->mat_.transparency);
+    
+    if (refracted.dir_ == NULL) {
+        return NULL;
+    }
+
+    return color(refracted);
 }

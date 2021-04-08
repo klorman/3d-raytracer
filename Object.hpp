@@ -3,7 +3,7 @@
 #include "Ray.hpp"
 
 struct Material {
-    double reflection, transparency, surface;
+    double reflection, refraction, transparency, surface;
 };
 
 class Object {
@@ -15,6 +15,6 @@ public:
     Object(const Vector& center, const Vector& color, const Material& mat);
 
     virtual Vector norm (const Vector& p  ) = 0;
-    virtual Vector color() = 0;
+    virtual Vector color(const Vector& hit) = 0;
     virtual Vector trace(const Ray&    ray) = 0;
 };

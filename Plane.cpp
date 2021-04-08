@@ -10,7 +10,10 @@ Vector Plane::norm (const Vector& p  ) {
     return dir_;
 }
 
-Vector Plane::color() {
+Vector Plane::color(const Vector& hit) {
+    //if (abs((int) hit.x_ % 50) > 25 ^
+    //    abs((int) hit.z_ % 50) > 25)
+    //    return {0,0,0}; //рисуем черным
     return color_;
 }
 

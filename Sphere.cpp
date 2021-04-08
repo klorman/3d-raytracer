@@ -10,7 +10,7 @@ Vector Sphere::norm (const Vector& p  ) {
     return (p - center_) / radius_;
 }
 
-Vector Sphere::color() {
+Vector Sphere::color(const Vector& hit) {
     return color_;
 }
 
@@ -29,5 +29,6 @@ Vector Sphere::trace(const Ray&    ray) {
         return NULL;
     }
 
+    if ((center_ - ray.start_).length() <= radius_) return ray.start_ + ray.dir_ * (projection + sqrt(r2 - h2)); //костыль для преломления
     return ray.start_ + ray.dir_ * (projection - sqrt(r2 - h2));
 }
