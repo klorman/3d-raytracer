@@ -31,14 +31,15 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
     return hit_near;
 }
 
-bool Raytracer::inshadow(const Vector& p, const Vector& lightpos) {
-    Vector hit = trace({ lightpos, (p - lightpos).norm() });
+bool Raytracer::inshadow(const Vector& p, const Light& light) {
+    Vector dir = (p - light.center_).norm();
+    Vector hit = trace({ light.center_ + dir * (light.radius_ + 0.1), dir });
 
     if (hit == NULLVEC) {
         return false;
     }
 
-    return ((hit - lightpos).length() + 0.1 <= (p - lightpos).length() - 0.1);
+    return ((hit - light.center_).length() + 0.1 <= (p - light.center_).length() - 0.1);
 }
 
 Vector Raytracer::color(const Ray& ray) {
@@ -60,12 +61,16 @@ Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
     double k = 1, sumlight = 0;
 
     for (int light = 0; light < light_count_; ++light) {
-        if (inshadow(hit, lights_[light].pos_)) {
+        if ((lights_[light].center_ - hit).length() <= lights_[light].radius_ + 0.1) {
+            return lights_[light].color_;
+        }
+
+        if (inshadow(hit, lights_[light])) {
             //continue;
             k = 0.3;
         }
 
-        Vector dir = (hit - lights_[light].pos_).norm();
+        Vector dir = (hit - lights_[light].center_).norm();
         double cos = -(dir ^ norm);
         if (cos < 0) cos = 0;
 

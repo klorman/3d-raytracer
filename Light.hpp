@@ -1,8 +1,9 @@
 #pragma once
-#include "Vector.hpp"
+#include "Sphere.hpp"
 
-class Light {
+class Light : public Sphere {
 public:
-    Vector pos_;
     double power_;
+
+    Light(const Vector& center, const Vector& color, double power);
 };
