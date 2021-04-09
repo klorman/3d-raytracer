@@ -9,6 +9,9 @@ Window::Window(int width, int height) :
 {
 	txCreateWindow(width_, height_);
 	Video_memory_ = txVideoMemory();
+
+	_txCursorBlinkInterval = 1;
+	_txWindowUpdateInterval = 60;
 }
 
 Window::~Window() {
@@ -61,5 +64,19 @@ void Window::update(Raytracer& rt, const Camera& cam) {
     	}
 	}
 
+	show_fps();
+
 	txEnd();
+}
+
+void Window::show_fps() {
+	double fps = txGetFPS();
+
+	if      (fps < 10) txSetColor(TX_RED   );
+	else if (fps < 20) txSetColor(TX_YELLOW);
+	else 			   txSetColor(TX_GREEN );
+
+	char text[3] = "";
+	_itoa_s((int) fps, text, 10);
+	txTextOut(10, 10, text);
 }
