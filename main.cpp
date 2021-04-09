@@ -35,4 +35,5 @@ int main() {
     Window wnd(800, 600);
     
     start(wnd);
+    
 }
