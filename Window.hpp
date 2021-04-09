@@ -7,12 +7,14 @@ class Window {
 public:
 	int width_, height_;
 	RGBQUAD* Video_memory_;
+
 	Window(int width, int height);
 	~Window();
 
 	void draw_pixel(const Vector& coords, const Vector& color);
 	void update(Raytracer& rt, const Camera& cam);
 	void show_fps();
+	void move(Raytracer& rt, const Camera& cam);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;

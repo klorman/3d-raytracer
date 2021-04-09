@@ -1,4 +1,6 @@
 #include "Raytracer.hpp"
+#include <random>
+
 
 Raytracer::Raytracer(int object_count, Object** objects, int light_count, Light* lights) :
     object_count_(object_count),
@@ -9,7 +11,7 @@ Raytracer::Raytracer(int object_count, Object** objects, int light_count, Light*
 
 Vector Raytracer::trace(const Ray& ray, int* object) {
     Vector hit_near = NULLVEC, hit;
-    double min_length = 99999;
+    double min_length = 10000;
 
     for (int obj = 0; obj < object_count_; ++obj) {
         hit = objects_[obj]->trace(ray);
@@ -31,15 +33,41 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
     return hit_near;
 }
 
-bool Raytracer::inshadow(const Vector& p, const Light& light) {
-    Vector dir = (p - light.center_).norm();
-    Vector hit = trace({ light.center_ + dir * (light.radius_ + 0.1), dir });
+std::default_random_engine re;
 
-    if (hit == NULLVEC) {
-        return false;
+bool Raytracer::inshadow(const Vector& p, const Light& light) {
+
+    std::uniform_real_distribution<double> unif(0, 1);
+    Vector rnd;// = { unif(re), unif(re), unif(re) };
+    //double theta = rnd.x_ * 2 * txPI; //рандомная точка на фере
+    //double phi = acos(2 * rnd.y_ - 1);
+    //double r = pow(rnd.z_, 1.0 / 3.0);
+
+    //rnd = Vector {
+    //    r * sin(phi) * cos(theta),
+    //    r * sin(phi) * sin(theta),
+    //    r * cos(phi)
+    //} * light.radius_;
+
+    while(true) { //рандомная точка в кубе, работает быстрее, чем поиск ранд точки на сфере
+        rnd = Vector { unif(re), unif(re), unif(re) } * light.radius_;
+    
+        if (rnd.length() <= light.radius_) break;
     }
 
-    return ((hit - light.center_).length() + 0.1 <= (p - light.center_).length() - 0.1);
+    Vector dir = (light.center_ + rnd - p).norm();
+
+    int obj;
+    trace({ p + dir, dir }, &obj);
+
+    if (obj >= object_count_ - light_count_) return false;
+    else                                     return true;
+
+
+    //if (hit == NULLVEC) {
+    //    return false;
+    //}
+    //return ((hit - light.center_).length() <= (p - light.center_).length() - 0.01);
 }
 
 Vector Raytracer::color(const Ray& ray) {
@@ -61,7 +89,7 @@ Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
     double k = 1, sumlight = 0;
 
     for (int light = 0; light < light_count_; ++light) {
-        if ((lights_[light].center_ - hit).length() <= lights_[light].radius_ + 0.1) {
+        if ((lights_[light].center_ - hit).length() <= lights_[light].radius_ + 0.01) {
             return lights_[light].color_;
         }
 

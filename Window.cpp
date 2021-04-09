@@ -26,11 +26,11 @@ void Window::draw_pixel(const Vector& coords, const Vector& color) {
 }
 
 void Window::update(Raytracer& rt, const Camera& cam) {
-	//Vector px, dir;
 	txBegin();
 
 	const int num_threads = 16;
 	omp_set_num_threads(num_threads);
+	
 	#pragma omp parallel num_threads(num_threads)
 	{
 		int thread = omp_get_thread_num();
@@ -79,4 +79,45 @@ void Window::show_fps() {
 	char text[3] = "";
 	_itoa_s((int) fps, text, 10);
 	txTextOut(10, 10, text);
+}
+
+void Window::move(Raytracer& rt, const Camera& cam) {
+	    if (txMouseButtons() == 1) {
+        POINT mouse = txMousePos();
+
+        Vector px = {(double) mouse.x - width_ / 2, (double) mouse.y - height_ / 2, 0};
+
+		double  //proj1 = sqrt(cam.dir_.y_*cam.dir_.y_ + cam.dir_.z_*cam.dir_.z_),
+				proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
+
+		double  //cos1 = 0, sin1 = 0, 
+				cos2 = 0, sin2 = 0;
+		//if (proj1 != 0) {
+		//	cos1 = cam.dir_.z_ / proj1,
+		//	sin1 = cam.dir_.y_ / proj1;
+		//	px = {px.x_, px.y_*cos1 - px.z_*sin1, px.y_*sin1 + px.z_*cos1};
+		//}
+
+		if (proj2 > 0) {
+			cos2 = cam.dir_.z_ / proj2,
+			sin2 = cam.dir_.x_ / proj2;
+			px = {px.x_*cos2 + px.z_*sin2, px.y_, -px.x_*sin2 + px.z_*cos2};
+		}
+
+		Ray ray = { cam.pos_, (cam.dir_ * 1000 + px).norm() };
+
+        int obj;
+        Vector hit = rt.trace(ray, &obj);
+
+        if (hit == NULLVEC) {
+            return;
+        }
+		Vector t;
+		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_ , rt.objects_[obj]->center_.y_);
+		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_);
+		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_);
+        rt.objects_[obj]->center_ += cam.dir_;
+    }
+
+    return;
 }

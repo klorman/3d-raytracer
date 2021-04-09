@@ -3,6 +3,7 @@
 #include "Sphere.hpp"
 #include "Plane.hpp"
 #include "Light.hpp"
+#include "Camera.hpp"
 
 const Vector background_color = { 50, 50, 255 };
 
