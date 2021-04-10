@@ -5,6 +5,8 @@
 
 class Window {
 public:
+	const int UPSCALING = 2;
+
 	int width_, height_;
 	RGBQUAD* Video_memory_;
 

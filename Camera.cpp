@@ -2,12 +2,13 @@
 #include "TXLib.h"
 
 void Camera::move() {
-    const double a = 0.1; //не хочу сейчас заморачиваться с векторами
     double fps = txGetFPS();
 
     if (fps < 1) {
         return;
-    } 
+    }
+
+    double a = 1 / fps;
 
     //if (GetAsyncKeyState(VK_UP   )) dir_ = Vector ({dir_.x_, dir_.y_*cos(-a) + dir_.z_*sin(-a), -dir_.y_*sin(-a) + dir_.z_*cos(-a)}).norm();
     //if (GetAsyncKeyState(VK_DOWN )) dir_ = Vector ({dir_.x_, dir_.y_*cos( a) + dir_.z_*sin( a), -dir_.y_*sin( a) + dir_.z_*cos( a)}).norm();

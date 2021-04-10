@@ -35,7 +35,7 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
 
 std::default_random_engine re;
 
-bool Raytracer::inshadow(const Vector& p, const Light& light) {
+double Raytracer::shading(const Vector& p, const Light& light) {
 
     std::uniform_real_distribution<double> unif(0, 1);
     Vector rnd;// = { unif(re), unif(re), unif(re) };
@@ -58,10 +58,20 @@ bool Raytracer::inshadow(const Vector& p, const Light& light) {
     Vector dir = (light.center_ + rnd - p).norm();
 
     int obj;
-    trace({ p + dir, dir }, &obj);
+    Vector hit = trace({ p + dir * 0.01, dir }, &obj);
 
-    if (obj >= object_count_ - light_count_) return false;
-    else                                     return true;
+    if (objects_[obj]->mat_.transparency > 0) {
+        Ray ray = { hit, dir };
+        ray.refract(objects_[obj]->norm(hit), hit, objects_[obj]->mat_.refraction, objects_[obj]->mat_.transparency);
+
+        hit = trace(ray, &obj);
+        ray.refract(objects_[obj]->norm(hit), hit, objects_[obj]->mat_.refraction, objects_[obj]->mat_.transparency);
+
+        if (obj >= object_count_ - light_count_) return objects_[obj]->mat_.transparency; //тут должна быть рекурсия, но и без нее всё не работает
+    }
+
+    if (obj >= object_count_ - light_count_) return 1;
+    else                                     return 0;
 
 
     //if (hit == NULLVEC) {
@@ -93,10 +103,7 @@ Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
             return lights_[light].color_;
         }
 
-        if (inshadow(hit, lights_[light])) {
-            //continue;
-            k = 0.3;
-        }
+        k += shading(hit, lights_[light]);
 
         Vector dir = (hit - lights_[light].center_).norm();
         double cos = -(dir ^ norm);
@@ -109,7 +116,7 @@ Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
 }
 
 Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-    if (obj->mat_.reflection * ray.power_ < 0.2) {
+    if (obj->mat_.reflection * ray.power_ < 0.1) {
         return { 0, 0, 0 };
     }
 

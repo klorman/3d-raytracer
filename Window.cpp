@@ -35,11 +35,13 @@ void Window::update(Raytracer& rt, const Camera& cam) {
 	{
 		int thread = omp_get_thread_num();
 
-		POINT start = { width_ * thread / num_threads, 0 }, end = { width_ * (thread + 1) / num_threads, height_ };
+		POINT start = { width_ * thread / num_threads / UPSCALING, 0 }, end = { width_ * (thread + 1) / num_threads / UPSCALING, height_ / UPSCALING };
 
     	for (double x = start.x; x < end.x; ++x) {
     	    for (double y = start.y; y < end.y; ++y) {
-				Vector px = {x - width_ / 2, y - height_ / 2, 0};
+				POINT p = { x * UPSCALING, y * UPSCALING };
+
+				Vector px = { p.x - width_ / 2, p.y - height_ / 2, 0};
 
 				double  //proj1 = sqrt(cam.dir_.y_*cam.dir_.y_ + cam.dir_.z_*cam.dir_.z_),
 						proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
@@ -58,8 +60,13 @@ void Window::update(Raytracer& rt, const Camera& cam) {
 					px = {px.x_*cos2 + px.z_*sin2, px.y_, -px.x_*sin2 + px.z_*cos2};
 				}
 
-				Vector dir = (cam.dir_ * 1000 + px).norm();
-    	        draw_pixel({x,y,0}, rt.color({cam.pos_, dir, 1}));
+				Vector dir = (cam.dir_ * 1000 + px).norm(), color = rt.color({cam.pos_, dir, 1});
+
+				for (double i = 0; i < UPSCALING; ++i) {
+					for (double j = 0; j < UPSCALING; ++j) {
+    	        		draw_pixel({ p.x + i, p.y + j, 0 }, color);
+					}
+				}
     	    }
     	}
 	}

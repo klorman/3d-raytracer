@@ -3,20 +3,22 @@
 #include <cassert>
 
 Ray::Ray() :
-    start_(NULL),
-    dir_  (NULL),
-    power_(NULL)
+    start_     (NULL),
+    dir_       (NULL),
+    power_     (NULL),
+    generation_(NULL)
 {}
 
-Ray::Ray(const Vector& start, const Vector& dir, double power) :
-    start_(start),
-    dir_  (dir),
-    power_(power)
+Ray::Ray(const Vector& start, const Vector& dir, double power, int generation) :
+    start_     (start),
+    dir_       (dir),
+    power_     (power),
+    generation_(generation)
 {}
 
 Ray Ray::reflect(const Vector& norm, const Vector& hit, double refl) const {
     Vector dir = dir_ + norm * ((dir_ ^ norm) * (-2));
-    return { hit + dir, dir, refl * power_ };
+    return { hit + dir * 0.01, dir, refl * power_, generation_ + 1 };
 }
 
 Ray Ray::refract(const Vector& norm, const Vector& hit, double refr, double transparency) const {
@@ -36,5 +38,5 @@ Ray Ray::refract(const Vector& norm, const Vector& hit, double refr, double tran
     double b = nd * a + sqrt(D);
     Vector dir = dir_ * a - norm * b;
 
-    return { hit + dir, dir, transparency * power_ };
+    return { hit + dir * 0.01, dir, transparency * power_, generation_ + 1 };
 }
