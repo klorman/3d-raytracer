@@ -18,23 +18,29 @@ Window::~Window() {
 	txDisableAutoPause();
 }
 
-void Window::draw_pixel(const Vector& coords, const Vector& color) {
+void Window::draw_pixel(const Vector& coords, const Vector& color, int frames) {
 	RGBQUAD* pixel = &Video_memory_[(height_ - 1 - (int)coords.y_) * width_ + (int)coords.x_];
-	pixel->rgbRed   = BYTE (((double) pixel->rgbRed   * 0 + color.x_ * 255) / 1);
-	pixel->rgbGreen = BYTE (((double) pixel->rgbGreen * 0 + color.y_ * 255) / 1);
-	pixel->rgbBlue  = BYTE (((double) pixel->rgbBlue  * 0 + color.z_ * 255) / 1);
+
+	pixel->rgbRed   = BYTE (color.x_ * 255);
+	pixel->rgbGreen = BYTE (color.y_ * 255);
+	pixel->rgbBlue  = BYTE (color.z_ * 255);
+
+	//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
+	//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
+	//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
 }
 
-void Window::update(Raytracer& rt, const Camera& cam) {
+void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	txBegin();
 
-	const int num_threads = 16;
+	const int num_threads = 16; //количество используемых потоков
 	omp_set_num_threads(num_threads);
 	
 	#pragma omp parallel num_threads(num_threads)
 	{
 		int thread = omp_get_thread_num();
 
+		assert(UPSCALING > 0);
 		POINT start = { width_ * thread / num_threads / UPSCALING, 0 }, end = { width_ * (thread + 1) / num_threads / UPSCALING, height_ / UPSCALING };
 
     	for (int x = start.x; x < end.x; ++x) {
@@ -64,7 +70,7 @@ void Window::update(Raytracer& rt, const Camera& cam) {
 
 				for (double i = 0; i < UPSCALING; ++i) {
 					for (double j = 0; j < UPSCALING; ++j) {
-    	        		draw_pixel({ p.x + i, p.y + j, 0 }, color);
+    	        		draw_pixel({ p.x + i, p.y + j, 0 }, color, frames);
 					}
 				}
     	    }
@@ -88,8 +94,8 @@ void Window::show_fps() {
 	txTextOut(10, 10, text);
 }
 
-void Window::move(Raytracer& rt, const Camera& cam) {
-	    if (txMouseButtons() == 1) {
+bool Window::move(Raytracer& rt, const Camera& cam) {
+	if (txMouseButtons() == 1) {
         POINT mouse = txMousePos();
 
         Vector px = {(double) mouse.x - width_ / 2, (double) mouse.y - height_ / 2, 0};
@@ -117,11 +123,13 @@ void Window::move(Raytracer& rt, const Camera& cam) {
         Vector hit = rt.trace(ray, &obj);
 
         if (hit == NULLVEC) {
-            return;
+            return false;
         }
 
         rt.objects_[obj]->center_ += cam.dir_;
-    }
 
-    return;
+		return true;
+	}
+
+    return false;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Sphere.hpp"
 
-class Light : public Sphere {
+class Light : public Sphere { //этот класс уже не нужен
 public:
     double power_;
 

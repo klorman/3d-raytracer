@@ -7,5 +7,5 @@ public:
     double speed_;
     Vector pos_, dir_;
 
-    void move();
+    bool move();
 };

@@ -13,10 +13,10 @@ public:
 	Window(int width, int height);
 	~Window();
 
-	void draw_pixel(const Vector& coords, const Vector& color);
-	void update(Raytracer& rt, const Camera& cam);
+	void draw_pixel(const Vector& coords, const Vector& color, int frames);
+	void update(Raytracer& rt, const Camera& cam, int frames);
 	void show_fps();
-	void move(Raytracer& rt, const Camera& cam);
+	bool move(Raytracer& rt, const Camera& cam);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;

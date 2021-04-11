@@ -18,7 +18,7 @@ Ray::Ray(const Vector& start, const Vector& dir, const Vector& color, int genera
 
 Ray Ray::reflect(const Vector& norm, const Vector& hit, const Vector& color) const {
     Vector dir = dir_ + norm * ((dir_ ^ norm) * (-2));
-    return { hit + dir * 0.01, dir, color_ * color, generation_ + 1 };
+    return { hit + dir * EPS, dir, color_ * color, generation_ + 1 };
 }
 
 Ray Ray::refract(const Vector& norm, const Vector& hit, double refr, double transparency) const {
@@ -38,5 +38,5 @@ Ray Ray::refract(const Vector& norm, const Vector& hit, double refr, double tran
     double b = nd * a + sqrt(D);
     Vector dir = dir_ * a - norm * b;
 
-    return { hit + dir * 0.01, dir, color_ * transparency, generation_ + 1 };
+    return { hit + dir * EPS, dir, color_ * transparency, generation_ + 1 };
 }
