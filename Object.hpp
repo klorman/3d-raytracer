@@ -3,7 +3,7 @@
 #include "Ray.hpp"
 
 struct Material {
-    double reflection, refraction, transparency, surface;
+    double reflection, refraction, transparency, roughness;
 };
 
 class Object {

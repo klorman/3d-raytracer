@@ -85,3 +85,6 @@ Vector& Vector::limit(double lim) {
 
 	return (*this);
 }
+
+
+//Vector mix()

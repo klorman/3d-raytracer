@@ -20,9 +20,9 @@ Window::~Window() {
 
 void Window::draw_pixel(const Vector& coords, const Vector& color) {
 	RGBQUAD* pixel = &Video_memory_[(height_ - 1 - (int)coords.y_) * width_ + (int)coords.x_];
-	pixel->rgbRed   = (BYTE) color.x_;
-	pixel->rgbGreen = (BYTE) color.y_;
-	pixel->rgbBlue  = (BYTE) color.z_;
+	pixel->rgbRed   = BYTE (((double) pixel->rgbRed   * 0 + color.x_ * 255) / 1);
+	pixel->rgbGreen = BYTE (((double) pixel->rgbGreen * 0 + color.y_ * 255) / 1);
+	pixel->rgbBlue  = BYTE (((double) pixel->rgbBlue  * 0 + color.z_ * 255) / 1);
 }
 
 void Window::update(Raytracer& rt, const Camera& cam) {
@@ -37,11 +37,11 @@ void Window::update(Raytracer& rt, const Camera& cam) {
 
 		POINT start = { width_ * thread / num_threads / UPSCALING, 0 }, end = { width_ * (thread + 1) / num_threads / UPSCALING, height_ / UPSCALING };
 
-    	for (double x = start.x; x < end.x; ++x) {
-    	    for (double y = start.y; y < end.y; ++y) {
+    	for (int x = start.x; x < end.x; ++x) {
+    	    for (int y = start.y; y < end.y; ++y) {
 				POINT p = { x * UPSCALING, y * UPSCALING };
 
-				Vector px = { p.x - width_ / 2, p.y - height_ / 2, 0};
+				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
 
 				double  //proj1 = sqrt(cam.dir_.y_*cam.dir_.y_ + cam.dir_.z_*cam.dir_.z_),
 						proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
@@ -83,7 +83,7 @@ void Window::show_fps() {
 	else if (fps < 20) txSetColor(TX_YELLOW);
 	else 			   txSetColor(TX_GREEN );
 
-	char text[3] = "";
+	char text[4] = "";
 	_itoa_s((int) fps, text, 10);
 	txTextOut(10, 10, text);
 }
@@ -119,10 +119,7 @@ void Window::move(Raytracer& rt, const Camera& cam) {
         if (hit == NULLVEC) {
             return;
         }
-		Vector t;
-		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_ , rt.objects_[obj]->center_.y_);
-		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_);
-		//txLine(rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_, rt.objects_[obj]->center_.x_, rt.objects_[obj]->center_.y_);
+
         rt.objects_[obj]->center_ += cam.dir_;
     }
 

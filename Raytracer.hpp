@@ -5,7 +5,7 @@
 #include "Light.hpp"
 #include "Camera.hpp"
 
-const Vector background_color = { 50, 50, 255 };
+const Vector background_color = { 0.2, 0.2, 1.0 };
 
 class Raytracer {
 public:
@@ -16,10 +16,12 @@ public:
     Raytracer(int object_count, Object** objects, int light_count, Light* lights);
 
     Vector trace  (const Ray& ray, int* object = nullptr);
-    double shading(const Vector& p, const Light& light);
+    //double shading(const Vector& p, const Light& light);
     Vector color  (const Ray& ray);
 
-    Vector diffuse   (Object* obj, const Vector& hit, const Vector& norm);
+    Vector diffuse   (Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
     Vector reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
     Vector refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
 };
+
+Vector random_on_sphere();

@@ -32,9 +32,7 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
 
     return hit_near;
 }
-
-std::default_random_engine re;
-
+/*
 double Raytracer::shading(const Vector& p, const Light& light) {
 
     std::uniform_real_distribution<double> unif(0, 1);
@@ -79,7 +77,7 @@ double Raytracer::shading(const Vector& p, const Light& light) {
     //}
     //return ((hit - light.center_).length() <= (p - light.center_).length() - 0.01);
 }
-
+*/
 Vector Raytracer::color(const Ray& ray) {
     int obj;
     Vector hit = trace(ray, &obj);
@@ -88,46 +86,34 @@ Vector Raytracer::color(const Ray& ray) {
         return background_color;
     }
 
-    Vector norm = objects_[obj]->norm(hit);
+    if (obj >= object_count_ - light_count_) return objects_[obj]->color_;
+
+    Vector norm = objects_[obj]->norm(hit);//, color = objects_[obj]->color(hit);
 
     return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection  ) +
-            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency) +
-            (diffuse   (objects_[obj], hit, norm     ) * objects_[obj]->mat_.surface     )).limit(255);
+            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency) + 
+            objects_[obj]->color(hit) * (1 - objects_[obj]->mat_.transparency - objects_[obj]->mat_.reflection)).limit(1);
 }
 
-Vector Raytracer::diffuse(Object* obj, const Vector& hit, const Vector& norm) {
-    double k = 1, sumlight = 0;
-
-    for (int light = 0; light < light_count_; ++light) {
-        if ((lights_[light].center_ - hit).length() <= lights_[light].radius_ + 0.01) {
-            return lights_[light].color_;
-        }
-
-        k += shading(hit, lights_[light]);
-
-        Vector dir = (hit - lights_[light].center_).norm();
-        double cos = -(dir ^ norm);
-        if (cos < 0) cos = 0;
-
-        sumlight += lights_[light].power_ * cos;
-    }
-
-    return obj->color(hit) * sumlight * k;
+Vector Raytracer::diffuse   (Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+    
 }
 
 Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-    if (obj->mat_.reflection * ray.power_ < 0.1) {
+    if (ray.generation_ > 100 || obj->mat_.reflection < 0.01) {
         return { 0, 0, 0 };
     }
 
     Ray reflected = ray.reflect(norm, hit, obj->mat_.reflection);
 
+    reflected.dir_ = reflected.dir_ * 1000 * obj->mat_.roughness + random_on_sphere();
+    reflected.dir_ = (reflected.dir_ * (reflected.dir_ ^ norm)).norm();
+
     return color(reflected);
 }
 
 Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-    //return {0,0,0};
-    if (obj->mat_.transparency * ray.power_ <= 0) {
+    if (obj->mat_.transparency <= 0.01) {
         return NULLVEC;
     }
 
@@ -138,4 +124,19 @@ Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm,
     }
 
     return color(refracted);
+}
+
+std::default_random_engine re;
+
+Vector random_on_sphere() {
+    std::uniform_real_distribution<double> unif(0, 1);
+    Vector rnd;
+
+    while(true) {
+        rnd = Vector { unif(re), unif(re), unif(re) };
+    
+        if (rnd.length() <= 1) break;
+    }
+
+    return rnd;
 }

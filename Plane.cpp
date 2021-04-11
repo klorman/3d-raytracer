@@ -8,7 +8,7 @@ Plane::Plane(const Vector& center, const Vector& color, const Vector& dir, const
 
 Vector Plane::norm (const Vector& p  ) {
     (void)p;
-    return dir_;
+    return dir_; //нужно переделать так, чтобы работало с обратной стороны плоскости
 }
 
 Vector Plane::color(const Vector& hit) {
