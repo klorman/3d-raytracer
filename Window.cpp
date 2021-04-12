@@ -2,15 +2,19 @@
 
 #include <omp.h>
 
-Window::Window(int width, int height) :
+Window::Window(int width, int height, const Interface& interf) :
 	width_(width),
 	height_(height),
-	Video_memory_(nullptr)
+	interf_(interf),
+	Video_memory_(nullptr),
+	dc_(nullptr)
 {
-	txCreateWindow(width_, height_);
+	txCreateWindow(width_ + interf_.right_size_, height_ + interf.bottom_size_);
 	Video_memory_ = txVideoMemory();
+	dc_ = txDC();
 
-	_txCursorBlinkInterval = 1;
+	txSelectFont("Consolas", 20, false, FW_BOLD);
+	//_txCursorBlinkInterval = 1;
 	_txWindowUpdateInterval = 60;
 }
 
@@ -22,16 +26,22 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 	RGBQUAD* pixel;
 	for (int i = 0; i < UPSCALING; ++i) {
 		for (int j = 0; j < UPSCALING; ++j) {
-			pixel = &Video_memory_[(height_ - 1 - (int)px.y - i) * width_ + (int)px.x + j];
+			pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
 
-			pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
-			pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
-			pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+			pixel->rgbRed   = BYTE (color.x_ * 255);
+			pixel->rgbGreen = BYTE (color.y_ * 255);
+			pixel->rgbBlue  = BYTE (color.z_ * 255);
+
+			//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
+			//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
+			//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
 		}
 	}
 }
 
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
+	interf_.update(*this, txMousePos());
+
 	txBegin();
 
 	omp_set_num_threads(THREADS);

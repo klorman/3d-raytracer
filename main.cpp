@@ -3,6 +3,8 @@
 #include "Raytracer.hpp"
 #include "Camera.hpp"
 
+#include <clocale>
+
 #define LEN(arr) sizeof(arr) / sizeof(arr[0])
 
 void start(Window& wnd);
@@ -23,6 +25,8 @@ void start(Window& wnd) {
     bool is_moved = false;
     int  frames = 0;
 
+    wnd.interf_.draw(wnd);
+
     while (!GetAsyncKeyState(VK_ESCAPE)) {  
 
         is_moved |= cam.move();
@@ -35,8 +39,20 @@ void start(Window& wnd) {
 }
 
 int main() {
+    Interface interf(50, 300);
 
-    Window wnd(800, 600);
+    Window wnd(800, 600, interf);
+
+    AbstractButton* buttons[] = {
+        new BasicButton{{wnd.width_,                                     0 }, {LONG (interf.right_size_ / 2)    , 30}, EVEC * 70, EVEC * 255, "Edit"},
+        new BasicButton{{wnd.width_ + LONG (interf.right_size_ / 2) - 1, 0 }, {LONG (interf.right_size_ / 2 + 1), 30}, EVEC * 70, EVEC * 255, "Objects"},
+        new BasicButton{{wnd.width_,                                     30}, {interf.right_size_               , 30}, EVEC * 70, EVEC * 255, "Create"}
+    };
+
+    wnd.interf_.button_count_ = LEN(buttons);
+    wnd.interf_.buttons_      = buttons;
+
+    
     
     start(wnd);
     
