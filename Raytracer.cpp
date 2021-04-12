@@ -29,65 +29,31 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
     return hit_near;
 }
 
-Vector Raytracer::color(const Ray& ray) {
+Vector Raytracer::color(Ray* ray) {
+    
     int obj;
-    Vector hit = trace(ray, &obj);
+    Vector hit = trace(*ray, &obj);
 
-    if (hit == NULLVEC) {
-        return background_color;
-    }
-
-    if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_;
+    if (hit == NULLVEC)                       { ray->generation_ = MAXGEN + 1; return background_color;      };
+    if (objects_[obj]->mat_.transparency < 0) { ray->generation_ = MAXGEN + 1; return objects_[obj]->color_; };
 
     Vector norm = objects_[obj]->norm(hit);
 
-    return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection  )  +
-            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency)) * objects_[obj]->color(hit);
+    ray->reflect(norm, hit, objects_[obj]->mat_.roughness);
+
+    return objects_[obj]->color(hit) * objects_[obj]->mat_.reflection;
 }
 
-Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-    if (ray.generation_ > 10 || obj->mat_.reflection < EPS) {
-        return NULLVEC;
-    }
-
-    Ray reflected = ray.reflect(norm, hit, obj->mat_.reflection);
-
-    Vector diffuse = random_on_sphere();
-    diffuse = (diffuse * (diffuse ^ norm)).norm();
-
-    reflected.dir_ = mix(diffuse, reflected.dir_, obj->mat_.roughness);
-
-    //reflected.dir_ = reflected.dir_ * 1000 * obj->mat_.roughness + random_on_sphere();
-    //reflected.dir_ = (reflected.dir_ * (reflected.dir_ ^ norm)).norm();
-
-    return color(reflected);
-}
-
-Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-    if (obj->mat_.transparency <= EPS) {
-        return NULLVEC;
-    }
-
-    Ray refracted = ray.refract(norm, hit, obj->mat_.refraction, obj->mat_.transparency);
-    
-    if (refracted.dir_ == NULLVEC) {
-        return NULLVEC;
-    }
-
-    return color(refracted);
-}
-
-std::default_random_engine re;
-
-Vector random_on_sphere() {
-    std::uniform_real_distribution<double> unif(-1, 1);
-    Vector rnd;
-
-    while(true) {
-        rnd = Vector { unif(re), unif(re), unif(re) };
-    
-        if (rnd.length() <= 1) break;
-    }
-
-    return rnd;
-}
+//Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+//    if (ray.generation_ > MAXGEN || obj->mat_.transparency <= EPS) {
+//        return NULLVEC;
+//    }
+//
+//    Ray refracted = ray.refract(norm, hit, obj->mat_.refraction, obj->mat_.transparency);
+//    
+//    if (refracted.dir_ == NULLVEC) {
+//        return NULLVEC;
+//    }
+//
+//    return color(refracted);
+//}

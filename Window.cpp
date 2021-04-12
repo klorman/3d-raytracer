@@ -18,30 +18,30 @@ Window::~Window() {
 	txDisableAutoPause();
 }
 
-void Window::draw_pixel(const Vector& coords, const Vector& color, int frames) {
-	RGBQUAD* pixel = &Video_memory_[(height_ - 1 - (int)coords.y_) * width_ + (int)coords.x_];
+void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
+	RGBQUAD* pixel;
+	for (int i = 0; i < UPSCALING; ++i) {
+		for (int j = 0; j < UPSCALING; ++j) {
+			pixel = &Video_memory_[(height_ - 1 - (int)px.y - i) * width_ + (int)px.x + j];
 
-	pixel->rgbRed   = BYTE (color.x_ * 255);
-	pixel->rgbGreen = BYTE (color.y_ * 255);
-	pixel->rgbBlue  = BYTE (color.z_ * 255);
-
-	//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
-	//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
-	//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+			pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
+			pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
+			pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+		}
+	}
 }
 
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	txBegin();
 
-	const int num_threads = 16; //количество используемых потоков
-	omp_set_num_threads(num_threads);
+	omp_set_num_threads(THREADS);
 	
-	#pragma omp parallel num_threads(num_threads)
+	#pragma omp parallel num_threads(THREADS)
 	{
 		int thread = omp_get_thread_num();
 
 		assert(UPSCALING > 0);
-		POINT start = { width_ * thread / num_threads / UPSCALING, 0 }, end = { width_ * (thread + 1) / num_threads / UPSCALING, height_ / UPSCALING };
+		POINT start = { width_ * thread / THREADS / UPSCALING, 0 }, end = { width_ * (thread + 1) / THREADS / UPSCALING, height_ / UPSCALING };
 
     	for (int x = start.x; x < end.x; ++x) {
     	    for (int y = start.y; y < end.y; ++y) {
@@ -49,30 +49,11 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 
 				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
 
-				double  //proj1 = sqrt(cam.dir_.y_*cam.dir_.y_ + cam.dir_.z_*cam.dir_.z_),
-						proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
+				px.rot({0,0,1}, cam.dir_);
 
-				double  //cos1 = 0, sin1 = 0, 
-						cos2 = 0, sin2 = 0;
-				//if (proj1 != 0) {
-				//	cos1 = cam.dir_.z_ / proj1,
-				//	sin1 = cam.dir_.y_ / proj1;
-				//	px = {px.x_, px.y_*cos1 - px.z_*sin1, px.y_*sin1 + px.z_*cos1};
-				//}
+				Ray ray = { cam.pos_, (cam.dir_ * 1000 + px).norm(), 1 };
 
-				if (proj2 > 0) {
-					cos2 = cam.dir_.z_ / proj2,
-					sin2 = cam.dir_.x_ / proj2;
-					px = {px.x_*cos2 + px.z_*sin2, px.y_, -px.x_*sin2 + px.z_*cos2};
-				}
-
-				Vector dir = (cam.dir_ * 1000 + px).norm(), color = rt.color({cam.pos_, dir, 1});
-
-				for (double i = 0; i < UPSCALING; ++i) {
-					for (double j = 0; j < UPSCALING; ++j) {
-    	        		draw_pixel({ p.x + i, p.y + j, 0 }, color, frames);
-					}
-				}
+    	        draw_pixel(p, get_color(rt, ray), frames);
     	    }
     	}
 	}
@@ -100,16 +81,8 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
 
         Vector px = {(double) mouse.x - width_ / 2, (double) mouse.y - height_ / 2, 0};
 
-		double  //proj1 = sqrt(cam.dir_.y_*cam.dir_.y_ + cam.dir_.z_*cam.dir_.z_),
-				proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
-
-		double  //cos1 = 0, sin1 = 0, 
-				cos2 = 0, sin2 = 0;
-		//if (proj1 != 0) {
-		//	cos1 = cam.dir_.z_ / proj1,
-		//	sin1 = cam.dir_.y_ / proj1;
-		//	px = {px.x_, px.y_*cos1 - px.z_*sin1, px.y_*sin1 + px.z_*cos1};
-		//}
+		double  proj2 = sqrt(cam.dir_.z_*cam.dir_.z_ + cam.dir_.x_*cam.dir_.x_);
+		double  cos2 = 0, sin2 = 0;
 
 		if (proj2 > 0) {
 			cos2 = cam.dir_.z_ / proj2,
@@ -132,4 +105,16 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
 	}
 
     return false;
+}
+
+Vector get_color(Raytracer& rt, Ray& ray) {
+	Vector color = EVEC;
+
+	while (ray.generation_ < MAXGEN) {
+		color *= rt.color(&ray);
+	}
+
+	if (ray.generation_ == MAXGEN) color = NULLVEC;
+
+	return color;
 }

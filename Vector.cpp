@@ -93,6 +93,18 @@ Vector& Vector::limit(double lim) {
 	return (*this);
 }
 
+Vector& Vector::rot(const Vector& vec1, const Vector& vec2) { //пока костыльная функция, нужно переделать
+	double  proj = sqrt(vec2.z_*vec2.z_ + vec2.x_*vec2.x_), cos = 0, sin = 0;
+
+	if (proj > 0) {
+		cos = vec2.z_ / proj,
+		sin = vec2.x_ / proj;
+		*this = {x_*cos + z_*sin, y_, -x_*sin + z_*cos};
+	}
+
+	return (*this);
+}
+
 Vector mix(const Vector& x, const Vector& y, double a) {
 	return x * (1 - a) + y * a;
 }

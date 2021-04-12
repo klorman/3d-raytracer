@@ -4,8 +4,7 @@
 #define EVEC    Vector { 1, 1, 1 }
 #define EPS     0.01
 
-class Vector
-{
+class Vector {
 public:
 	double x_, y_, z_;
 
@@ -29,6 +28,7 @@ public:
 	double  length() const;
 	Vector& norm();
 	Vector& limit(double lim);
+	Vector& rot(const Vector& vec1, const Vector& vec2);
 };
 
 Vector mix(const Vector& col1, const Vector& col2, double a);
