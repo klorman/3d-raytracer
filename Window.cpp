@@ -2,19 +2,18 @@
 
 #include <omp.h>
 
-Window::Window(int width, int height, const Interface& interf) :
-	width_(width),
-	height_(height),
-	interf_(interf),
+Window::Window(int width, int height, LONG bottom_size, LONG right_size) :
+	width_       (width),
+	height_      (height),
+	interf_      ({bottom_size, right_size}),
 	Video_memory_(nullptr),
-	dc_(nullptr)
+	should_close_(false)
 {
-	txCreateWindow(width_ + interf_.right_size_, height_ + interf.bottom_size_);
+	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
 	Video_memory_ = txVideoMemory();
-	dc_ = txDC();
 
 	txSelectFont("Consolas", 20, false, FW_BOLD);
-	//_txCursorBlinkInterval = 1;
+
 	_txWindowUpdateInterval = 60;
 }
 
@@ -40,6 +39,11 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 }
 
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
+	if (GetAsyncKeyState(VK_ESCAPE)) {
+		should_close_ = true;
+		return;
+	}
+
 	interf_.update(*this, txMousePos());
 
 	txBegin();
@@ -117,6 +121,10 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
     return false;
 }
 
+HDC& Window::get_DC() const {
+	return txDC();
+}
+
 Vector get_color(Raytracer& rt, Ray& ray) {
 	Vector color = EVEC;
 
@@ -127,4 +135,43 @@ Vector get_color(Raytracer& rt, Ray& ray) {
 	if (ray.generation_ == MAXGEN) color = NULLVEC;
 
 	return color;
+}
+
+void Window::Save() {
+
+}
+
+void Window::Load() {
+
+}
+
+void Window::Screenshot() {
+
+}
+
+void Window::Exit() {
+    should_close_ = true;
+}
+
+void Interface::draw(Window& wnd) {
+    txSetColor    (VEC2RGB((BACKGROUND * 0.9)), 1, wnd.get_DC());
+    txSetFillColor(VEC2RGB(BACKGROUND),            wnd.get_DC());
+
+    txRectangle(0,          wnd.height_, wnd.width_,               wnd.height_ + bottom_size_, wnd.get_DC());
+    txRectangle(wnd.width_, 0,           wnd.width_ + right_size_, wnd.height_ + bottom_size_, wnd.get_DC());
+
+    for (int button = 0; button < button_count_; ++button) {
+        buttons_[button]->draw(wnd.get_DC());
+    }
+}
+
+void BasicButton::draw(HDC dc) {
+    txSetColor    (VEC2RGB((fill_color_ * 0.8)), 1, dc);
+    txSetFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))), dc);
+
+    txRectangle(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, dc);
+
+    txSetColor(VEC2RGB(text_color_), 1, dc);
+    
+    txDrawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_, DT_CENTER | DT_VCENTER, dc);
 }

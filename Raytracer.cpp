@@ -37,7 +37,7 @@ Vector Raytracer::color(Ray* ray) {
     if (hit == NULLVEC)                       { ray->generation_ = MAXGEN + 1; return background_color;      };
     if (objects_[obj]->mat_.transparency < 0) { ray->generation_ = MAXGEN + 1; return objects_[obj]->color_; };
 
-    Vector norm = objects_[obj]->norm(hit);
+    Vector norm = objects_[obj]->norm(hit, ray->start_);
 
     ray->reflect(norm, hit, objects_[obj]->mat_.roughness);
 
