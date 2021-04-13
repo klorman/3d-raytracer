@@ -32,7 +32,8 @@ void start() {
 
     wnd.interf_.draw(wnd);
 
-    while (!wnd.should_close_) {  
+    while (!wnd.should_close_) { 
+        if (!IsWindowVisible(wnd.getWindow())) continue;
         
         is_moved |= cam.move();
         is_moved |= wnd.move(rt, cam);

@@ -14,9 +14,8 @@ public:
 
     Raytracer(int object_count, Object** objects);
 
-    Vector trace  (const Ray& ray, int* object = nullptr);
-    //double shading(const Vector& p, const Light& light);
-    Vector color  (Ray* ray);
+    Vector trace(const Ray& ray, int* object = nullptr);
+    Vector color(Ray* ray);
 
     Vector reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
     Vector refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);

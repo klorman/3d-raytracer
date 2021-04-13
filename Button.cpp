@@ -11,6 +11,9 @@ AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector
 
 void AbstractButton::pressed() {
     if (func_ != nullptr) func_();
+
+    //status_ = 1;
+    //draw(wnd.get_DC());
 }
 
 BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, const char* text, func_t func) :

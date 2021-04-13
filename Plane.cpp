@@ -12,7 +12,7 @@ Vector Plane::norm(const Vector& p, const Vector& from) {
 Vector Plane::color(const Vector& hit) {
     if (((int) hit.x_ % 50 > 25 || (int) hit.x_ % 50 > -25) ^
         ((int) hit.z_ % 50 > 25 || (int) hit.z_ % 50 > -25))
-        return EVEC / 10;
+        return EVEC / 8;
 
     return color_;
 }

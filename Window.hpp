@@ -42,6 +42,7 @@ public:
 	void show_fps();
 	bool move(Raytracer& rt, const Camera& cam);
 	HDC& get_DC() const;
+	HWND getWindow() const;
 
 	void Save();
 	void Load();

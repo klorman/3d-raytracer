@@ -39,7 +39,7 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 }
 
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
-	if (GetAsyncKeyState(VK_ESCAPE)) {
+	if (!IsWindow(txWindow())) {
 		should_close_ = true;
 		return;
 	}
@@ -125,6 +125,10 @@ HDC& Window::get_DC() const {
 	return txDC();
 }
 
+HWND Window::getWindow() const {
+	return txWindow();
+}
+
 Vector get_color(Raytracer& rt, Ray& ray) {
 	Vector color = EVEC;
 
@@ -135,22 +139,6 @@ Vector get_color(Raytracer& rt, Ray& ray) {
 	if (ray.generation_ == MAXGEN) color = NULLVEC;
 
 	return color;
-}
-
-void Window::Save() {
-
-}
-
-void Window::Load() {
-
-}
-
-void Window::Screenshot() {
-
-}
-
-void Window::Exit() {
-    should_close_ = true;
 }
 
 void Interface::draw(Window& wnd) {

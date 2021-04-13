@@ -23,15 +23,20 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
     if (mouse_on_interface(wnd, mouse_pos)) {        
         for (int button = 0; button < button_count_; ++button) {
             bool mob = buttons_[button]->mouse_on_button(mouse_pos);
-            int status = txMouseButtons();
+            int mouse_button = txMouseButtons();
 
-            if (mob && status == 0) {
+            if (mob && mouse_button == 0 && buttons_[button]->status_ == 0) {
                 buttons_[button]->status_ = 1;
                 buttons_[button]->draw(wnd.get_DC());
             }
 
-            if (mob && status == 1) {
+            if (mob && mouse_button == 1 && buttons_[button]->status_ != 2) {
                 buttons_[button]->status_ = 2;
+                buttons_[button]->draw(wnd.get_DC());
+            }
+
+            if (mob && mouse_button == 0 && buttons_[button]->status_ == 2) {
+                buttons_[button]->status_ = 1;
                 buttons_[button]->draw(wnd.get_DC());
                 buttons_[button]->pressed();
             }
