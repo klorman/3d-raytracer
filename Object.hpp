@@ -3,8 +3,7 @@
 #include "Ray.hpp"
 
 #include <cmath>
-
-#define SIGN(x) (((x) < 0) ? -1 : ((x) > 0 ))
+#include <cassert>
 
 struct Material {
     double reflection, n, transparency, roughness;

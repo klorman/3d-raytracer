@@ -33,5 +33,10 @@ public:
 	Vector& rot(const Vector& vec1, const Vector& vec2);
 };
 
-Vector mix(const Vector& col1, const Vector& col2, double a);
-Vector abs(const Vector& vec);
+double sign(double x);
+double step(double edge, double x);
+
+Vector mix (const Vector& col1, const Vector& col2, double a);
+Vector abs (const Vector& vec);
+Vector sign(const Vector& vec);
+Vector step(const Vector& edge, const Vector& vec);

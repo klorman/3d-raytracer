@@ -14,7 +14,7 @@ Vector Plane::color(const Vector& hit) const {
 }
 
 Vector Plane::trace(const Ray& ray, Vector* norm) const {
-    *norm = dir_ * SIGN((ray.start_ - center_) ^ dir_);
+    *norm = dir_ * sign((ray.start_ - center_) ^ dir_);
 
     double D = -center_ ^ *norm, den = ray.dir_ ^ *norm;
     

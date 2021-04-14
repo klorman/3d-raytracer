@@ -44,11 +44,6 @@ public:
 	HDC& get_DC() const;
 	HWND getWindow() const;
 
-	void Save();
-	void Load();
-	void Screenshot();
-	void Exit();
-
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 };

@@ -1,6 +1,7 @@
 #include "Vector.hpp"
 #include <cmath>
 #include <algorithm>
+#include <cassert>
 
 Vector::Vector() :
 	x_(0),
@@ -29,7 +30,9 @@ Vector Vector::operator  *  (const Vector& vec) const {
 }
 
 Vector Vector::operator  /  (const Vector& vec) const {
-	return{ x_ / vec.x_, y_ / vec.y_, z_ / vec.z_ };
+	//assert(vec.x_ == 0 || vec.y_ == 0 || vec.z_ == 0);
+
+	return{ vec.x_ == 0 ? 10000 : x_ / vec.x_, vec.y_ == 0 ? 10000 : y_ / vec.y_, vec.z_ == 0 ? 10000 : z_ / vec.z_ }; //надо придумать, как обрабатывать деление на 0
 }
 
 Vector Vector::operator  +  (const Vector& vec) const {
@@ -111,4 +114,20 @@ Vector mix(const Vector& x, const Vector& y, double a) {
 
 Vector abs(const Vector& vec) {
 	return { (double)abs(vec.x_), (double)abs(vec.y_), (double)abs(vec.z_) };
+}
+
+double sign(double x) {
+	return x < 0 ? -1 : x > 0;
+}
+
+Vector sign(const Vector& vec) {
+	return { sign(vec.x_), sign(vec.y_), sign(vec.z_) };
+}
+
+double step(double edge, double x) {
+	return x < edge ? 0 : 1;
+}
+
+Vector step(const Vector& edge, const Vector& vec) {
+	return { step(edge.x_, vec.x_), step(edge.y_, vec.y_), step(edge.z_, vec.z_) };
 }
