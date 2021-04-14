@@ -4,14 +4,6 @@ Sphere::Sphere(const Vector& center, const Vector& color, const double size, con
     Object(mat, size, center, color)
 {}
 
-//Vector Sphere::norm(const Vector& p, const Vector& from) const {
-//    (void) from;
-//    Vector norm = (p - center_) / size_;
-//    
-//    return norm;                             //нормаль всегда направлена из центра
-//    //return norm * SIGN((from - p) ^ norm); //нормаль направлена в зависимости от того, откуда луч вылетел
-//}
-
 Vector Sphere::color(const Vector& hit) const {
     (void) hit;
     return color_;

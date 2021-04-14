@@ -86,8 +86,6 @@ void Screenshot() {
     }
 
     txDeleteDC(save);
-
-
 }
 
 void Exit() {

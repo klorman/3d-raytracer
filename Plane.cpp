@@ -5,10 +5,6 @@ Plane::Plane(const Vector& center, const Vector& color, const Vector& dir, const
     dir_(dir)
 {}
 
-//Vector Plane::norm(const Vector& p, const Vector& from) const {
-//    return dir_ * SIGN((from - p) ^ dir_);
-//}
-
 Vector Plane::color(const Vector& hit) const {
     if (((int) hit.x_ % 50 > 25 || (int) hit.x_ % 50 > -25) ^
         ((int) hit.z_ % 50 > 25 || (int) hit.z_ % 50 > -25))
