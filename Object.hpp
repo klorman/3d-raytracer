@@ -7,19 +7,19 @@
 #define SIGN(x) (((x) < 0) ? -1 : ((x) > 0 ))
 
 struct Material {
-    double reflection, refraction, transparency, roughness;
+    double reflection, n, transparency, roughness;
 };
 
 class Object {
 public:
-    Vector center_, color_;
     Material mat_;
+    Vector center_, color_, rotation_;
 
     Object();
-    Object(const Vector& center, const Vector& color, const Material& mat);
+    Object(const Material& mat, const Vector& center, const Vector& color, const Vector& rotation = NULLVEC);
     virtual ~Object() = default;
 
-    virtual Vector norm (const Vector& p, const Vector& from) = 0;
-    virtual Vector color(const Vector& hit                  ) = 0;
-    virtual Vector trace(const Ray&    ray                  ) = 0;
+    virtual Vector norm (const Vector& p, const Vector& from) const = 0;
+    virtual Vector color(const Vector& hit                  ) const = 0;
+    virtual Vector trace(const Ray&    ray                  ) const = 0;
 };

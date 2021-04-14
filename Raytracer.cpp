@@ -29,31 +29,40 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
     return hit_near;
 }
 
-Vector Raytracer::color(Ray* ray) {
-    
+Vector Raytracer::color(const Ray& ray) {
     int obj;
-    Vector hit = trace(*ray, &obj);
+    Vector hit = trace(ray, &obj);
 
-    if (hit == NULLVEC)                       { ray->generation_ = MAXGEN + 1; return background_color;      };
-    if (objects_[obj]->mat_.transparency < 0) { ray->generation_ = MAXGEN + 1; return objects_[obj]->color_; };
+    if (hit == NULLVEC)                       return background_color;      //луч не пересекает объекты
+    if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_; //объект - источник 
+    if (ray.generation_ > MAXGEN)             return NULLVEC;               //достигнут лимит
 
-    Vector norm = objects_[obj]->norm(hit, ray->start_);
+    Vector norm = objects_[obj]->norm(hit, ray.start_);
 
-    ray->reflect(norm, hit, objects_[obj]->mat_.roughness);
-
-    return objects_[obj]->color(hit) * objects_[obj]->mat_.reflection;
+    return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection   ) +
+            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency)) * objects_[obj]->color(hit);
 }
 
-//Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
-//    if (ray.generation_ > MAXGEN || obj->mat_.transparency <= EPS) {
-//        return NULLVEC;
-//    }
-//
-//    Ray refracted = ray.refract(norm, hit, obj->mat_.refraction, obj->mat_.transparency);
-//    
-//    if (refracted.dir_ == NULLVEC) {
-//        return NULLVEC;
-//    }
-//
-//    return color(refracted);
-//}
+Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+    if (obj->mat_.reflection < EPS) {
+        return NULLVEC;
+    }
+
+    Ray reflected = ray.reflect(norm, hit, obj->mat_.roughness);
+
+    return color(reflected);
+}
+
+Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {
+    if (obj->mat_.transparency < EPS) {
+        return NULLVEC;
+    }
+
+    Ray refracted = ray.refract(norm, hit, obj->mat_.n);
+    
+    if (refracted.dir_ == NULLVEC) {
+        return NULLVEC;
+    }
+
+    return color(refracted);
+}

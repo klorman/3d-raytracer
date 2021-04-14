@@ -65,9 +65,9 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 
 				px.rot({0,0,1}, cam.dir_);
 
-				Ray ray = { cam.pos_, (cam.dir_ * 1000 + px).norm(), 1 };
+				Ray ray = { cam.pos_, (cam.dir_ * 1000 + px).norm() };
 
-    	        draw_pixel(p, get_color(rt, ray), frames);
+    	        draw_pixel(p, rt.color(ray), frames);
     	    }
     	}
 	}
@@ -129,17 +129,17 @@ HWND Window::getWindow() const {
 	return txWindow();
 }
 
-Vector get_color(Raytracer& rt, Ray& ray) {
-	Vector color = EVEC;
-
-	while (ray.generation_ < MAXGEN) {
-		color *= rt.color(&ray);
-	}
-
-	if (ray.generation_ == MAXGEN) color = NULLVEC;
-
-	return color;
-}
+//Vector get_color(Raytracer& rt, Ray& ray) {
+//	Vector color = EVEC;
+//
+//	while (ray.generation_ < MAXGEN) {
+//		color *= rt.color(&ray);
+//	}
+//
+//	if (ray.generation_ == MAXGEN) color = NULLVEC;
+//
+//	return color;
+//}
 
 void Interface::draw(Window& wnd) {
     txSetColor    (VEC2RGB((BACKGROUND * 0.9)), 1, wnd.get_DC());
