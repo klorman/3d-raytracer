@@ -28,8 +28,8 @@ Vector Vector::operator  *  (const Vector& vec) const {
 	return{ x_ * vec.x_, y_ * vec.y_, z_ * vec.z_ };
 }
 
-Vector Vector::operator  /  (const double& num) const {
-	return{ x_ / num, y_ / num, z_ / num };
+Vector Vector::operator  /  (const Vector& vec) const {
+	return{ x_ / vec.x_, y_ / vec.y_, z_ / vec.z_ };
 }
 
 Vector Vector::operator  +  (const Vector& vec) const {
@@ -107,4 +107,8 @@ Vector& Vector::rot(const Vector& vec1, const Vector& vec2) { //пока кос�
 
 Vector mix(const Vector& x, const Vector& y, double a) {
 	return x * (1 - a) + y * a;
+}
+
+Vector abs(const Vector& vec) {
+	return { (double)abs(vec.x_), (double)abs(vec.y_), (double)abs(vec.z_) };
 }

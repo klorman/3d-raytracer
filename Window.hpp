@@ -24,8 +24,8 @@ public:
 
 class Window {
 public:
-	const double UPSCALING = 2;  //во сколько раз меньше изображение будет рендериться
-	const int    THREADS   = 16; //количество используемых потоков
+	const int UPSCALING = 2;  //во сколько раз меньше изображение будет рендериться
+	const int THREADS   = 16; //количество используемых потоков
 
 	int width_, height_;
 	Interface interf_;

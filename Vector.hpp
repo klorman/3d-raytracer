@@ -17,7 +17,7 @@ public:
 	Vector operator  -  () const;
 
 	Vector  operator *  (const Vector& vec) const;
-	Vector  operator /  (const double& num) const;
+	Vector  operator /  (const Vector& vec) const;
 	Vector  operator +  (const Vector& vec) const;
 	Vector  operator -  (const Vector& vec) const;
 	double  operator ^  (const Vector& vec) const;
@@ -34,3 +34,4 @@ public:
 };
 
 Vector mix(const Vector& col1, const Vector& col2, double a);
+Vector abs(const Vector& vec);

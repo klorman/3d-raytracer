@@ -5,12 +5,12 @@ Raytracer::Raytracer(int object_count, Object** objects) :
     objects_(objects)
 {}
 
-Vector Raytracer::trace(const Ray& ray, int* object) {
+Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
     Vector hit_near = NULLVEC, hit;
     double min_length = 10000;
 
     for (int obj = 0; obj < object_count_; ++obj) {
-        hit = objects_[obj]->trace(ray);
+        hit = objects_[obj]->trace(ray, norm);
         if (hit == NULLVEC) {
             continue;
         }
@@ -31,16 +31,16 @@ Vector Raytracer::trace(const Ray& ray, int* object) {
 
 Vector Raytracer::color(const Ray& ray) {
     int obj;
-    Vector hit = trace(ray, &obj);
+    Vector norm;
+    Vector hit = trace(ray, &obj, &norm);
 
     if (hit == NULLVEC)                       return background_color;      //луч не пересекает объекты
     if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_; //объект - источник 
     if (ray.generation_ > MAXGEN)             return NULLVEC;               //достигнут лимит
 
-    Vector norm = objects_[obj]->norm(hit, ray.start_);
+    //Vector norm = objects_[obj]->norm(hit, ray.start_);
 
-    return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection   ) +
-            (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency)) * objects_[obj]->color(hit);
+    return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection   )) * objects_[obj]->color(hit);
 }
 
 Vector Raytracer::reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray) {

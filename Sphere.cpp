@@ -1,25 +1,24 @@
 #include "Sphere.hpp"
 
-Sphere::Sphere(const Vector& center, const Vector& color, const double& radius, const Material& mat) :
-    Object(mat, center, color),
-    radius_(radius)
+Sphere::Sphere(const Vector& center, const Vector& color, const double size, const Material& mat) :
+    Object(mat, size, center, color)
 {}
 
-Vector Sphere::norm(const Vector& p, const Vector& from) const {
-    (void) from;
-    Vector norm = (p - center_) / radius_;
-    
-    return norm;                             //нормаль всегда направлена из центра
-    //return norm * SIGN((from - p) ^ norm); //нормаль направлена в зависимости от того, откуда луч вылетел
-}
+//Vector Sphere::norm(const Vector& p, const Vector& from) const {
+//    (void) from;
+//    Vector norm = (p - center_) / size_;
+//    
+//    return norm;                             //нормаль всегда направлена из центра
+//    //return norm * SIGN((from - p) ^ norm); //нормаль направлена в зависимости от того, откуда луч вылетел
+//}
 
 Vector Sphere::color(const Vector& hit) const {
     (void) hit;
     return color_;
 }
 
-Vector Sphere::trace(const Ray& ray) const {
-    double r2 = radius_ * radius_;
+Vector Sphere::trace(const Ray& ray, Vector* norm) const {
+    double r2 = size_ * size_;
     double dist2 =  pow((center_ - ray.start_).length(), 2);
     double projection = (center_ - ray.start_) ^ ray.dir_;
 
@@ -33,6 +32,12 @@ Vector Sphere::trace(const Ray& ray) const {
         return NULLVEC;
     }
 
-    if ((center_ - ray.start_).length() <= radius_) return ray.start_ + ray.dir_ * (projection + sqrt(r2 - h2)); //костыль для преломления
-    return ray.start_ + ray.dir_ * (projection - sqrt(r2 - h2));
+    Vector hit = ray.start_;
+
+    ((center_ - ray.start_).length() <= size_) ? hit += ray.dir_ * (projection + sqrt(r2 - h2)) : 
+                                                 hit += ray.dir_ * (projection - sqrt(r2 - h2));
+
+    *norm = (hit - center_) / size_; //что то не так, не понимаю, в чем дело
+
+    return hit;
 }

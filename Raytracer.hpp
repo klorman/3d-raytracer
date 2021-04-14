@@ -13,7 +13,7 @@ public:
 
     Raytracer(int object_count, Object** objects);
 
-    Vector trace(const Ray& ray, int* object = nullptr);
+    Vector trace(const Ray& ray, int* object = nullptr, Vector* norm = nullptr);
     Vector color(const Ray& ray);
 
     Vector reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
