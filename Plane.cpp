@@ -1,4 +1,4 @@
-#include "Plane.hpp"
+#include "Object.hpp"
 
 Plane::Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat) :
     Object(mat, 0, center, color),

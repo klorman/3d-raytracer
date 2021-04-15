@@ -22,3 +22,29 @@ public:
     virtual Vector color(const Vector& hit              ) const = 0;
     virtual Vector trace(const Ray&    ray, Vector* norm) const = 0;
 };
+
+class Box : public Object {
+public:
+    Box(const Vector& center, const Vector& color, const double size, const Material& mat);
+
+    virtual Vector color(const Vector& hit              ) const override;
+    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+};
+
+class Sphere : public Object {
+public:
+    Sphere(const Vector& center, const Vector& color, const double size, const Material& mat);
+
+    virtual Vector color(const Vector& hit              ) const override;
+    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+};
+
+class Plane : public Object {
+public:
+    Vector dir_;
+
+    Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat);
+
+    virtual Vector color(const Vector& hit              ) const override;
+    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+};

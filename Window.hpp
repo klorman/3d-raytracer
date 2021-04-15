@@ -1,8 +1,6 @@
 #pragma once
 #include "Raytracer.hpp"
 #include "Camera.hpp"
-//#include "Interface.hpp"
-
 #include "Button.hpp"
 
 class Window;
