@@ -12,20 +12,19 @@ struct Material {
 class Object {
 public:
     Material mat_;
-    double size_;
-    Vector center_, color_, rotation_;
+    Vector size_, center_, color_, rotation_;
 
     Object();
-    Object(const Material& mat, double size, const Vector& center, const Vector& color, const Vector& rotation = {0,0,1});
+    Object(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation = {0,-1,0});
     virtual ~Object() = default;
 
-    virtual Vector color(const Vector& hit              ) const = 0;
+    virtual Vector color(const Vector& hit              ) const = 0; //этой функции скорее всего не нужна виртуальность
     virtual Vector trace(const Ray&    ray, Vector* norm) const = 0;
 };
 
 class Box : public Object {
 public:
-    Box(const Vector& center, const Vector& color, const double size, const Material& mat);
+    Box(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation);
 
     virtual Vector color(const Vector& hit              ) const override;
     virtual Vector trace(const Ray&    ray, Vector* norm) const override;
@@ -33,7 +32,7 @@ public:
 
 class Sphere : public Object {
 public:
-    Sphere(const Vector& center, const Vector& color, const double size, const Material& mat);
+    Sphere(const Material& mat, const Vector& size, const Vector& center, const Vector& color);
 
     virtual Vector color(const Vector& hit              ) const override;
     virtual Vector trace(const Ray&    ray, Vector* norm) const override;
@@ -41,9 +40,7 @@ public:
 
 class Plane : public Object {
 public:
-    Vector dir_;
-
-    Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat);
+    Plane(const Material& mat, const Vector& center, const Vector& color, const Vector& rotation);
 
     virtual Vector color(const Vector& hit              ) const override;
     virtual Vector trace(const Ray&    ray, Vector* norm) const override;

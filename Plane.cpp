@@ -1,8 +1,7 @@
 #include "Object.hpp"
 
-Plane::Plane(const Vector& center, const Vector& color, const Vector& dir, const Material& mat) :
-    Object(mat, 0, center, color),
-    dir_(dir)
+Plane::Plane(const Material& mat, const Vector& center, const Vector& color, const Vector& rotation) :
+    Object(mat, 0, center, color, rotation)
 {}
 
 Vector Plane::color(const Vector& hit) const {
@@ -14,7 +13,7 @@ Vector Plane::color(const Vector& hit) const {
 }
 
 Vector Plane::trace(const Ray& ray, Vector* norm) const {
-    *norm = dir_ * sign((ray.start_ - center_) ^ dir_);
+    *norm = rotation_ * sign((ray.start_ - center_) ^ rotation_);
 
     double D = -center_ ^ *norm, den = ray.dir_ ^ *norm;
     

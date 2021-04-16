@@ -1,7 +1,7 @@
 #include "Object.hpp"
 
-Box::Box(const Vector& center, const Vector& color, const double size, const Material& mat) :
-    Object(mat, size, center, color)
+Box::Box(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation) :
+    Object(mat, size, center, color, rotation)
 {}
 
 Vector Box::color(const Vector& hit) const {

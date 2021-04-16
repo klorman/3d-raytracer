@@ -1,7 +1,4 @@
 #include "Vector.hpp"
-#include <cmath>
-#include <algorithm>
-#include <cassert>
 
 Vector::Vector() :
 	x_(0),

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cmath>
+#include <algorithm>
+#include <cassert>
+
 #define NULLVEC Vector { 0, 0, 0 }
 #define EVEC    Vector { 1, 1, 1 }
 #define EPS     0.01
