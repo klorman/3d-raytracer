@@ -1,33 +1,46 @@
 #pragma once
 
 #include <cassert>
+#include <iostream>
 
 template <int rows, int cols>
 class matrix {
 public:
     double data_[rows][cols];
-    int row_, col_;
 
-    matrix(const matrix<rows, cols>& m) :
-        data_(m.data_),
-        row_ (rows),
-        col_ (cols)
-    {}
+    //matrix(const matrix<rows, cols>& m) :
+    //    data_(m.data_)
+    //{}
 
-    matrix(double** data) :
-        data_(data)
-    {}
+    matrix() {}
 
-    ~matrix() {
-        delete[] data_;
+    matrix(double* data) {
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                data_[row][col] = data[row * cols + col];
+            }
+        }
     }
 
-    matrix<rows, cols>& operator= (const matrix<rows, cols>& m); //всё переделать
-    matrix<rows, cols>& operator[](int row); //всё переделать
-    matrix<rows, cols>  operator- (const matrix<rows, cols>& m) const;  //всё переделать
-    matrix<rows, cols>  operator+ (const matrix<rows, cols>& m) const;  //всё переделать
-    matrix<rows, cols>  operator* (const matrix<rows, cols>& m) const;  //всё переделать
+    matrix<rows, cols>& operator= (const matrix<rows, cols>& m);
+    double* operator[](int row);
+    matrix<rows, cols>  operator- (const matrix<rows, cols>& m) const;
+    matrix<rows, cols>  operator+ (const matrix<rows, cols>& m) const;
+
+    void print() {
+        std::cout << std::endl;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                std::cout << data_[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
 };
+
+typedef matrix<4,4> mat4;
+typedef matrix<1,4> vec4;
 
 template <int rows, int cols>
 matrix<rows, cols>& matrix<rows, cols>::operator=(const matrix<rows, cols>& m) {
@@ -35,16 +48,8 @@ matrix<rows, cols>& matrix<rows, cols>::operator=(const matrix<rows, cols>& m) {
 		return *this;
 	}
 
-    if (col_ < m.col_ || row_ < m.row_) {
-        col_ = m.col_;
-        row_ = m.row_;
-        data_ = m.data_;
-
-        return *this;
-    }
-
-    for(int i = 0; i < m.row_; i++) {
-        for(int j = 0; j < m.col_; j++) {
+    for(int i = 0; i < rows; ++i) {
+        for(int j = 0; j < cols; ++j) {
             data_[i][j] = m.data_[i][j];
         }
     }
@@ -53,18 +58,16 @@ matrix<rows, cols>& matrix<rows, cols>::operator=(const matrix<rows, cols>& m) {
 }
 
 template <int rows, int cols>
-matrix<rows, cols>& matrix<rows, cols>::operator[](int row) {
+double* matrix<rows, cols>::operator[](int row) {
     return data_[row];
 }
 
 template <int rows, int cols>
 matrix<rows, cols> matrix<rows, cols>::operator-(const matrix<rows, cols>& m) const {
-    assert(col_ == m.col_ && row_ == m.row_);
-
     matrix<rows, cols> res;
 
-    for (int i = 0; i < res.row_; i++) {
-        for (int j = 0; j < res.col_; j++) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
             res[i][j] = data_[i][j] - m.data_[i][j];
         }
     }
@@ -74,12 +77,10 @@ matrix<rows, cols> matrix<rows, cols>::operator-(const matrix<rows, cols>& m) co
 
 template <int rows, int cols>
 matrix<rows, cols> matrix<rows, cols>::operator+(const matrix<rows, cols>& m) const {
-    assert(col_ == m.col_ && row_ == m.row_);
+    matrix<rows, cols> res;
 
-    matrix<rows, cols> res(m.col_, m.row_);
-
-    for (int i = 0; i < res.row_; i++) {
-        for (int j = 0; j < res.col_; j++) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
             res[i][j] = data_[i][j] + m.data_[i][j];
         }
     }
@@ -88,15 +89,15 @@ matrix<rows, cols> matrix<rows, cols>::operator+(const matrix<rows, cols>& m) co
 }
 
 template <int rows1, int cols1, int rows2, int cols2>
-matrix<rows1, cols2> matrix<rows1, cols1>::operator*(const matrix<rows2, cols2>& m) const {
-    assert(col_ == m.row_);
+matrix<rows1, cols2> operator*(const matrix<rows1, cols1> a, const matrix<rows2, cols2>& b) { //с умножением что то не так
+    assert(cols1 == rows2);
 
-    matrix<(rows1, cols2> res;
+    matrix<rows1, cols2> res;
     
-    for (int i = 0; i < row_; i++) {
-        for (int j = 0; j < m.col_; j++) {
-            for (int elem = 0; elem < col_; elem++) {
-                res.data_[i][j] += data_[i][elem] * m.data_[elem][j];
+    for (int i = 0; i < rows1; i++) {
+        for (int j = 0; j < cols2; j++) {
+            for (int elem = 0; elem < cols1; elem++) {
+                res.data_[i][j] += a.data_[i][elem] * b.data_[elem][j];
             }
         }
     }
