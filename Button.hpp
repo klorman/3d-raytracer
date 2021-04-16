@@ -2,6 +2,7 @@
 
 #include "TXLib.h"
 #include "Vector.hpp"
+#include "Window.hpp"
 
 typedef void (*func_t) ();
 
@@ -16,7 +17,7 @@ public:
     virtual ~AbstractButton() = default;
 
     virtual bool mouse_on_button(const POINT& mouse_pos) = 0;
-    virtual void draw(HDC dc) = 0;
+    virtual void draw() = 0;
 
     void pressed();
 };
@@ -28,7 +29,7 @@ public:
     BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color = EVEC * 255, const Vector& text_color = NULLVEC, const char* text = "", func_t func = nullptr);
 
     virtual bool mouse_on_button(const POINT& mouse_pos) override;
-    virtual void draw(HDC dc) override;
+    virtual void draw() override;
 
     BasicButton(const BasicButton&) = delete;
     BasicButton& operator=(const BasicButton&) = delete;

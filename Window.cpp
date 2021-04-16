@@ -22,18 +22,17 @@ Window::~Window() {
 }
 
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
-	RGBQUAD* pixel;
 	for (int i = 0; i < UPSCALING; ++i) {
 		for (int j = 0; j < UPSCALING; ++j) {
-			pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
+			RGBQUAD* pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
 
-			pixel->rgbRed   = BYTE (color.x_ * 255);
-			pixel->rgbGreen = BYTE (color.y_ * 255);
-			pixel->rgbBlue  = BYTE (color.z_ * 255);
+			//pixel->rgbRed   = BYTE (color.x_ * 255);
+			//pixel->rgbGreen = BYTE (color.y_ * 255);
+			//pixel->rgbBlue  = BYTE (color.z_ * 255);
 
-			//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
-			//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
-			//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+			pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
+			pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
+			pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
 		}
 	}
 }
@@ -80,9 +79,9 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 void Window::show_fps() {
 	double fps = txGetFPS();
 
-	if      (fps < 10) txSetColor(TX_RED   );
-	else if (fps < 20) txSetColor(TX_YELLOW);
-	else 			   txSetColor(TX_GREEN );
+	if      (fps < 10) setColor(TX_RED   );
+	else if (fps < 20) setColor(TX_YELLOW);
+	else 			   setColor(TX_GREEN );
 
 	char text[4] = "";
 	_itoa_s((int) fps, text, 10);
@@ -121,45 +120,7 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
     return false;
 }
 
-HDC& Window::get_DC() const {
-	return txDC();
-}
-
-HWND Window::getWindow() const {
-	return txWindow();
-}
-
-//Vector get_color(Raytracer& rt, Ray& ray) {
-//	Vector color = EVEC;
-//
-//	while (ray.generation_ < MAXGEN) {
-//		color *= rt.color(&ray);
-//	}
-//
-//	if (ray.generation_ == MAXGEN) color = NULLVEC;
-//
-//	return color;
-//}
-
-void Interface::draw(Window& wnd) {
-    txSetColor    (VEC2RGB((BACKGROUND * 0.9)), 1, wnd.get_DC());
-    txSetFillColor(VEC2RGB(BACKGROUND),            wnd.get_DC());
-
-    txRectangle(0,          wnd.height_, wnd.width_,               wnd.height_ + bottom_size_, wnd.get_DC());
-    txRectangle(wnd.width_, 0,           wnd.width_ + right_size_, wnd.height_ + bottom_size_, wnd.get_DC());
-
-    for (int button = 0; button < button_count_; ++button) {
-        buttons_[button]->draw(wnd.get_DC());
-    }
-}
-
-void BasicButton::draw(HDC dc) {
-    txSetColor    (VEC2RGB((fill_color_ * 0.8)), 1, dc);
-    txSetFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))), dc);
-
-    txRectangle(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, dc);
-
-    txSetColor(VEC2RGB(text_color_), 1, dc);
-    
-    txDrawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_, DT_CENTER | DT_VCENTER, dc);
-}
+HPEN   setColor    (COLORREF color, double thickness)                                               {return txSetColor(color, thickness);}
+HBRUSH setFillColor(COLORREF color)                                                                 {return txSetFillColor(color);}
+bool   rectangle   (double x0, double y0, double x1, double y1)                                     {return txRectangle(x0, y0, x1, y1);}
+bool   drawText    (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}

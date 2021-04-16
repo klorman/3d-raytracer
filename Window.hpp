@@ -46,5 +46,8 @@ public:
 	Window& operator=(const Window&) = delete;
 };
 
-Vector get_color(Raytracer& rt, Ray& ray);
-
+HPEN   setColor    (COLORREF color, double thickness = 1);
+HBRUSH setFillColor(COLORREF color);
+bool   rectangle   (double x0, double y0, double x1, double y1);
+bool   drawText    (double x0, double y0, double x1, double y1, const char text[],
+                    unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS);
