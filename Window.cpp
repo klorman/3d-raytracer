@@ -7,10 +7,13 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size) :
 	height_      (height),
 	interf_      ({bottom_size, right_size}),
 	Video_memory_(nullptr),
+	window_      (NULL),
 	should_close_(false)
+	
 {
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
 	Video_memory_ = txVideoMemory();
+	window_       = txWindow();
 
 	txSelectFont("Consolas", 20, false, FW_BOLD);
 
@@ -22,17 +25,18 @@ Window::~Window() {
 }
 
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
+	RGBQUAD* pixel;
 	for (int i = 0; i < UPSCALING; ++i) {
 		for (int j = 0; j < UPSCALING; ++j) {
-			RGBQUAD* pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
+			pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
 
-			//pixel->rgbRed   = BYTE (color.x_ * 255);
-			//pixel->rgbGreen = BYTE (color.y_ * 255);
-			//pixel->rgbBlue  = BYTE (color.z_ * 255);
+			pixel->rgbRed   = BYTE (color.x_ * 255);
+			pixel->rgbGreen = BYTE (color.y_ * 255);
+			pixel->rgbBlue  = BYTE (color.z_ * 255);
 
-			pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
-			pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
-			pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+			//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
+			//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
+			//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
 		}
 	}
 }
@@ -79,9 +83,9 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 void Window::show_fps() {
 	double fps = txGetFPS();
 
-	if      (fps < 10) setColor(TX_RED   );
-	else if (fps < 20) setColor(TX_YELLOW);
-	else 			   setColor(TX_GREEN );
+	if      (fps < 10) txSetColor(TX_RED   );
+	else if (fps < 20) txSetColor(TX_YELLOW);
+	else 			   txSetColor(TX_GREEN );
 
 	char text[4] = "";
 	_itoa_s((int) fps, text, 10);
@@ -120,7 +124,8 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
     return false;
 }
 
-HPEN   setColor    (COLORREF color, double thickness)                                               {return txSetColor(color, thickness);}
-HBRUSH setFillColor(COLORREF color)                                                                 {return txSetFillColor(color);}
-bool   rectangle   (double x0, double y0, double x1, double y1)                                     {return txRectangle(x0, y0, x1, y1);}
-bool   drawText    (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
+HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thickness);}
+HBRUSH setFillColor (COLORREF color) {return txSetFillColor(color);}
+bool   rectangle (double x0, double y0, double x1, double y1) {return txRectangle(x0, y0, x1, y1);}
+bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
+bool   bitBlt   (HDC destImage, double xDest, double yDest, double width, double height) {return txBitBlt(destImage, xDest, yDest, width, height, txDC());}

@@ -8,7 +8,7 @@ Interface::Interface(LONG bottom, LONG right) :
 {}
 
 void Interface::draw(Window& wnd) {
-    setColor    (VEC2RGB((BACKGROUND * 0.9)), 1);
+    setColor    (VEC2RGB((BACKGROUND * 0.9)));
     setFillColor(VEC2RGB(BACKGROUND));
 
     rectangle(0,          wnd.height_, wnd.width_,               wnd.height_ + bottom_size_);

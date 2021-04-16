@@ -39,7 +39,7 @@ void start() {
     wnd.interf_.draw(wnd);
 
     while (!wnd.should_close_) { 
-        if (!IsWindowVisible(wnd.getWindow())) continue;
+        if (!IsWindowVisible(wnd.window_)) continue;
         
         is_moved |= cam.move();
         is_moved |= wnd.move(rt, cam);
@@ -80,7 +80,7 @@ void Load() {
 void Screenshot() {
     HDC save = txCreateCompatibleDC(wnd.width_, wnd.height_);
 
-    if (txBitBlt(save, 0, 0, wnd.width_, wnd.height_, wnd.get_DC())) {
+    if (bitBlt(save, 0, 0, wnd.width_, wnd.height_)) {
         std::string PATH = std::string("screenshots/") + getTime() + std::string(".jpg");
 
         txSaveImage(PATH.c_str(), save);
