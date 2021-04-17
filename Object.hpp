@@ -1,6 +1,7 @@
 #pragma once
 #include "TXLib.h"
 #include "Ray.hpp"
+#include "Matrix.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -13,9 +14,10 @@ class Object {
 public:
     Material mat_;
     Vector size_, center_, color_, rotation_;
+    mat4 txx, txi;
 
     Object();
-    Object(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation = {0,-1,0});
+    Object(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotatio = {0,-1,0});
     virtual ~Object() = default;
 
     virtual Vector color(const Vector& hit              ) const = 0; //этой функции скорее всего не нужна виртуальность

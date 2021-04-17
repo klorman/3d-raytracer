@@ -10,8 +10,14 @@ Vector Box::color(const Vector& hit) const {
 }
 
 Vector Box::trace(const Ray& ray, Vector* norm) const {
-    Vector m = EVEC / ray.dir_,
-           n = m * (ray.start_ - center_),
+    double d1[] = {ray.dir_.x_,   ray.dir_.y_,   ray.dir_.z_,   0.0},
+           d2[] = {ray.start_.x_, ray.start_.y_, ray.start_.z_, 1.0};
+
+    Vector rdd = (vec4) d1 * txx,
+           roo = (vec4) d2 * txx;
+
+    Vector m = EVEC / rdd,
+           n = m * roo,
            k = abs(m) * size_,
            t1 = -n - k,
            t2 = -n + k;
@@ -21,7 +27,10 @@ Vector Box::trace(const Ray& ray, Vector* norm) const {
 
     if (tN > tF || tF < 0) return NULLVEC;
 
-    *norm = -sign(ray.dir_) * step({ t1.y_, t1.z_, t1.x_ }, { t1.x_, t1.y_, t1.z_ }) * step({ t1.z_, t1.x_, t1.y_ }, { t1.x_, t1.y_, t1.z_ });
+    *norm = -sign(rdd) * step({ t1.y_, t1.z_, t1.x_ }, { t1.x_, t1.y_, t1.z_ }) * step({ t1.z_, t1.x_, t1.y_ }, { t1.x_, t1.y_, t1.z_ });
+    double d[] = {norm->x_, norm->y_, norm->z_, 0.0};
+    *norm = (vec4) d * txi;
+    
 
     return ray.start_ + ray.dir_ * tN;
 }

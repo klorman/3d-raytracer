@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Matrix.hpp"
-
 #include <cmath>
 #include <algorithm>
 #include <cassert>

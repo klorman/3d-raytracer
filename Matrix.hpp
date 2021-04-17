@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector.hpp"
+
 #include <cassert>
 #include <iostream>
 
@@ -8,11 +10,9 @@ class matrix {
 public:
     double data_[rows][cols];
 
-    //matrix(const matrix<rows, cols>& m) :
-    //    data_(m.data_)
-    //{}
-
-    matrix() {}
+    matrix() {
+        memset(data_, 0, sizeof(data_));
+    }
 
     matrix(double* data) {
         for (int row = 0; row < rows; ++row) {
@@ -26,6 +26,8 @@ public:
     double* operator[](int row);
     matrix<rows, cols>  operator- (const matrix<rows, cols>& m) const;
     matrix<rows, cols>  operator+ (const matrix<rows, cols>& m) const;
+
+    operator Vector() const;
 
     void print() {
         std::cout << std::endl;
@@ -41,6 +43,15 @@ public:
 
 typedef matrix<4,4> mat4;
 typedef matrix<1,4> vec4;
+
+mat4 inverse(mat4& m);
+mat4 rotation(const Vector& v, double angle);
+mat4 translate(const Vector& v);
+
+template <int rows, int cols>
+matrix<rows, cols>::operator Vector() const {
+    return {data_[0][0], data_[0][1], data_[0][2]};
+}
 
 template <int rows, int cols>
 matrix<rows, cols>& matrix<rows, cols>::operator=(const matrix<rows, cols>& m) {
@@ -89,7 +100,7 @@ matrix<rows, cols> matrix<rows, cols>::operator+(const matrix<rows, cols>& m) co
 }
 
 template <int rows1, int cols1, int rows2, int cols2>
-matrix<rows1, cols2> operator*(const matrix<rows1, cols1> a, const matrix<rows2, cols2>& b) { //с умножением что то не так
+matrix<rows1, cols2> operator*(const matrix<rows1, cols1>& a, const matrix<rows2, cols2>& b) {
     assert(cols1 == rows2);
 
     matrix<rows1, cols2> res;

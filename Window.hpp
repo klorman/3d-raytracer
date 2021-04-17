@@ -30,7 +30,6 @@ public:
 	Interface interf_;
 	RGBQUAD* Video_memory_;
 	HWND window_;
-
 	bool should_close_;
 
 
