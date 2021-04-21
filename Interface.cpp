@@ -3,8 +3,8 @@
 Interface::Interface(LONG bottom, LONG right) :
     bottom_size_ (bottom),
     right_size_  (right),
-    button_count_(0),
-    buttons_     (nullptr)
+    field_count_(0),
+    fields_     (nullptr)
 {}
 
 void Interface::draw(Window& wnd) {
@@ -14,36 +14,40 @@ void Interface::draw(Window& wnd) {
     rectangle(0,          wnd.height_, wnd.width_,               wnd.height_ + bottom_size_);
     rectangle(wnd.width_, 0,           wnd.width_ + right_size_, wnd.height_ + bottom_size_);
 
-    for (int button = 0; button < button_count_; ++button) {
-        buttons_[button]->draw();
+    for (int field = 0; field < field_count_; ++field) {
+        if (fields_[field].visible_) fields_[field].draw();
     }
 }
 
 void Interface::update(Window& wnd, const POINT& mouse_pos) {
     if (mouse_on_interface(wnd, mouse_pos)) {        
-        for (int button = 0; button < button_count_; ++button) {
-            bool mob = buttons_[button]->mouse_on_button(mouse_pos);
-            int mouse_button = txMouseButtons();
+        for (int field = 0; field < field_count_; ++field) {
+            if (!fields_[field].visible_) continue;
 
-            if (mob && mouse_button == 0 && buttons_[button]->status_ == 0) {
-                buttons_[button]->status_ = 1;
-                buttons_[button]->draw();
-            }
+            for (int button = 0; button < fields_[field].button_count_; ++button) {
+                bool mob = fields_[field].buttons_[button]->mouse_on_button(mouse_pos);
+                int mouse_button = txMouseButtons();
 
-            if (mob && mouse_button == 1 && buttons_[button]->status_ != 2) {
-                buttons_[button]->status_ = 2;
-                buttons_[button]->draw();
-            }
+                if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 0) {
+                    fields_[field].buttons_[button]->status_ = 1;
+                    fields_[field].buttons_[button]->draw();
+                }
 
-            if (mob && mouse_button == 0 && buttons_[button]->status_ == 2) {
-                buttons_[button]->status_ = 1;
-                buttons_[button]->draw();
-                buttons_[button]->pressed();
-            }
+                if (mob && mouse_button == 1 && fields_[field].buttons_[button]->status_ != 2) {
+                    fields_[field].buttons_[button]->status_ = 2;
+                    fields_[field].buttons_[button]->draw();
+                }
 
-            else if (buttons_[button]->status_ != 0 && !mob) {
-                buttons_[button]->status_ = 0;
-                buttons_[button]->draw();
+                if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 2) {
+                    fields_[field].buttons_[button]->status_ = 1;
+                    fields_[field].buttons_[button]->draw();
+                    fields_[field].buttons_[button]->pressed();
+                }
+
+                else if (fields_[field].buttons_[button]->status_ != 0 && !mob) {
+                    fields_[field].buttons_[button]->status_ = 0;
+                    fields_[field].buttons_[button]->draw();
+                }
             }
         }
     }

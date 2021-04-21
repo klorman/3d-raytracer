@@ -97,7 +97,8 @@ void Window::show_fps() {
 bool Window::move(Raytracer& rt, const Camera& cam) {
 	POINT mouse = txMousePos();
 
-	if (txMouseButtons() == 1 && 
+	if (interf_.fields_[1].visible_ &&
+		txMouseButtons() == 1 && 
 		mouse.x >= 0 && 
 		mouse.x <= width_ &&
 		mouse.y >= 0 &&
@@ -124,10 +125,10 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
         }
 		
 		for (int button = 0; button < 12; ++button) {
-			interf_.buttons_[button]->obj_ = rt.objects_[obj];
-			interf_.buttons_[button]->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]));
+			interf_.fields_[1].buttons_[button]->obj_ = rt.objects_[obj];
+			interf_.fields_[1].buttons_[button]->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]));
 
-			interf_.buttons_[button]->draw();
+			interf_.fields_[1].buttons_[button]->draw();
 		}
 
 		return false;

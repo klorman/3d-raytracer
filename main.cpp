@@ -17,6 +17,7 @@ void Exit();
 Window wnd(800, 600, 50, 300);
 
 void start();
+void createFields();
 
 void start() {
     Object* objects[] = {
@@ -50,36 +51,92 @@ void start() {
     }
 }
 
-int main() {
-    AbstractButton* buttons[] = {
-        new TextButton {posX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 70          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {posY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 100         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {posZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 130         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {rotX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 170         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {rotY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 200         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {rotZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 230         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {szX , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 270         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {szY , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 300         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {szZ , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 330         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {colX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 370         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 400         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 430         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-
+void createFields() {
+    AbstractButton* menuButtons[] = {
         new BasicButton{{wnd.width_                                         , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3) * 2, 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings"},
-        new BasicButton{{wnd.width_                                         , 30          }, {      wnd.interf_.right_size_     , 30}, EVEC * 70, EVEC * 255, "Create"},
         new BasicButton{{wnd.width_                                         , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit", Exit}        
     };
+    AbstractButton* editButtons[] = {
+        new TextButton {posX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 70 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 100}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 130}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 170}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 200}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 230}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szX , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 270}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szY , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szZ , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 370}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 400}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 430}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
 
-    wnd.interf_.button_count_ = LEN(buttons);
-    wnd.interf_.buttons_      = buttons;
+        new BasicButton{{wnd.width_, 30              }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create"},
+        new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete"},
+    };
+    Textbox editTextBoxes[] = {
+        {{wnd.width_, 100}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Сoordinates:"}
+    };
+
+    Field fields[] = {
+        {0, LEN(menuButtons), 0,                  menuButtons, nullptr},
+        {0, LEN(editButtons), LEN(editTextBoxes), editButtons, editTextBoxes}
+    };
+
+    wnd.interf_.field_count_ = LEN(fields);
+    wnd.interf_.fields_ = fields;
+}
+
+int main() {
+    //createFields();
+
+    AbstractButton* menuButtons[] = {
+        new BasicButton{{wnd.width_                                         , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit"},
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects"},
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3) * 2, 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings"},
+        new BasicButton{{wnd.width_                                         , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save"},
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load"},
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit", Exit}        
+    };
+    AbstractButton* editButtons[] = {
+        new TextButton {posX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 70 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 100}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 130}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 170}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 200}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 230}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szX , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 270}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szY , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szZ , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 370}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 400}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 430}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+
+        new BasicButton{{wnd.width_, 30              }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create"},
+        new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete"},
+    };
+    Textbox editTextBoxes[] = {
+        {{wnd.width_, 100}, {LONG (wnd.interf_.right_size_ / 3 - 30), 30}, "Coords:", EVEC * 70, EVEC * 255},
+        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 70 }, {30, 30}, "X:", EVEC * 70, EVEC * 255},
+        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 100}, {30, 30}, "Y:", EVEC * 70, EVEC * 255},
+        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 130}, {30, 30}, "Z:", EVEC * 70, EVEC * 255}
+
+    };
+
+    Field fields[] = {
+        {1, LEN(menuButtons), 0,                  menuButtons, nullptr},
+        {1, LEN(editButtons), LEN(editTextBoxes), editButtons, editTextBoxes}
+    };
+
+    wnd.interf_.field_count_ = LEN(fields);
+    wnd.interf_.fields_ = fields;
 
     start();
-    
 }
 
 void Save() {

@@ -1,18 +1,18 @@
 #pragma once
 #include "Raytracer.hpp"
 #include "Camera.hpp"
-#include "Button.hpp"
+#include "Field.hpp"
 
 class Window;
-class AbstractButton;
+class Field;
 
 class Interface {
 public:
 	const Vector BACKGROUND = { 70, 70, 70 };
 
     LONG bottom_size_, right_size_;
-    int button_count_;
-    AbstractButton** buttons_; 
+    int field_count_;
+    Field* fields_; 
 
     Interface(LONG bottom, LONG right);
 
