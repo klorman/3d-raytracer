@@ -46,7 +46,7 @@ TextButton::TextButton(int bind, const POINT& pos, const POINT& size, const Vect
 {}
 
 void TextButton::pressed() {
-    while (!GetAsyncKeyState(VK_RETURN)) {
+    while (!GetAsyncKeyState(VK_RETURN) && !GetAsyncKeyState(VK_ESCAPE)) {
         for (int index = 48; index <= 57 && text_.length() < 6; ++index) {
             if (GetAsyncKeyState(index)) {
                 if (text_[0] == '0') text_.erase(text_.begin());
