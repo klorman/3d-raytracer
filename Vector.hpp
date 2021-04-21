@@ -32,6 +32,7 @@ public:
 	Vector& operator *= (const Vector& vec);
 
 	bool operator == (const Vector& vec) const;
+	bool operator != (const Vector& vec) const;
 
 	double  length() const;
 	Vector& norm();

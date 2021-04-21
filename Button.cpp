@@ -12,10 +12,9 @@ AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector
 {}
 
 void BasicButton::pressed() {
-    if (func_ != nullptr) func_();
+    status_ = 1;
 
-    //status_ = 1;
-    //draw(wnd.get_DC());
+    if (func_ != nullptr) func_();
 }
 
 BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func) :
@@ -85,6 +84,8 @@ void TextButton::pressed() {
     if (obj_ != nullptr) {
         *getParam(bind_, obj_) = std::stod(text_);
     }
+
+    status_ = 1;
 }
 
 double* getParam(int id, Object* obj) {

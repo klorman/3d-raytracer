@@ -9,10 +9,13 @@ Textbox::Textbox(const POINT& pos, const POINT& size, std::string text, const Ve
 {}
 
 void Textbox::draw() {
-    setColor    (VEC2RGB((fill_color_ * 0.8)));
-    setFillColor(VEC2RGB(fill_color_));
-    rectangle   (pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
-    setColor    (VEC2RGB(text_color_));
+    if (fill_color_ != -EVEC) {
+        setColor    (VEC2RGB((fill_color_ * 0.8)));
+        setFillColor(VEC2RGB(fill_color_));
+        rectangle   (pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
+    }
+
+    setColor (VEC2RGB(text_color_));
     
     drawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER);
 }

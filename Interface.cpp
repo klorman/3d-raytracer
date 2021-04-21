@@ -28,6 +28,8 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
                 bool mob = fields_[field].buttons_[button]->mouse_on_button(mouse_pos);
                 int mouse_button = txMouseButtons();
 
+                if (fields_[field].buttons_[button]->status_ == 3) continue;
+
                 if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 0) {
                     fields_[field].buttons_[button]->status_ = 1;
                     fields_[field].buttons_[button]->draw();
@@ -39,9 +41,9 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
                 }
 
                 if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 2) {
-                    fields_[field].buttons_[button]->status_ = 1;
-                    fields_[field].buttons_[button]->draw();
+                    //fields_[field].buttons_[button]->status_ = 1;
                     fields_[field].buttons_[button]->pressed();
+                    fields_[field].buttons_[button]->draw();
                 }
 
                 else if (fields_[field].buttons_[button]->status_ != 0 && !mob) {

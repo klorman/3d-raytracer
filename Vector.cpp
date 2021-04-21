@@ -69,6 +69,10 @@ bool Vector::operator == (const Vector& vec) const {
 	return vec.x_ == x_ && vec.y_ == y_ && vec.z_ == z_ ? true : false;
 }
 
+bool Vector::operator != (const Vector& vec) const {
+	return !(vec == *this);
+}
+
 double Vector::length() const {
 	return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 }
