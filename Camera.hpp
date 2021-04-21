@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Vector.hpp"
+#include "Matrix.hpp"
 
 class Camera {
 public:
     double speed_;
-    Vector pos_, dir_;
+    Vector pos_, dir_, angle_;
 
     bool move();
 };
+

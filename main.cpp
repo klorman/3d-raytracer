@@ -31,7 +31,7 @@ void start() {
 
     Raytracer rt = {LEN(objects), objects};
 
-    Camera cam = {100, {600 ,385, -100}, {0, 0, 1}};
+    Camera cam = {100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0}};
     
     bool is_moved = false;
     int  frames = 0;
@@ -39,8 +39,8 @@ void start() {
     wnd.interf_.draw(wnd);
 
     while (!wnd.should_close_) { 
-        if (!IsWindowVisible(wnd.window_)) continue;
-        
+        if (isIconic()) continue;
+
         is_moved |= cam.move();
         is_moved |= wnd.move(rt, cam);
 
@@ -52,6 +52,19 @@ void start() {
 
 int main() {
     AbstractButton* buttons[] = {
+        new TextButton {posX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 70          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 100         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {posZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 130         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 170         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 200         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {rotZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 230         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szX , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 270         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szY , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 300         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {szZ , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 330         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 370         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 400         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 430         }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+
         new BasicButton{{wnd.width_                                         , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3) * 2, 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings"},
@@ -59,7 +72,7 @@ int main() {
         new BasicButton{{wnd.width_                                         , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load"},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit", Exit}
+        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit", Exit}        
     };
 
     wnd.interf_.button_count_ = LEN(buttons);

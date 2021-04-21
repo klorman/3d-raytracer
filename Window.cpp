@@ -11,7 +11,9 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size) :
 	should_close_(false)
 	
 {
+	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
+
 	Video_memory_ = txVideoMemory();
 	window_       = txWindow();
 
@@ -93,8 +95,13 @@ void Window::show_fps() {
 }
 
 bool Window::move(Raytracer& rt, const Camera& cam) {
-	if (txMouseButtons() == 1) {
-        POINT mouse = txMousePos();
+	POINT mouse = txMousePos();
+
+	if (txMouseButtons() == 1 && 
+		mouse.x >= 0 && 
+		mouse.x <= width_ &&
+		mouse.y >= 0 &&
+		mouse.y <= height_) {
 
         Vector px = {(double) mouse.x - width_ / 2, (double) mouse.y - height_ / 2, 0};
 
@@ -115,10 +122,18 @@ bool Window::move(Raytracer& rt, const Camera& cam) {
         if (hit == NULLVEC) {
             return false;
         }
+		
+		for (int button = 0; button < 12; ++button) {
+			interf_.buttons_[button]->obj_ = rt.objects_[obj];
+			interf_.buttons_[button]->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]));
 
-        rt.objects_[obj]->center_ += cam.dir_;
+			interf_.buttons_[button]->draw();
+		}
 
-		return true;
+		return false;
+        //rt.objects_[obj]->center_ += cam.dir_;
+
+		//return true;
 	}
 
     return false;
@@ -129,3 +144,5 @@ HBRUSH setFillColor (COLORREF color) {return txSetFillColor(color);}
 bool   rectangle (double x0, double y0, double x1, double y1) {return txRectangle(x0, y0, x1, y1);}
 bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
 bool   bitBlt   (HDC destImage, double xDest, double yDest, double width, double height) {return txBitBlt(destImage, xDest, yDest, width, height, txDC());}
+bool   isIconic () {return IsIconic(txWindow());}
+POINT  mousePos () {return txMousePos();}
