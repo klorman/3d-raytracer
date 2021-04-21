@@ -44,7 +44,7 @@ Ray Ray::refract(const Vector& norm, const Vector& hit, double n2) const {
 //
 //    return { hit + dir * EPS, dir, generation_ + 1, n2 };
 
-    assert(n1 != 0 && n2 != 0);
+    assert(n1 > 0 && n2 > 0);
     double nd = norm ^ dir_, a = 1 / n2;
     if (nd > 0) {
         return refract(-norm, hit, a);

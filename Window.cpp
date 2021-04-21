@@ -68,9 +68,9 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 
 				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
 
-				px.rot({0,0,1}, cam.dir_);
+				//px.rot(cam.angle_);
 
-				Ray ray = { cam.pos_, (cam.dir_ * 1000 + px).norm() };
+				Ray ray = { cam.pos_, ((Vector {0,0,1} * 1000 + px).norm()).rot(cam.angle_) };
 
     	        draw_pixel(p, rt.color(ray), frames);
     	    }

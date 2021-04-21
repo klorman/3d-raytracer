@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TXLib.h"
+
 #include <cmath>
 #include <algorithm>
 #include <cassert>
@@ -34,7 +36,7 @@ public:
 	double  length() const;
 	Vector& norm();
 	Vector& limit(double lim);
-	Vector& rot(const Vector& vec1, const Vector& vec2);
+	Vector& rot(const Vector& r);
 };
 
 double sign(double x);

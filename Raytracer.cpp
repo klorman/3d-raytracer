@@ -26,8 +26,6 @@ Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
         }
     }
 
-
-
     return hit_near;
 }
 

@@ -5,7 +5,7 @@
 
 class Ray {
 public:
-    Vector start_, dir_, color_;
+    Vector start_, dir_;
     int generation_;
     double n1;
 

@@ -76,7 +76,7 @@ double Vector::length() const {
 Vector& Vector::norm() {
 	double len = length();
 
-	if (len != 0) {
+	if (len > 0) {
 		x_ = x_ / len;
 		y_ = y_ / len;
 		z_ = z_ / len;
@@ -93,14 +93,20 @@ Vector& Vector::limit(double lim) {
 	return (*this);
 }
 
-Vector& Vector::rot(const Vector& vec1, const Vector& vec2) { //пока костыльная функция, нужно переделать
-	double  proj = sqrt(vec2.z_*vec2.z_ + vec2.x_*vec2.x_), cos = 0, sin = 0;
+Vector& Vector::rot(const Vector& r) {
+	double cx = cos(r.x_),
+		   sx = sin(r.x_),
+		   cy = cos(r.y_),
+		   sy = sin(r.y_),
+		   d = z_ * cy - y_ * sy;
 
-	if (proj > 0) {
-		cos = vec2.z_ / proj,
-		sin = vec2.x_ / proj;
-		*this = {x_*cos + z_*sin, y_, -x_*sin + z_*cos};
-	}
+	Vector res = {
+		x_ * cx + d * sx,
+		z_ * sy + y_ * cy,
+		-x_ * sx + d * cx
+	};
+
+	*this = res;
 
 	return (*this);
 }
