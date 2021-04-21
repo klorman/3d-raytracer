@@ -12,8 +12,6 @@ AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector
 {}
 
 void BasicButton::pressed() {
-    status_ = 1;
-
     if (func_ != nullptr) func_();
 }
 
@@ -81,11 +79,15 @@ void TextButton::pressed() {
         }
     }
 
-    if (obj_ != nullptr) {
-        *getParam(bind_, obj_) = std::stod(text_);
+    if (text_.length() == 1 && text_[0] == '-') {
+        text_ = std::to_string((int) *getParam(bind_, obj_));
+
+        draw();
     }
 
-    status_ = 1;
+    else if (obj_ != nullptr) {
+        *getParam(bind_, obj_) = std::stod(text_);
+    }
 }
 
 double* getParam(int id, Object* obj) {

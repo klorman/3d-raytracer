@@ -44,11 +44,6 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 }
 
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
-	if (!IsWindow(txWindow())) {
-		should_close_ = true;
-		return;
-	}
-
 	interf_.update(*this, txMousePos());
 
 	txBegin();
@@ -146,4 +141,5 @@ bool   rectangle (double x0, double y0, double x1, double y1) {return txRectangl
 bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
 bool   bitBlt   (HDC destImage, double xDest, double yDest, double width, double height) {return txBitBlt(destImage, xDest, yDest, width, height, txDC());}
 bool   isIconic () {return IsIconic(txWindow());}
+bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}

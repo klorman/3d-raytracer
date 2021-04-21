@@ -51,4 +51,5 @@ bool   rectangle    (double x0, double y0, double x1, double y1);
 bool   drawText     (double x0, double y0, double x1, double y1, const char text[], unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS);
 bool   bitBlt       (HDC destImage, double xDest, double yDest, double width, double height);
 bool   isIconic     ();
+bool   isForeground ();
 POINT  mousePos     ();

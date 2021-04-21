@@ -41,7 +41,7 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
                 }
 
                 if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 2) {
-                    //fields_[field].buttons_[button]->status_ = 1;
+                    fields_[field].buttons_[button]->status_ = 1;
                     fields_[field].buttons_[button]->pressed();
                     fields_[field].buttons_[button]->draw();
                 }

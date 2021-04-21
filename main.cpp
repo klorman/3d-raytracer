@@ -44,7 +44,7 @@ void start() {
     wnd.interf_.draw(wnd);
 
     while (!wnd.should_close_) { 
-        if (isIconic()) continue;
+        if (!isForeground()) continue;
 
         is_moved |= cam.move();
         is_moved |= wnd.move(rt, cam);
