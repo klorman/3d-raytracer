@@ -1,7 +1,14 @@
 #include "Camera.hpp"
-#include "TXLib.h"
 
-bool Camera::move() {
+Camera::Camera(double speed, const Vector& pos, const Vector& dir, const Vector& angle) :
+    speed_ (speed),
+    pos_   (pos),
+    dir_   (dir),
+    angle_ (angle),
+    mouse_ ({0, 0})
+{}
+
+bool Camera::move(Window& wnd) {
     bool moved = false;
 
     double fps = txGetFPS();
@@ -11,6 +18,34 @@ bool Camera::move() {
     }
 
     double a = 1 / fps;
+
+    POINT mouse_pos = mousePos();
+
+    if (GetAsyncKeyState(VK_RBUTTON) && mouse_pos.x < wnd.width_ && mouse_pos.y < wnd.height_) {
+        if (mouse_.x == 0 && mouse_.y == 0) {
+            GetCursorPos(&mouse_);
+
+            ShowCursor(false);
+
+            return true;
+        }
+
+        POINT pos;
+        GetCursorPos(&pos);
+
+        Vector offset = {double (pos.x - mouse_.x), double (pos.y - mouse_.y), 0};
+
+        angle_ += offset / 100;
+        moved = true;
+
+        SetCursorPos(mouse_.x, mouse_.y);
+    }
+
+    else if (mouse_.x != 0 || mouse_.y != 0) {
+        mouse_ = {0, 0};
+
+        ShowCursor(true);
+    }
 
     if (GetAsyncKeyState(VK_UP   )) { angle_.y_ -= a; moved = true; };
     if (GetAsyncKeyState(VK_DOWN )) { angle_.y_ += a; moved = true; };

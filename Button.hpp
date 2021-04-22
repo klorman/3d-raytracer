@@ -14,11 +14,9 @@ public:
     POINT pos_, size_;
     Vector fill_color_, text_color_;
     int status_;
-    func_t func_;
-    Object* obj_;
-    std::string text_;
+    func_t func_;    
 
-    AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func);
+    AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, func_t func);
     virtual ~AbstractButton() = default;
 
     virtual bool mouse_on_button(const POINT& mouse_pos) = 0;
@@ -31,6 +29,8 @@ public:
 
 class BasicButton : public AbstractButton {
 public:
+    std::string text_;
+
     BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color = EVEC * 255, const Vector& text_color = NULLVEC, std::string text = "", func_t func = nullptr);
 
     virtual bool mouse_on_button(const POINT& mouse_pos) override;
@@ -44,8 +44,10 @@ public:
 class TextButton : public BasicButton {
 public:
     int bind_;
+    Object* obj_;
+    int minv_, maxv_, mult_;
 
-    TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color);
+    TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv_ = -INF, int maxv_ = INF, int mult = 1);
 
     virtual void pressed() override;
     

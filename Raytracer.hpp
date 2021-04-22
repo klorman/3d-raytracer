@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Object.hpp"
-#include "Camera.hpp"
 
 const Vector background_color = { 0.5, 0.5, 1.0 };
 

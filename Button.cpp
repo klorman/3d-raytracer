@@ -1,14 +1,12 @@
 #include "Button.hpp"
 
-AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func) :
-    pos_       (pos),
-    size_      (size),
-    fill_color_(fill_color),
-    text_color_(text_color),
-    status_    (0),
-    func_      (func),
-    obj_       (nullptr),
-    text_      (text)
+AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, func_t func) :
+    pos_        (pos),
+    size_       (size),
+    fill_color_ (fill_color),
+    text_color_ (text_color),
+    status_     (0),
+    func_       (func)
 {}
 
 void BasicButton::pressed() {
@@ -16,7 +14,8 @@ void BasicButton::pressed() {
 }
 
 BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func) :
-    AbstractButton(pos, size, fill_color, text_color, text, func)
+    AbstractButton (pos, size, fill_color, text_color, func),
+    text_          (text)
 {}
 
 void BasicButton::draw() {
@@ -37,10 +36,16 @@ bool BasicButton::mouse_on_button(const POINT& mouse_pos) {
             mouse_pos.y < pos_.y + size_.y);
 }
 
-TextButton::TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color) :
+TextButton::TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv, int maxv, int mult) :
     BasicButton(pos, size, fill_color, text_color),
-    bind_(bind)
-{}
+    bind_      (bind),
+    obj_       (nullptr),
+    minv_      (minv),
+    maxv_      (maxv),
+    mult_      (mult)
+{
+    assert(mult_ != 0);
+}
 
 void TextButton::pressed() {
     while (!GetAsyncKeyState(VK_RETURN) && !GetAsyncKeyState(VK_ESCAPE)) {
@@ -80,13 +85,22 @@ void TextButton::pressed() {
     }
 
     if (text_.length() == 1 && text_[0] == '-') {
-        text_ = std::to_string((int) *getParam(bind_, obj_));
+        text_ = std::to_string((int) *getParam(bind_, obj_) * mult_);
+
+        draw();
+        return;
+    }
+
+    double val = std::stod(text_);
+
+    if (val < minv_ || val > maxv_) {
+        text_ = std::to_string((int) *getParam(bind_, obj_) * mult_);
 
         draw();
     }
 
     else if (obj_ != nullptr) {
-        *getParam(bind_, obj_) = std::stod(text_);
+        *getParam(bind_, obj_) = val / mult_;
     }
 }
 

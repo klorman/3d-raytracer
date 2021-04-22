@@ -29,7 +29,7 @@ Vector Vector::operator  *  (const Vector& vec) const {
 Vector Vector::operator  /  (const Vector& vec) const {
 	//assert(vec.x_ == 0 || vec.y_ == 0 || vec.z_ == 0);
 
-	return{ vec.x_ == 0 ? 10000 : x_ / vec.x_, vec.y_ == 0 ? 10000 : y_ / vec.y_, vec.z_ == 0 ? 10000 : z_ / vec.z_ }; //надо придумать, как обрабатывать деление на 0
+	return{ vec.x_ == 0 ? INF : x_ / vec.x_, vec.y_ == 0 ? INF : y_ / vec.y_, vec.z_ == 0 ? INF : z_ / vec.z_ }; //надо придумать, как обрабатывать деление на 0
 }
 
 Vector Vector::operator  +  (const Vector& vec) const {
