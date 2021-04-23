@@ -10,6 +10,7 @@ Camera::Camera(double speed, const Vector& pos, const Vector& dir, const Vector&
 
 bool Camera::move(Window& wnd) {
     bool moved = false;
+    static bool rotWithMouse = false;
 
     double fps = txGetFPS();
 
@@ -21,12 +22,13 @@ bool Camera::move(Window& wnd) {
 
     POINT mouse_pos = mousePos();
 
-    if (GetAsyncKeyState(VK_RBUTTON) && mouse_pos.x < wnd.width_ && mouse_pos.y < wnd.height_) {
+    if (GetAsyncKeyState(VK_RBUTTON) && ((mouse_pos.x < wnd.width_ && mouse_pos.y < wnd.height_) || rotWithMouse)) {
         if (mouse_.x == 0 && mouse_.y == 0) {
             GetCursorPos(&mouse_);
 
             hideCursor();
-            //ShowCursor(false);
+
+            rotWithMouse = true;
 
             return true;
         }
@@ -36,7 +38,7 @@ bool Camera::move(Window& wnd) {
 
         Vector offset = {double (pos.x - mouse_.x), double (pos.y - mouse_.y), 0};
 
-        angle_ += offset / 100;
+        angle_ += offset / 512;
         moved = true;
 
         SetCursorPos(mouse_.x, mouse_.y);
@@ -44,10 +46,9 @@ bool Camera::move(Window& wnd) {
 
     else if (mouse_.x != 0 || mouse_.y != 0) {
         mouse_ = {0, 0};
+        rotWithMouse = false;
 
-        drawCursor();
-        //txSetWindowsHook(drawCursorProc);
-        //ShowCursor(true);
+        drawCursor(IDC_ARROW);
     }
 
     if (GetAsyncKeyState(VK_UP   )) { angle_.y_ -= a; moved = true; };

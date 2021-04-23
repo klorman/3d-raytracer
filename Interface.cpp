@@ -37,6 +37,7 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
 
                 if (mob && mouse_button == 1 && fields_[field].buttons_[button]->status_ != 2) {
                     fields_[field].buttons_[button]->status_ = 2;
+                    if (fields_[field].buttons_[button]->pinched()) fields_[field].buttons_[button]->status_ = 1;
                     fields_[field].buttons_[button]->draw();
                 }
 

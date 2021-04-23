@@ -9,6 +9,10 @@ AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector
     func_       (func)
 {}
 
+bool BasicButton::pinched() {
+    return false;//??? тут могла быть ваша функция
+}
+
 void BasicButton::pressed() {
     if (func_ != nullptr) func_();
 }
@@ -47,6 +51,59 @@ TextButton::TextButton(double* val, int bind, const POINT& pos, const POINT& siz
     assert(mult_ != 0);
 
     if (val_ != nullptr) text_ = std::to_string(int (*val_ * mult_));
+}
+
+bool TextButton::pinched() {    
+    POINT mouse1, mouse2;
+    GetCursorPos(&mouse1);
+    double shift = 0;
+
+    bool res = false;
+
+    while (GetAsyncKeyState(VK_LBUTTON)) { //можно реализовать лучше
+        GetCursorPos(&mouse2);
+        LONG offset = mouse2.x - mouse1.x;
+
+        if (abs(offset) > 20) {
+            res = true;
+
+            drawCursor(IDC_SIZEWE);
+
+            shift += (double) offset / 4000000;
+
+            if (shift > 1) {
+                double val = std::stod(text_) + 1;
+
+                if (val >= minv_ && val <= maxv_) {
+                    text_ = std::to_string((int) val);
+                    draw();
+                }
+
+                shift -= 1;
+            }
+
+            if (shift < -1) {
+                double val = std::stod(text_) - 1;
+
+                if (val >= minv_ && val <= maxv_) {
+                    text_ = std::to_string((int) val);
+                    draw();
+                }
+
+                shift += 1;
+            }
+        }
+    }
+
+    double val = std::stod(text_);
+
+    if (val_ != nullptr) {
+        *val_ = val / mult_;
+    }
+
+    drawCursor(IDC_ARROW);
+
+    return res;
 }
 
 void TextButton::pressed() {
@@ -96,12 +153,14 @@ void TextButton::pressed() {
     double val = std::stod(text_);
 
     if (val < minv_ || val > maxv_) {
+        val = std::min(std::max((int) val, minv_), maxv_);
+
         text_ = std::to_string((int) *val_ * mult_);
 
         draw();
     }
 
-    else if (val_ != nullptr) {
+    if (val_ != nullptr) {
         *val_ = val / mult_;
     }
 }

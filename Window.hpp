@@ -37,10 +37,10 @@ public:
 	Window(int width, int height, LONG bottom_size_, LONG right_size_, Properties* prop);
 	~Window();
 
-	void draw_pixel   (const POINT& px, const Vector& color, int frames);
-	void update       (Raytracer& rt, const Camera& cam, int frames);
-	void show_fps     ();
-	int  selectObject (Raytracer& rt, const Camera& cam);
+	void draw_pixel      (const POINT& px, const Vector& color, int frames);
+	void update          (Raytracer& rt, const Camera& cam, int frames);
+	void show_fps        ();
+	int  selectObject    (Raytracer& rt, const Camera& cam);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
@@ -54,7 +54,8 @@ bool   bitBlt         (HDC destImage, double xDest, double yDest, double width, 
 bool   isIconic       ();
 bool   isForeground   ();
 POINT  mousePos       ();
+
 void   hideCursor     ();
-void   drawCursor     ();
+void   drawCursor     (LPCSTR cursorName);
 LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);

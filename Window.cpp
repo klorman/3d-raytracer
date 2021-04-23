@@ -131,8 +131,11 @@ bool   bitBlt   (HDC destImage, double xDest, double yDest, double width, double
 bool   isIconic () {return IsIconic(txWindow());}
 bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}
+
+LPCSTR cursorName_ = IDC_ARROW;
+
 void   hideCursor () {txSetWindowsHook(hideCursorProc);}
-void   drawCursor () {txSetWindowsHook(drawCursorProc);}
+void   drawCursor (LPCSTR cursorName) {cursorName_ = cursorName; txSetWindowsHook(drawCursorProc);}
 
 LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
 	(void) window;
@@ -151,7 +154,7 @@ LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARA
 	(void) wParam;
 
 	if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
-	    SetCursor (LoadCursor(0, IDC_ARROW));
+	    SetCursor (LoadCursor(0, cursorName_));
 		return true;
 	}
 

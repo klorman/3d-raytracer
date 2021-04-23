@@ -21,6 +21,7 @@ public:
 
     virtual bool mouse_on_button(const POINT& mouse_pos) = 0;
     virtual void draw() = 0;
+    virtual bool pinched() = 0;
     virtual void pressed() = 0;
 
     AbstractButton(const AbstractButton&) = delete;
@@ -35,6 +36,7 @@ public:
 
     virtual bool mouse_on_button(const POINT& mouse_pos) override;
     virtual void draw() override;
+    virtual bool pinched() override;
     virtual void pressed() override;
 
     BasicButton(const BasicButton&) = delete;
@@ -49,6 +51,7 @@ public:
 
     TextButton(double* val_, int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv_ = -INF, int maxv_ = INF, int mult = 1);
 
+    virtual bool pinched() override;
     virtual void pressed() override;
     
     TextButton(const TextButton&) = delete;
