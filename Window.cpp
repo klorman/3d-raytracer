@@ -56,11 +56,11 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 		int thread = omp_get_thread_num();
 
 		assert(prop_->UPSCALING > 0);
-		POINT start = { width_ * thread / THREADS / prop_->UPSCALING, 0 }, end = { width_ * (thread + 1) / THREADS / prop_->UPSCALING, height_ / prop_->UPSCALING };
+		POINT start = { LONG (width_ * thread / THREADS / prop_->UPSCALING), 0 }, end = { LONG (width_ * (thread + 1) / THREADS / prop_->UPSCALING), LONG (height_ / prop_->UPSCALING) };
 
     	for (int x = start.x; x < end.x; ++x) {
     	    for (int y = start.y; y < end.y; ++y) {
-				POINT p = { x * prop_->UPSCALING, y * prop_->UPSCALING };
+				POINT p = { LONG (x * prop_->UPSCALING), LONG (y * prop_->UPSCALING) };
 
 				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
 
@@ -88,11 +88,10 @@ void Window::show_fps() {
 	txTextOut(10, 10, text);
 }
 
-void Window::selectObject(Raytracer& rt, const Camera& cam) {
+int Window::selectObject(Raytracer& rt, const Camera& cam) {
 	POINT mouse = txMousePos();
 
-	if (interf_.fields_[1].visible_ &&
-		txMouseButtons() == 1 && 
+	if (txMouseButtons() == 1 && 
 		mouse.x >= 0 && 
 		mouse.x <= width_ &&
 		mouse.y >= 0 &&
@@ -106,7 +105,7 @@ void Window::selectObject(Raytracer& rt, const Camera& cam) {
         Vector hit = rt.trace(ray, &obj);
 
         if (hit == NULLVEC) {
-            return;
+            return 1;
         }
 		
 		for (int button = posX; button <= colZ; ++button) {
@@ -115,9 +114,13 @@ void Window::selectObject(Raytracer& rt, const Camera& cam) {
 			editTextButton->val_  = getParam(editTextButton->bind_, rt.objects_[obj]);
 			editTextButton->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]) * editTextButton->mult_);
 
-			editTextButton->draw();
+			if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
 		}
+
+		return 2;
 	}
+
+	return 0;
 }
 
 HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thickness);}
@@ -132,6 +135,9 @@ void   hideCursor () {txSetWindowsHook(hideCursorProc);}
 void   drawCursor () {txSetWindowsHook(drawCursorProc);}
 
 LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+	(void) window;
+	(void) wParam;
+
     if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
         SetCursor (NULL);
         return true;     
@@ -141,6 +147,9 @@ LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARA
 }
 
 LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+	(void) window;
+	(void) wParam;
+
 	if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
 	    SetCursor (LoadCursor(0, IDC_ARROW));
 		return true;

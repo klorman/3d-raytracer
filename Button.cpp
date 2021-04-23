@@ -46,7 +46,7 @@ TextButton::TextButton(double* val, int bind, const POINT& pos, const POINT& siz
 {
     assert(mult_ != 0);
 
-    if (val_ != nullptr) text_ = std::to_string((int) *val_ * mult_);
+    if (val_ != nullptr) text_ = std::to_string(int (*val_ * mult_));
 }
 
 void TextButton::pressed() {

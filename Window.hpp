@@ -40,7 +40,7 @@ public:
 	void draw_pixel   (const POINT& px, const Vector& color, int frames);
 	void update       (Raytracer& rt, const Camera& cam, int frames);
 	void show_fps     ();
-	void selectObject (Raytracer& rt, const Camera& cam);
+	int  selectObject (Raytracer& rt, const Camera& cam);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
