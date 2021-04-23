@@ -39,18 +39,6 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 			//pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
 			//pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
 			//pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
-
-//			if (frames == 0) {
-//				pixel->rgbRed   = BYTE (color.x_ * 255);
-//				pixel->rgbGreen = BYTE (color.y_ * 255);
-//				pixel->rgbBlue  = BYTE (color.z_ * 255);
-//			}
-//
-//			else {
-//				pixel->rgbRed   = BYTE ((pixel->rgbRed   + color.x_ * 255) / 2);
-//				pixel->rgbGreen = BYTE ((pixel->rgbGreen + color.y_ * 255) / 2);
-//				pixel->rgbBlue  = BYTE ((pixel->rgbBlue  + color.z_ * 255) / 2);				
-//			}
 		}
 	}
 }
@@ -120,13 +108,13 @@ void Window::selectObject(Raytracer& rt, const Camera& cam) {
             return;
         }
 		
-		for (int button = 0; button < 12; ++button) {
-			TextButton* textButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
+		for (int button = posX; button <= colZ; ++button) {
+			TextButton* editTextButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
 
-			textButton->obj_  = rt.objects_[obj];
-			textButton->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]) * textButton->mult_);
+			editTextButton->val_  = getParam(editTextButton->bind_, rt.objects_[obj]);
+			editTextButton->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]) * editTextButton->mult_);
 
-			textButton->draw();
+			editTextButton->draw();
 		}
 	}
 }

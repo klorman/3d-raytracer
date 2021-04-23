@@ -125,6 +125,12 @@ int main() {
         new BasicButton{{wnd.width_, 30              }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create"},
         new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete"},
     };
+    AbstractButton* settingsButtons[] = {
+        new TextButton {-1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {-1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {-1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {-1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255}
+    };
     Textbox editTextBoxes[] = {
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      60}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"},
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "X:"},
@@ -142,12 +148,16 @@ int main() {
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "R:"},
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "G:"},
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 510}, {30, 30}, "B:"}
-
+    };
+    Textbox settingsTextBoxes[] = {
+        {{wnd.width_, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND},
+        {{wnd.width_, 60}, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND}
     };
 
     Field fields[] = {
-        {1, LEN(menuButtons), 0,                  menuButtons, nullptr},
-        {0, LEN(editButtons), LEN(editTextBoxes), editButtons, editTextBoxes}
+        {1, LEN(menuButtons),     0,                      menuButtons,     nullptr},
+        {0, LEN(editButtons),     LEN(editTextBoxes),     editButtons,     editTextBoxes},
+        {0, LEN(settingsButtons), LEN(settingsTextBoxes), settingsButtons, settingsTextBoxes}
     };
 
     wnd.interf_.field_count_ = LEN(fields);
@@ -158,7 +168,7 @@ int main() {
 
 void Edit() {
     wnd.interf_.fields_[1].visible_ = !wnd.interf_.fields_[1].visible_;
-    //wnd.interf_.fields_[2].visible_ = false;
+    wnd.interf_.fields_[2].visible_ = false;
     //wnd.interf_.fields_[3].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 3;
@@ -170,7 +180,7 @@ void Edit() {
 
 void Objects() {
     wnd.interf_.fields_[1].visible_ = false;
-    //wnd.interf_.fields_[2].visible_ = !wnd.interf_.fields_[2].visible_;
+    wnd.interf_.fields_[2].visible_ = !wnd.interf_.fields_[2].visible_;
     //wnd.interf_.fields_[3].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
@@ -182,7 +192,7 @@ void Objects() {
 
 void Settings() {
     wnd.interf_.fields_[1].visible_ = false;
-    //wnd.interf_.fields_[2].visible_ = false;
+    wnd.interf_.fields_[2].visible_ = false;
     //wnd.interf_.fields_[3].visible_ = !wnd.interf_.fields_[3].visible_;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;

@@ -38,8 +38,8 @@ bool BasicButton::mouse_on_button(const POINT& mouse_pos) {
 
 TextButton::TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv, int maxv, int mult) :
     BasicButton(pos, size, fill_color, text_color),
+    val_       (nullptr),
     bind_      (bind),
-    obj_       (nullptr),
     minv_      (minv),
     maxv_      (maxv),
     mult_      (mult)
@@ -85,7 +85,7 @@ void TextButton::pressed() {
     }
 
     if (text_.length() == 1 && text_[0] == '-') {
-        text_ = std::to_string((int) *getParam(bind_, obj_) * mult_);
+        text_ = std::to_string((int) *val_ * mult_);
 
         draw();
         return;
@@ -94,13 +94,13 @@ void TextButton::pressed() {
     double val = std::stod(text_);
 
     if (val < minv_ || val > maxv_) {
-        text_ = std::to_string((int) *getParam(bind_, obj_) * mult_);
+        text_ = std::to_string((int) *val_ * mult_);
 
         draw();
     }
 
-    else if (obj_ != nullptr) {
-        *getParam(bind_, obj_) = val / mult_;
+    else if (val_ != nullptr) {
+        *val_ = val / mult_;
     }
 }
 

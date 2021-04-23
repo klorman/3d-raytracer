@@ -43,8 +43,8 @@ public:
 
 class TextButton : public BasicButton {
 public:
+    double* val_;
     int bind_;
-    Object* obj_;
     int minv_, maxv_, mult_;
 
     TextButton(int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv_ = -INF, int maxv_ = INF, int mult = 1);
