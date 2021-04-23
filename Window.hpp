@@ -24,16 +24,17 @@ public:
 
 class Window {
 public:
-	const int UPSCALING = 2;  //во сколько раз меньше изображение будет рендериться
+	//double UPSCALING = 2;  //во сколько раз меньше изображение будет рендериться
 	const int THREADS   = 16; //количество используемых потоков
 
-	int       width_, height_;
-	Interface interf_;
-	RGBQUAD*  Video_memory_;
-	HWND      window_;
-	bool      should_close_;
+	int         width_, height_;
+	Interface   interf_;
+	RGBQUAD*    Video_memory_;
+	HWND        window_;
+	bool        should_close_;
+	Properties* prop_;
 
-	Window(int width, int height, LONG bottom_size_, LONG right_size_);
+	Window(int width, int height, LONG bottom_size_, LONG right_size_, Properties* prop);
 	~Window();
 
 	void draw_pixel   (const POINT& px, const Vector& color, int frames);
@@ -53,3 +54,7 @@ bool   bitBlt         (HDC destImage, double xDest, double yDest, double width, 
 bool   isIconic       ();
 bool   isForeground   ();
 POINT  mousePos       ();
+void   hideCursor     ();
+void   drawCursor     ();
+LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);

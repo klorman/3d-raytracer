@@ -25,7 +25,8 @@ bool Camera::move(Window& wnd) {
         if (mouse_.x == 0 && mouse_.y == 0) {
             GetCursorPos(&mouse_);
 
-            ShowCursor(false);
+            hideCursor();
+            //ShowCursor(false);
 
             return true;
         }
@@ -44,7 +45,9 @@ bool Camera::move(Window& wnd) {
     else if (mouse_.x != 0 || mouse_.y != 0) {
         mouse_ = {0, 0};
 
-        ShowCursor(true);
+        drawCursor();
+        //txSetWindowsHook(drawCursorProc);
+        //ShowCursor(true);
     }
 
     if (GetAsyncKeyState(VK_UP   )) { angle_.y_ -= a; moved = true; };

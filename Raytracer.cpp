@@ -1,8 +1,9 @@
 #include "Raytracer.hpp"
 
-Raytracer::Raytracer(int object_count, Object** objects) :
-    object_count_(object_count),
-    objects_(objects)
+Raytracer::Raytracer(int object_count, Object** objects, Properties* prop) :
+    object_count_ (object_count),
+    objects_      (objects),
+    prop_         (prop)
 {}
 
 Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
@@ -34,7 +35,7 @@ Vector Raytracer::color(const Ray& ray) {
     Vector norm = NULLVEC;
     Vector hit = trace(ray, &obj, &norm);
 
-    if (hit == NULLVEC)                       return background_color;      //луч не пересекает объекты
+    if (hit == NULLVEC)                       return prop_->BACKGROUNDCOLOR;//луч не пересекает объекты
     if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_; //объект - источник 
     if (ray.generation_ > MAXGEN)             return NULLVEC;               //достигнут лимит
 

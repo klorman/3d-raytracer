@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Object.hpp"
+#include "Properties.hpp"
 
-const Vector background_color = { 0.5, 0.5, 1.0 };
+//const Vector background_color = { 0.5, 0.5, 1.0 };
 
 class Raytracer {
 public:
     int object_count_;
     Object** objects_;
+    Properties* prop_;
 
-    Raytracer(int object_count, Object** objects);
+    Raytracer(int object_count, Object** objects, Properties* prop);
 
     Vector trace(const Ray& ray, int* object = nullptr, Vector* norm = nullptr);
     Vector color(const Ray& ray);

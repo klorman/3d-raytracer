@@ -2,13 +2,14 @@
 
 #include <omp.h>
 
-Window::Window(int width, int height, LONG bottom_size, LONG right_size) :
-	width_       (width),
-	height_      (height),
-	interf_      ({bottom_size, right_size}),
-	Video_memory_(nullptr),
-	window_      (NULL),
-	should_close_(false)
+Window::Window(int width, int height, LONG bottom_size, LONG right_size, Properties* prop) :
+	width_        (width),
+	height_       (height),
+	interf_       ({bottom_size, right_size}),
+	Video_memory_ (nullptr),
+	window_       (NULL),
+	should_close_ (false),
+	prop_         (prop)
 	
 {
 	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX;
@@ -28,8 +29,8 @@ Window::~Window() {
 
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 	RGBQUAD* pixel;
-	for (int i = 0; i < UPSCALING; ++i) {
-		for (int j = 0; j < UPSCALING; ++j) {
+	for (int i = 0; i < prop_->UPSCALING; ++i) {
+		for (int j = 0; j < prop_->UPSCALING; ++j) {
 			pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
 
 			pixel->rgbRed   = BYTE (color.x_ * 255);
@@ -54,12 +55,12 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	{
 		int thread = omp_get_thread_num();
 
-		assert(UPSCALING > 0);
-		POINT start = { width_ * thread / THREADS / UPSCALING, 0 }, end = { width_ * (thread + 1) / THREADS / UPSCALING, height_ / UPSCALING };
+		assert(prop_->UPSCALING > 0);
+		POINT start = { width_ * thread / THREADS / prop_->UPSCALING, 0 }, end = { width_ * (thread + 1) / THREADS / prop_->UPSCALING, height_ / prop_->UPSCALING };
 
     	for (int x = start.x; x < end.x; ++x) {
     	    for (int y = start.y; y < end.y; ++y) {
-				POINT p = { x * UPSCALING, y * UPSCALING };
+				POINT p = { x * prop_->UPSCALING, y * prop_->UPSCALING };
 
 				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
 
@@ -127,3 +128,23 @@ bool   bitBlt   (HDC destImage, double xDest, double yDest, double width, double
 bool   isIconic () {return IsIconic(txWindow());}
 bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}
+void   hideCursor () {txSetWindowsHook(hideCursorProc);}
+void   drawCursor () {txSetWindowsHook(drawCursorProc);}
+
+LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+    if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
+        SetCursor (NULL);
+        return true;     
+    }
+
+    return false;
+}
+
+LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+	if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
+	    SetCursor (LoadCursor(0, IDC_ARROW));
+		return true;
+	}
+
+    return false;
+}
