@@ -59,8 +59,15 @@ void start() {
 
         if (selected) objectSelected = selected - 1;
         if (wnd.interf_.fields_[0].buttons_[0]->status_ == 3 && selected) {
-            if (objectSelected) wnd.interf_.fields_[1].visible_ = true; 
-            else                wnd.interf_.fields_[1].visible_ = false;
+            if (objectSelected) {
+                wnd.interf_.fields_[1].visible_ = true; 
+                wnd.interf_.fields_[4].visible_ = false;
+            }
+
+            else {
+                wnd.interf_.fields_[1].visible_ = false;
+                wnd.interf_.fields_[4].visible_ = true;
+            }
 
             wnd.interf_.draw(wnd);
         }
@@ -78,7 +85,6 @@ int main() {
         new BasicButton{{wnd.width_                                         , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit",       Edit},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects",    Objects},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3) * 2, 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings",   Settings},
-        new BasicButton{{wnd.width_,                                          30          }, {wnd.interf_.right_size_,            30}, EVEC * 70, EVEC * 255, "Create",     Create},
         new BasicButton{{wnd.width_                                         , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save",       Save},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load",       Load},
         new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
@@ -98,13 +104,17 @@ int main() {
         new TextButton {nullptr, colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 480}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
         new TextButton {nullptr, colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 510}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
 
+        new BasicButton{{wnd.width_, 30              }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create},
         new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete}
     };
+    AbstractButton* createButtons[] = {   
+        new BasicButton{{wnd.width_, 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create}
+    };
     AbstractButton* settingsButtons[] = {
-        new TextButton {&wnd.prop_->UPSCALING,          -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255}
+        new TextButton {&wnd.prop_->UPSCALING,          -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255}
     };
     Textbox editTextBoxes[] = {
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"},
@@ -124,16 +134,20 @@ int main() {
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "G:"},
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 510}, {30, 30}, "B:"}
     };
+    Textbox createTextBoxes[] = {
+        {{wnd.width_, wnd.height_ >> 1}, {wnd.interf_.right_size_, 60}, "Create or select an object", -EVEC, EVEC * 150}
+    };
     Textbox settingsTextBoxes[] = {
-        {{wnd.width_, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, "UPSCALING"       , wnd.interf_.BACKGROUND},
-        {{wnd.width_, 60}, {LONG (wnd.interf_.right_size_ / 3 * 2), 120}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND}
+        {{wnd.width_, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND},
+        {{wnd.width_, 60}, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND}
     };
 
     Field fields[] = {
         {1, LEN(menuButtons),     0,                      menuButtons,     nullptr},
         {0, LEN(editButtons),     LEN(editTextBoxes),     editButtons,     editTextBoxes},
         {0, 0,                    0,                      nullptr,         nullptr},
-        {0, LEN(settingsButtons), LEN(settingsTextBoxes), settingsButtons, settingsTextBoxes}
+        {0, LEN(settingsButtons), LEN(settingsTextBoxes), settingsButtons, settingsTextBoxes},
+        {1, LEN(createButtons),   LEN(createTextBoxes),   createButtons,   createTextBoxes}
     };
 
     wnd.interf_.field_count_ = LEN(fields);
@@ -143,8 +157,16 @@ int main() {
 }
 
 void Edit() {
-    if      (objectSelected) wnd.interf_.fields_[1].visible_ = true;
-    else                     wnd.interf_.fields_[1].visible_ = false;
+    if (objectSelected) {
+        wnd.interf_.fields_[1].visible_ = true;
+        wnd.interf_.fields_[4].visible_ = false;
+    }
+
+    else {
+        wnd.interf_.fields_[1].visible_ = false;
+        wnd.interf_.fields_[4].visible_ = true;
+    }
+
     wnd.interf_.fields_[2].visible_ = false;
     wnd.interf_.fields_[3].visible_ = false;
 
@@ -159,6 +181,7 @@ void Objects() {
     wnd.interf_.fields_[1].visible_ = false;
     wnd.interf_.fields_[2].visible_ = !wnd.interf_.fields_[2].visible_;
     wnd.interf_.fields_[3].visible_ = false;
+    wnd.interf_.fields_[4].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
@@ -171,6 +194,7 @@ void Settings() {
     wnd.interf_.fields_[1].visible_ = false;
     wnd.interf_.fields_[2].visible_ = false;
     wnd.interf_.fields_[3].visible_ = !wnd.interf_.fields_[3].visible_;
+    wnd.interf_.fields_[4].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;
@@ -182,6 +206,14 @@ void Settings() {
 void Create() {
     rt.objects_.push_back(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
     rt.object_count_++;
+
+    wnd.bindButtonsToObject(rt.objects_.back());
+    objectSelected = (int) rt.objects_.size();
+    
+    Edit();
+    //wnd.interf_.fields_[1].visible_ = true;
+    //wnd.interf_.fields_[4].visible_ = false;
+    //wnd.interf_.draw(wnd);
 }
 
 void Delete() {
@@ -189,13 +221,13 @@ void Delete() {
 
     objectSelected = 1;
     wnd.interf_.fields_[1].visible_ = false;
+    wnd.interf_.fields_[4].visible_ = true;
     wnd.interf_.draw(wnd);
 
     if (!rt.objects_.empty()) {
         rt.objects_.erase(rt.objects_.begin() + id);
         rt.object_count_--;
     }
-    
 }
 
 void Save() {

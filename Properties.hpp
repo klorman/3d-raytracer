@@ -2,6 +2,9 @@
 
 #include "Vector.hpp"
 
+#include <fstream>
+#include <vector>
+
 class Vector;
 
 struct Properties {

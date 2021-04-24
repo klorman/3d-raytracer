@@ -108,19 +108,23 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
             return 1; //снято выделение с объектов
         }
 		
-		for (int button = posX; button <= colZ; ++button) {
-			TextButton* editTextButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
-
-			editTextButton->val_  = getParam(editTextButton->bind_, rt.objects_[obj]);
-			editTextButton->text_ = std::to_string((int) *getParam(button, rt.objects_[obj]) * editTextButton->mult_);
-
-			if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
-		}
+		bindButtonsToObject(rt.objects_[obj]);
 
 		return obj + 2; //возвращаем id объекта + 2
 	}
 
 	return 0; //ничего не произошло
+}
+
+void Window::bindButtonsToObject(Object* obj) {
+	for (int button = posX; button <= colZ; ++button) {
+		TextButton* editTextButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
+
+		editTextButton->val_  = getParam(editTextButton->bind_, obj);
+		editTextButton->text_ = std::to_string((int) *getParam(button, obj) * editTextButton->mult_);
+
+		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
+	}
 }
 
 HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thickness);}

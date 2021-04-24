@@ -37,10 +37,11 @@ public:
 	Window(int width, int height, LONG bottom_size_, LONG right_size_, Properties* prop);
 	~Window();
 
-	void draw_pixel      (const POINT& px, const Vector& color, int frames);
-	void update          (Raytracer& rt, const Camera& cam, int frames);
-	void show_fps        ();
-	int  selectObject    (Raytracer& rt, const Camera& cam);
+	void draw_pixel          (const POINT& px, const Vector& color, int frames);
+	void update              (Raytracer& rt, const Camera& cam, int frames);
+	void show_fps            ();
+	int  selectObject        (Raytracer& rt, const Camera& cam);
+	void bindButtonsToObject (Object* obj);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
