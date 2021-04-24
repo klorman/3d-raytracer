@@ -56,6 +56,6 @@ bool   isForeground   ();
 POINT  mousePos       ();
 
 void   hideCursor     ();
-void   drawCursor     (LPCSTR cursorName);
+void   drawCursor     (LPCSTR cursorName); //их можно объединить
 LRESULT CALLBACK hideCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);

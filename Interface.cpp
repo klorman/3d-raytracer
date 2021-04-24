@@ -3,8 +3,8 @@
 Interface::Interface(LONG bottom, LONG right) :
     bottom_size_ (bottom),
     right_size_  (right),
-    field_count_(0),
-    fields_     (nullptr)
+    field_count_ (0),
+    fields_      (nullptr)
 {}
 
 void Interface::draw(Window& wnd) {

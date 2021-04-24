@@ -105,7 +105,7 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
         Vector hit = rt.trace(ray, &obj);
 
         if (hit == NULLVEC) {
-            return 1;
+            return 1; //снято выделение с объектов
         }
 		
 		for (int button = posX; button <= colZ; ++button) {
@@ -117,10 +117,10 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 			if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
 		}
 
-		return 2;
+		return obj + 2; //возвращаем id объекта + 2
 	}
 
-	return 0;
+	return 0; //ничего не произошло
 }
 
 HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thickness);}
@@ -155,6 +155,7 @@ LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARA
 
 	if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
 	    SetCursor (LoadCursor(0, cursorName_));
+	
 		return true;
 	}
 
