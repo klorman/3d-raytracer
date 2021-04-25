@@ -29,7 +29,6 @@ Raytracer rt;
 int objectSelected = 0;
 
 void start();
-void createFields();
 
 void start() {
     std::vector<Object*> objects;
@@ -83,74 +82,75 @@ int main() {
     //createFields();
 
     AbstractButton* menuButtons[] = {
-        new BasicButton{{wnd.width_                                         , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit",       Edit},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3)    , 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects",    Objects},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 3) * 2, 0           }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings",   Settings},
-        new BasicButton{{wnd.width_                                         , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save",       Save},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load",       Load},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
-        new BasicButton{{wnd.width_ + LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit",       Exit}
+        new BasicButton{{0                                     , 0}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit",     Edit},
+        new BasicButton{{LONG (wnd.interf_.right_size_ / 3)    , 0}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects",  Objects},
+        new BasicButton{{LONG (wnd.interf_.right_size_ / 3) * 2, 0}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings", Settings},
+
+        new BasicButton{{0                                     , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save",       Save},
+        new BasicButton{{LONG (wnd.interf_.right_size_ / 4)    , wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load",       Load},
+        new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot},
+        new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_ }, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit",       Exit}
     };
     AbstractButton* editButtons[] = {
-        new TextButton {nullptr, posX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, posY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, posZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, rotX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, rotY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 240}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, rotZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 270}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
-        new TextButton {nullptr, szX , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
-        new TextButton {nullptr, szY , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 360}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
-        new TextButton {nullptr, szZ , {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 390}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
-        new TextButton {nullptr, colX, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {nullptr, colY, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 480}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {nullptr, colZ, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3), 510}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {nullptr, posX, {LONG (wnd.interf_.right_size_ / 3), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, posY, {LONG (wnd.interf_.right_size_ / 3), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, posZ, {LONG (wnd.interf_.right_size_ / 3), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, rotX, {LONG (wnd.interf_.right_size_ / 3), 180}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, rotY, {LONG (wnd.interf_.right_size_ / 3), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, rotZ, {LONG (wnd.interf_.right_size_ / 3), 240}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255},
+        new TextButton {nullptr, szX , {LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
+        new TextButton {nullptr, szY , {LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
+        new TextButton {nullptr, szZ , {LONG (wnd.interf_.right_size_ / 3), 360}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1},
+        new TextButton {nullptr, colX, {LONG (wnd.interf_.right_size_ / 3), 420}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {nullptr, colY, {LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {nullptr, colZ, {LONG (wnd.interf_.right_size_ / 3), 480}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
 
-        new BasicButton{{wnd.width_, 30              }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create},
-        new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete}
+        new BasicButton{{0, 0               }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create},
+        new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete}
     };
     AbstractButton* createButtons[] = {   
-        new BasicButton{{wnd.width_, 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create}
+        new BasicButton{{0, 0}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create}
     };
     AbstractButton* settingsButtons[] = {
-        new TextButton {&wnd.prop_->UPSCALING,          -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {&wnd.prop_->UPSCALING,          -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 0  }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
     
-        new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings}
+        new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings}
     };
     Textbox editTextBoxes[] = {
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "X:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 120}, {30, 30}, "Y:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 150}, {30, 30}, "Z:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      180}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Rotation"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 210}, {30, 30}, "X:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 240}, {30, 30}, "Y:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 270}, {30, 30}, "Z:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      300}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Size"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 330}, {30, 30}, "X:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 360}, {30, 30}, "Y:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 390}, {30, 30}, "Z:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      420}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Color"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "R:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "G:"},
-        {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3 - 30), 510}, {30, 30}, "B:"}
+        {{LONG (wnd.interf_.right_size_ / 3),      30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 60 }, {30, 30}, "X:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "Y:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 120}, {30, 30}, "Z:"},
+        {{LONG (wnd.interf_.right_size_ / 3),      150}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Rotation"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 180}, {30, 30}, "X:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 210}, {30, 30}, "Y:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 240}, {30, 30}, "Z:"},
+        {{LONG (wnd.interf_.right_size_ / 3),      270}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Size"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 300}, {30, 30}, "X:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 330}, {30, 30}, "Y:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 360}, {30, 30}, "Z:"},
+        {{LONG (wnd.interf_.right_size_ / 3),      390}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Color"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 420}, {30, 30}, "R:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "G:"},
+        {{LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "B:"}
     };
     Textbox createTextBoxes[] = {
-        {{wnd.width_, wnd.height_ >> 1}, {wnd.interf_.right_size_, 60}, "Create or select an object", -EVEC, EVEC * 150}
+        {{0, wnd.height_ >> 1}, {wnd.interf_.right_size_, 60}, "Create or select an object", -EVEC, EVEC * 150}
     };
     Textbox settingsTextBoxes[] = {
-        {{wnd.width_, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND},
-        {{wnd.width_, 60}, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND}
+        {{0, 0 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND},
+        {{0, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND}
     };
 
     Field fields[] = {
-        {1, LEN(menuButtons),     0,                      menuButtons,     nullptr},
-        {0, LEN(editButtons),     LEN(editTextBoxes),     editButtons,     editTextBoxes},
-        {0, 0,                    0,                      nullptr,         nullptr},
-        {0, LEN(settingsButtons), LEN(settingsTextBoxes), settingsButtons, settingsTextBoxes},
-        {1, LEN(createButtons),   LEN(createTextBoxes),   createButtons,   createTextBoxes}
+        {1, {wnd.width_, 0 }, {wnd.interf_.right_size_, wnd.height_      }, LEN(menuButtons),     0,                      menuButtons,     nullptr},
+        {0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}, LEN(editButtons),     LEN(editTextBoxes),     editButtons,     editTextBoxes},
+        {0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}, 0,                    0,                      nullptr,         nullptr},
+        {0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}, LEN(settingsButtons), LEN(settingsTextBoxes), settingsButtons, settingsTextBoxes},
+        {1, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}, LEN(createButtons),   LEN(createTextBoxes),   createButtons,   createTextBoxes}
     };
 
     wnd.interf_.field_count_ = LEN(fields);
@@ -263,7 +263,6 @@ void Save() {
             << object->rotation_.x_    << " " << object->rotation_.y_ << " " << object->rotation_.z_      << std::endl;
     }
 
-
     file.close();
 }
 
@@ -272,7 +271,7 @@ void Load() {
     std::ifstream file(getExeDir() + "\\save.rt");
 
     if (!file) {
-        std::cerr << "properties.txt does not exist!"; //загрузка настроек по умолчанию
+        std::cerr << "properties.txt does not exist!";
 
         return;
     }
@@ -280,6 +279,13 @@ void Load() {
     else {
         rt.objects_.clear();
         rt.object_count_ = 0;
+        
+        objectSelected = 0;
+        if (wnd.interf_.fields_[1].visible_) {
+            wnd.interf_.fields_[1].visible_ = false;
+            wnd.interf_.fields_[4].visible_ = true;
+            wnd.interf_.draw(wnd);
+        }
 
         while(getline(file, line)) {
             std::istringstream iss(line, std::istringstream::in);
