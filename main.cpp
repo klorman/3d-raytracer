@@ -15,6 +15,7 @@ void Objects();
 void Settings();
 void Create();
 void Delete();
+void SaveSettings();
 
 void Save();
 void Load();
@@ -114,7 +115,9 @@ int main() {
         new TextButton {&wnd.prop_->UPSCALING,          -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16},
         new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
         new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
-        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255}
+        new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {wnd.width_ + LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255},
+    
+        new BasicButton{{wnd.width_, wnd.height_ - 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings}
     };
     Textbox editTextBoxes[] = {
         {{wnd.width_ + LONG (wnd.interf_.right_size_ / 3),      60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"},
@@ -219,7 +222,7 @@ void Create() {
 void Delete() {
     int id = objectSelected - 1;
 
-    objectSelected = 1;
+    objectSelected = 0;
     wnd.interf_.fields_[1].visible_ = false;
     wnd.interf_.fields_[4].visible_ = true;
     wnd.interf_.draw(wnd);
@@ -228,6 +231,10 @@ void Delete() {
         rt.objects_.erase(rt.objects_.begin() + id);
         rt.object_count_--;
     }
+}
+
+void SaveSettings() {
+    prop.saveProperties();
 }
 
 void Save() {
@@ -242,7 +249,7 @@ void Screenshot() {
     HDC save = txCreateCompatibleDC(wnd.width_, wnd.height_);
 
     if (bitBlt(save, 0, 0, wnd.width_, wnd.height_)) {
-        std::string PATH = std::string("screenshots/") + getTime() + std::string(".jpg");
+        std::string PATH = getExeDir() + std::string("\\screenshots\\") + getTime() + std::string(".jpg");
 
         txSaveImage(PATH.c_str(), save);
     }
