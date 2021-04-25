@@ -27,9 +27,7 @@ Vector Vector::operator  *  (const Vector& vec) const {
 }
 
 Vector Vector::operator  /  (const Vector& vec) const {
-	//assert(vec.x_ == 0 || vec.y_ == 0 || vec.z_ == 0);
-
-	return{ vec.x_ == 0 ? INF : x_ / vec.x_, vec.y_ == 0 ? INF : y_ / vec.y_, vec.z_ == 0 ? INF : z_ / vec.z_ }; //надо придумать, как обрабатывать деление на 0
+	return{ abs(vec.x_) < EPS ? INF : x_ / vec.x_, abs(vec.y_) < EPS ? INF : y_ / vec.y_, abs(vec.z_) < EPS ? INF : z_ / vec.z_ };
 }
 
 Vector Vector::operator  +  (const Vector& vec) const {
@@ -66,7 +64,7 @@ Vector& Vector::operator *= (const Vector& vec) {
 }
 
 bool Vector::operator == (const Vector& vec) const {
-	return vec.x_ == x_ && vec.y_ == y_ && vec.z_ == z_ ? true : false;
+	return abs(vec.x_ - x_) < EPS && abs(vec.y_ - y_) < EPS && abs(vec.z_ - z_) < EPS ? true : false;
 }
 
 bool Vector::operator != (const Vector& vec) const {

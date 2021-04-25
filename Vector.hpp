@@ -8,7 +8,7 @@
 
 #define NULLVEC Vector { 0, 0, 0 }
 #define EVEC    Vector { 1, 1, 1 }
-#define EPS     0.01
+#define EPS     0.0001
 #define INF     99999
 
 #define VEC2RGB(vec) ((COLORREF)(((BYTE)(vec.x_)|((WORD)((BYTE)(vec.y_))<<8))|(((DWORD)(BYTE)(vec.z_))<<16)))

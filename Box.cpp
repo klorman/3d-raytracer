@@ -2,7 +2,9 @@
 
 Box::Box(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation) :
     Object(mat, size, center, color, rotation)
-{}
+{
+    type = 2;
+}
 
 Vector Box::color(const Vector& hit) const {
     (void) hit;

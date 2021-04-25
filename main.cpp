@@ -238,11 +238,80 @@ void SaveSettings() {
 }
 
 void Save() {
+    std::ofstream file(getExeDir() + "\\save.rt");
 
+    if (!file) {
+        std::cerr << "save.txt does not exist!";
+
+        return;
+    }
+
+    for (int obj = 0; obj < rt.object_count_; ++obj) {
+        Object* object = rt.objects_[obj];
+
+        if (object->type > 0) file << object->type << " " 
+            << object->mat_.reflection << " " << object->mat_.n       << " " << object->mat_.transparency << " " << object->mat_.roughness << " "
+            << object->size_.x_        << " " << object->size_.y_     << " " << object->size_.z_          << " "
+            << object->center_.x_      << " " << object->center_.y_   << " " << object->center_.z_        << " "
+            << object->color_.x_       << " " << object->color_.y_    << " " << object->color_.z_         << " "
+            << object->rotation_.x_    << " " << object->rotation_.y_ << " " << object->rotation_.z_      << std::endl;
+
+        else file << object->type << " " 
+            << object->mat_.reflection << " " << object->mat_.n       << " " << object->mat_.transparency << " " << object->mat_.roughness << " "
+            << object->center_.x_      << " " << object->center_.y_   << " " << object->center_.z_        << " "
+            << object->color_.x_       << " " << object->color_.y_    << " " << object->color_.z_         << " "
+            << object->rotation_.x_    << " " << object->rotation_.y_ << " " << object->rotation_.z_      << std::endl;
+    }
+
+
+    file.close();
 }
 
 void Load() {
+    std::string line = "", word = "";
+    std::ifstream file(getExeDir() + "\\save.rt");
 
+    if (!file) {
+        std::cerr << "properties.txt does not exist!"; //загрузка настроек по умолчанию
+
+        return;
+    }
+
+    else {
+        rt.objects_.clear();
+        rt.object_count_ = 0;
+
+        while(getline(file, line)) {
+            std::istringstream iss(line, std::istringstream::in);
+            std::vector<std::string> wordsVector;
+
+            while (iss >> word) {
+                wordsVector.push_back(word);
+            }
+
+            rt.object_count_++;
+
+            if      (wordsVector[0] == "0") rt.objects_.push_back(new Plane  {{std::stod(wordsVector[1 ]), std::stod(wordsVector[2 ]), std::stod(wordsVector[3 ]), std::stod(wordsVector[4])}, 
+                                                                              {std::stod(wordsVector[5 ]), std::stod(wordsVector[6 ]), std::stod(wordsVector[7 ])},
+                                                                              {std::stod(wordsVector[8 ]), std::stod(wordsVector[9 ]), std::stod(wordsVector[10])}, 
+                                                                              {std::stod(wordsVector[11]), std::stod(wordsVector[12]), std::stod(wordsVector[13])}});
+
+            else if (wordsVector[0] == "1") rt.objects_.push_back(new Sphere {{std::stod(wordsVector[1 ]), std::stod(wordsVector[2 ]), std::stod(wordsVector[3 ]), std::stod(wordsVector[4])}, 
+                                                                              {std::stod(wordsVector[5 ]), std::stod(wordsVector[6 ]), std::stod(wordsVector[7 ])},
+                                                                              {std::stod(wordsVector[8 ]), std::stod(wordsVector[9 ]), std::stod(wordsVector[10])}, 
+                                                                              {std::stod(wordsVector[11]), std::stod(wordsVector[12]), std::stod(wordsVector[13])}, 
+                                                                              {std::stod(wordsVector[14]), std::stod(wordsVector[15]), std::stod(wordsVector[16])}});
+
+            else if (wordsVector[0] == "2") rt.objects_.push_back(new Box    {{std::stod(wordsVector[1 ]), std::stod(wordsVector[2 ]), std::stod(wordsVector[3 ]), std::stod(wordsVector[4])}, 
+                                                                              {std::stod(wordsVector[5 ]), std::stod(wordsVector[6 ]), std::stod(wordsVector[7 ])},
+                                                                              {std::stod(wordsVector[8 ]), std::stod(wordsVector[9 ]), std::stod(wordsVector[10])}, 
+                                                                              {std::stod(wordsVector[11]), std::stod(wordsVector[12]), std::stod(wordsVector[13])}, 
+                                                                              {std::stod(wordsVector[14]), std::stod(wordsVector[15]), std::stod(wordsVector[16])}});
+
+        }
+    }
+
+    file.close();
 }
 
 void Screenshot() {

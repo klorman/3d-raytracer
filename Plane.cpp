@@ -1,8 +1,10 @@
 #include "Object.hpp"
 
 Plane::Plane(const Material& mat, const Vector& center, const Vector& color, const Vector& rotation) :
-    Object(mat, 0, center, color, rotation)
-{}
+    Object (mat, 0, center, color, rotation)
+{
+    type = 0;
+}
 
 Vector Plane::color(const Vector& hit) const {
     if (((int) hit.x_ % 50 > 25 || (int) hit.x_ % 50 > -25) ^

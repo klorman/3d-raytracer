@@ -1,8 +1,10 @@
 #include "Object.hpp"
 
-Sphere::Sphere(const Material& mat, const Vector& size, const Vector& center, const Vector& color) :
-    Object(mat, size, center, color)
-{}
+Sphere::Sphere(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation) :
+    Object(mat, size, center, color, rotation)
+{
+    type = 1;
+}
 
 Vector Sphere::color(const Vector& hit) const {
     (void) hit;

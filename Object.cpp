@@ -7,7 +7,8 @@ Object::Object(const Material& mat, const Vector& size, const Vector& center, co
     color_   (color),
     rotation_(rotatio),
     txx      (),
-    txi      ()
+    txi      (),
+    type     (-1)
 {
     mat4 rot = rotation(Vector {0,1,0}.norm(), 30);
     mat4 tra = translate(center_);
