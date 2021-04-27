@@ -11,12 +11,13 @@ class Interface {
 public:
 	const Vector BACKGROUND = { 70, 70, 70 };
 
-    LONG   bottom_size_, right_size_;
-    int    field_count_;
-    Field* fields_; 
+    LONG               bottom_size_, right_size_;
+    int                field_count_;
+    std::vector<Field> fields_; 
 
     Interface(LONG bottom, LONG right);
 
+	void addField(bool visible, POINT pos, POINT size);
     bool mouse_on_interface (const Window& wnd, const POINT& mouse_pos);
 	void draw               (Window& wnd);
     void update             (Window& wnd, const POINT& mouse_pos);

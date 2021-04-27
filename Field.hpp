@@ -8,15 +8,17 @@ class Textbox;
 
 class Field {
 public:
-    bool             visible_;
-    POINT            pos_,
-                     size_;
-    int              button_count_, 
-                     textbox_count_;
-    AbstractButton** buttons_;
-    Textbox*         textboxes_;
+    bool                         visible_;
+    POINT                        pos_,
+                                 size_;
+    int                          button_count_, 
+                                 textbox_count_;
+    std::vector<AbstractButton*> buttons_;
+    std::vector<Textbox>         textboxes_;
 
-    Field(bool visible, POINT pos, POINT size, int button_count, int textbox_count, AbstractButton** buttons, Textbox* textboxes);
+    Field(bool visible, POINT pos, POINT size);
 
+    void addButton(AbstractButton* button);
+    void addTextbox(const Textbox& textbox);
     void draw();
 };

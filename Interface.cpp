@@ -4,8 +4,14 @@ Interface::Interface(LONG bottom, LONG right) :
     bottom_size_ (bottom),
     right_size_  (right),
     field_count_ (0),
-    fields_      (nullptr)
+    fields_      (std::vector<Field>())
 {}
+
+void Interface::addField(bool visible, POINT pos, POINT size) {
+    field_count_++;
+
+    fields_.push_back({visible, pos, size});
+}
 
 void Interface::draw(Window& wnd) {
     setColor    (VEC2RGB((BACKGROUND * 0.9)));
