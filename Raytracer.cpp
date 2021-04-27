@@ -72,3 +72,9 @@ Vector Raytracer::refraction(Object* obj, const Vector& hit, const Vector& norm,
 
     return color(refracted);
 }
+
+void Raytracer::addObject(Object* object) {
+    object_count_++;
+
+    objects_.push_back(object);
+}

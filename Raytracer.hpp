@@ -22,6 +22,8 @@ public:
     Vector reflection(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
     Vector refraction(Object* obj, const Vector& hit, const Vector& norm, const Ray& ray);
 
+    void addObject(Object* object);
+
     Raytracer(const Raytracer&) = delete;
     Raytracer& operator=(const Raytracer&) = delete;
 };

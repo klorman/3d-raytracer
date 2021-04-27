@@ -23,14 +23,18 @@ BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill
 {}
 
 void BasicButton::draw() {
-    setColor    (VEC2RGB((fill_color_ * 0.8)));
-    setFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))));
+    if (fill_color_ != -EVEC) {
+        setColor    (VEC2RGB((fill_color_ * 0.8)));
+        setFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))));
 
-    rectangle(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
+        rectangle(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
+    }
 
-    setColor(VEC2RGB(text_color_), 1);
+    if (text_color_ != -EVEC) {
+        setColor(VEC2RGB(text_color_), 1);
     
-    drawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER);
+        drawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER);
+    }
 }
 
 bool BasicButton::mouse_on_button(const POINT& mouse_pos) {
