@@ -6,10 +6,8 @@ Field::Field(bool visible, POINT pos, POINT size) :
     size_         (size),
     button_count_ (0),
     textbox_count_(0),
-    image_count_  (0),
     buttons_      (std::vector<AbstractButton*>()),
-    textboxes_    (std::vector<Textbox>()),
-    images_       (std::vector<Image>())
+    textboxes_    (std::vector<Textbox>())
 {}
 
 
@@ -29,15 +27,6 @@ void Field::addTextbox(const Textbox& textbox) {
 
     textboxes_.back().pos_.x += pos_.x;
     textboxes_.back().pos_.y += pos_.y;
-}
-
-void Field::addImage(const Image& image) {
-    image_count_++;
-
-    images_.push_back(image);
-
-    images_.back().pos_.x += pos_.x;
-    images_.back().pos_.y += pos_.y;
 }
 
 void Field::draw() {

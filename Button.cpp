@@ -71,7 +71,7 @@ bool TextButton::pinched() {
         if (abs(offset) > 20) {
             res = true;
 
-            drawCursor(IDC_SIZEWE);
+            drawCursor(LoadCursor(0, IDC_SIZEWE));
 
             shift += (double) offset / 4000000;
 
@@ -105,7 +105,7 @@ bool TextButton::pinched() {
         *val_ = val / mult_;
     }
 
-    drawCursor(IDC_ARROW);
+    drawCursor(LoadCursor(0, IDC_ARROW));
 
     return res;
 }

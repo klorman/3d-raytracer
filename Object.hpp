@@ -16,13 +16,11 @@ public:
     Vector size_, center_, color_, rotation_;
     mat4 txx, txi;
     int type;
-    HDC image_;
+    bool status_;
 
     Object();
     Object(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotatio = {0,-1,0});
     virtual ~Object() = default;
-
-    void createImage();
 
     virtual Vector color(const Vector& hit              ) const = 0;
     virtual Vector trace(const Ray&    ray, Vector* norm) const = 0;

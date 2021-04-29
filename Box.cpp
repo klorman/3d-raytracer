@@ -33,6 +33,11 @@ Vector Box::trace(const Ray& ray, Vector* norm) const {
     double d[] = {norm->x_, norm->y_, norm->z_, 0.0};
     *norm = (vec4) d * txi;
     
+    if (status_) {
+        if (abs(tF - tN) < 10) return ray.start_ + ray.dir_ * tN;
+
+        return NULLVEC;
+    } 
 
     return ray.start_ + ray.dir_ * tN;
 }

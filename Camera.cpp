@@ -26,7 +26,7 @@ bool Camera::move(Window& wnd) {
         if (mouse_.x == 0 && mouse_.y == 0) {
             GetCursorPos(&mouse_);
 
-            hideCursor();
+            drawCursor(NULL);
 
             rotWithMouse = true;
 
@@ -48,13 +48,15 @@ bool Camera::move(Window& wnd) {
         mouse_ = {0, 0};
         rotWithMouse = false;
 
-        drawCursor(IDC_ARROW);
+        drawCursor(LoadCursor(0, IDC_ARROW));
     }
 
     if (GetAsyncKeyState(VK_UP   )) { angle_.y_ -= a; moved = true; };
     if (GetAsyncKeyState(VK_DOWN )) { angle_.y_ += a; moved = true; };
     if (GetAsyncKeyState(VK_LEFT )) { angle_.x_ -= a; moved = true; }; 
     if (GetAsyncKeyState(VK_RIGHT)) { angle_.x_ += a; moved = true; };
+
+    angle_.y_ = std::max(std::min(angle_.y_, txPI / 2), -txPI / 2); 
 
     if (moved) dir_ = Vector {0,0,1}.rot(angle_);
     

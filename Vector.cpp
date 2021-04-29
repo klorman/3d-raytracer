@@ -87,10 +87,10 @@ Vector& Vector::norm() {
 	return (*this);
 }
 
-Vector& Vector::limit(double lim) {
-	x_ = std::min(x_, lim);
-	y_ = std::min(y_, lim);
-	z_ = std::min(z_, lim);
+Vector& Vector::limit(double left, double right) {
+	x_ = std::max(std::min(x_, right), left);
+	y_ = std::max(std::min(y_, right), left);
+	z_ = std::max(std::min(z_, right), left);
 
 	return (*this);
 }

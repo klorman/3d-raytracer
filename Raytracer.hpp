@@ -5,8 +5,6 @@
 
 #include <vector>
 
-//const Vector background_color = { 0.5, 0.5, 1.0 };
-
 class Raytracer {
 public:
     int object_count_;

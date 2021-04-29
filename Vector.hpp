@@ -37,7 +37,7 @@ public:
 
 	double  length() const;
 	Vector& norm();
-	Vector& limit(double lim);
+	Vector& limit(double left, double right);
 	Vector& rot(const Vector& r);
 };
 

@@ -113,10 +113,6 @@ void createObjectsField() {
         wnd.interf_.fields_[2].addButton(new BasicButton{{0,                                      50 * obj}, {wnd.interf_.right_size_,                     50}, -EVEC,    -EVEC,       "",    SelectObj});
         wnd.interf_.fields_[2].addButton(new BasicButton{{50,                                     50 * obj}, {LONG (wnd.interf_.right_size_ / 3 * 2 - 50), 50}, EVEC * 70, EVEC * 255, std::to_string(rt.objects_[obj]->type)});
         wnd.interf_.fields_[2].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3 * 2), 50 * obj}, {LONG (wnd.interf_.right_size_ / 3),          50}, EVEC * 70, EVEC * 255, "Del", Delete});
-
-        wnd.interf_.fields_[2].addImage ({{0, 50 * obj}, {50, 50}});
-
-        wnd.interf_.fields_[2].images_.back().createObjectImage(rt.objects_[obj]);
     }
 }
 
@@ -202,10 +198,6 @@ void Objects() {
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
     wnd.interf_.fields_[0].buttons_[2]->status_ = 0;
 
-    for (int obj = 0; obj < rt.object_count_; ++obj) {
-        copyToWnd(rt.objects_[obj]->image_, wnd.width_, 30 + 50 * obj, 50, 50);
-    }
-
     wnd.interf_.draw(wnd);
 }
 
@@ -258,7 +250,10 @@ void SelectObj() {
     POINT pos = mousePos();
     pos.y -= 30;
 
-    objectSelected = int (pos.y / 60) + 1; //??? временно. надо сделать класс кнопки, в которой хранится id объекта
+    objectSelected = int (pos.y / 50) + 1; //??? временно. надо сделать класс кнопки, в которой хранится id объекта
+
+    for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
+    rt.objects_[objectSelected - 1]->status_ = true;
 
     wnd.bindButtonsToObject(rt.objects_[objectSelected - 1]);
 }
@@ -388,28 +383,4 @@ std::string getTime() {
 
     return std::to_string(timeinfo->tm_year) + std::to_string(timeinfo->tm_mon + 1) + std::to_string(timeinfo->tm_mday) +
            std::to_string(timeinfo->tm_hour) + std::to_string(timeinfo->tm_min)     + std::to_string(timeinfo->tm_sec);
-}
-
-void Object::createImage() {
-    Camera cam = {0, {0, 0, 0}, {0, 0, 1}, {0, 0, 0}};
-
-    image_ = txCreateCompatibleDC(50, 50);
-
-    //wnd.update(rt, cam, 0);
-
-    RGBQUAD* imageVideoMemory = txVideoMemory();
-
-    for (int i = 0; i < 50; ++i) {
-        for(int j = 0; j < 50; ++j) {
-            RGBQUAD* image_pixel = &imageVideoMemory[(49 - i) * 50 + j], 
-                     wnd_pixel   = wnd.Video_memory_[(wnd.height_ + (int) wnd.interf_.bottom_size_ - 1 - i * 50) * (wnd.width_ + (int)wnd.interf_.right_size_) + j * 50];
-
-//            image_pixel->rgbRed   = wnd_pixel.rgbRed;
-//            image_pixel->rgbGreen = wnd_pixel.rgbGreen;
-//            image_pixel->rgbBlue  = wnd_pixel.rgbBlue;
-            COLORREF color = RGB(wnd_pixel.rgbRed, wnd_pixel.rgbGreen, wnd_pixel.rgbBlue);
-
-            txSetPixel(i, j, color, image_);
-        }
-    }
 }

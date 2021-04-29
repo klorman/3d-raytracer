@@ -44,5 +44,11 @@ Vector Sphere::trace(const Ray& ray, Vector* norm) const {
 
     *norm =  ((hit - center_) / size_ / size_ * 2).norm();
 
+    if (status_) {
+        if (2 * sqrt(h) / a < 20) return hit;
+
+        return NULLVEC;
+    } 
+
     return hit;
 }
