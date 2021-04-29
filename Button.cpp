@@ -159,7 +159,7 @@ void TextButton::pressed() {
     if (val < minv_ || val > maxv_) {
         val = std::min(std::max((int) val, minv_), maxv_);
 
-        text_ = std::to_string((int) *val_ * mult_);
+        text_ = std::to_string((int) val * mult_);
 
         draw();
     }

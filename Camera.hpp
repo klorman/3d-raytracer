@@ -15,4 +15,3 @@ public:
 
     bool move(Window& wnd);
 };
-
