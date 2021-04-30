@@ -259,10 +259,28 @@ void SelectObj() {
 }
 
 void Save() {
-    std::ofstream file(getExeDir() + "\\save.rt");
+    OPENFILENAMEA ofn = {};
+    char fn[MAX_PATH] = ""; 
+
+    ofn.lStructSize     = sizeof(ofn);
+    ofn.hwndOwner       = NULL;
+    ofn.lpstrFile       = fn;
+    ofn.nMaxFile        = MAX_PATH;
+    ofn.lpstrFilter     = "RTRTRT\0*.RT*\0\0";
+    ofn.nFilterIndex    = 1;
+    ofn.lpstrFileTitle  = NULL;
+    ofn.nMaxFileTitle   = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags           = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+    ofn.lpstrDefExt     = "rt";
+    ofn.FlagsEx         = 0;
+
+    if (!GetSaveFileNameA(&ofn)) return;
+
+    std::ofstream file(fn);
 
     if (!file) {
-        std::cerr << "save.txt does not exist!";
+        printf("File does not exist!\n"); 
 
         return;
     }
@@ -288,34 +306,29 @@ void Save() {
 }
 
 void Load() {
-//    char fn[MAX_PATH]; 
-//    OPENFILENAMEA ofn;
-//
-//    fn[0] = '\0';
-//    ZeroMemory(&ofn, sizeof(ofn));
-//    ofn.lStructSize = sizeof(OPENFILENAMEA);
-//    ofn.hwndOwner = NULL;
-//    ofn.lpstrFilter = "Вс фйл\0*.*\0\0";
-//    ofn.lpstrCustomFilter = NULL;
-//    ofn.nFilterIndex = 1;
-//    ofn.lpstrFile = fn;
-//    ofn.nMaxFile = MAX_PATH;
-//    ofn.lpstrFileTitle = NULL;
-//    ofn.lpstrInitialDir = NULL;
-//    ofn.lpstrTitle = NULL;
-//    ofn.Flags = OFN_EXPLORER;
-//    ofn.lpstrDefExt = "rt";
-//    ofn.FlagsEx = 0;
+    OPENFILENAMEA ofn = {};
+    char fn[MAX_PATH] = ""; 
 
-    //std::cout << GetOpenFileNameA(&ofn); //help me
+    ofn.lStructSize     = sizeof(ofn);
+    ofn.hwndOwner       = NULL;
+    ofn.lpstrFile       = fn;
+    ofn.nMaxFile        = MAX_PATH;
+    ofn.lpstrFilter     = "RTRTRT\0*.RT*\0\0";
+    ofn.nFilterIndex    = 1;
+    ofn.lpstrFileTitle  = NULL;
+    ofn.nMaxFileTitle   = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags           = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+    ofn.lpstrDefExt     = "rt";
+    ofn.FlagsEx         = 0;
 
-//    std::cout << fn;
+    if (!GetOpenFileNameA(&ofn)) return;
 
     std::string line = "", word = "";
-    std::ifstream file(getExeDir() + "\\save.rt");
+    std::ifstream file(fn);
 
     if (!file) {
-        std::cerr << "properties.txt does not exist!";
+        printf("File does not exist!\n");
 
         return;
     }
@@ -363,9 +376,10 @@ void Load() {
 
 void Screenshot() {
     HDC save = txCreateCompatibleDC(wnd.width_, wnd.height_);
+    //StretchBlt
 
     if (copyFromWnd(save, 0, 0, wnd.width_, wnd.height_)) {
-        std::string PATH = getExeDir() + std::string("\\screenshots\\") + getTime() + std::string(".jpg");
+        std::string PATH = getExeDir() + "\\screenshots\\" + getTime() + ".jpg";
 
         txSaveImage(PATH.c_str(), save);
     }

@@ -12,7 +12,8 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, Propert
 	prop_         (prop)
 	
 {
-	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX;
+	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
+	_txWindowUpdateInterval = 60;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
 
 	Video_memory_ = txVideoMemory();
@@ -20,7 +21,6 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, Propert
 
 	txSelectFont("Consolas", 20, false, FW_BOLD);
 
-	_txWindowUpdateInterval = 60;
 }
 
 Window::~Window() {
@@ -35,10 +35,10 @@ void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 			//pixel->rgbRed   = BYTE (color.x_ * 255);
 			//pixel->rgbGreen = BYTE (color.y_ * 255);
 			//pixel->rgbBlue  = BYTE (color.z_ * 255);
-			
-			pixel->rgbRed   = BYTE ((pixel->rgbRed   * frames + color.x_ * 255) / (frames + 1));
-			pixel->rgbGreen = BYTE ((pixel->rgbGreen * frames + color.y_ * 255) / (frames + 1)); //денойзер работает не правильно
-			pixel->rgbBlue  = BYTE ((pixel->rgbBlue  * frames + color.z_ * 255) / (frames + 1));
+			//сделать массив с float
+			pixel->rgbRed   = (BYTE) ROUND((pixel->rgbRed   * frames + color.x_ * 255.0) / (frames + 1));
+			pixel->rgbGreen = (BYTE) ROUND((pixel->rgbGreen * frames + color.y_ * 255.0) / (frames + 1)); //денойзер работает не правильно
+			pixel->rgbBlue  = (BYTE) ROUND((pixel->rgbBlue  * frames + color.z_ * 255.0) / (frames + 1));
 		}
 	}
 }
