@@ -132,7 +132,7 @@ void Window::bindButtonsToObject(Object* obj) {
 		TextButton* editTextButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
 
 		editTextButton->val_  = getParam(editTextButton->bind_, obj);
-		editTextButton->text_ = std::to_string((int) *getParam(button, obj) * editTextButton->mult_);
+		editTextButton->text_ = std::to_string(int (*getParam(button, obj) * editTextButton->mult_));
 
 		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
 	}
@@ -142,8 +142,8 @@ HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thi
 HBRUSH setFillColor (COLORREF color) {return txSetFillColor(color);}
 bool   rectangle (double x0, double y0, double x1, double y1) {return txRectangle(x0, y0, x1, y1);}
 bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
-bool   copyFromWnd (HDC destImage,   double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(destImage, xDest, yDest, width, height, txDC());}
-bool   copyToWnd   (HDC SourceImage, double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(txDC(), xDest, yDest, width, height,SourceImage);}
+bool   copyFromWnd (HDC destImage,   double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(destImage, xDest, yDest, width, height, txDC(), xSource, ySource);}
+bool   copyToWnd   (HDC SourceImage, double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(txDC(), xDest, yDest, width, height,SourceImage, xSource, ySource);}
 bool   isIconic () {return IsIconic(txWindow());}
 bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}
