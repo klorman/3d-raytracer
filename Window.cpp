@@ -28,17 +28,21 @@ Window::~Window() {
 }
 
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
+	static std::vector<Vector> prev(width_ * height_);
+
 	for (int i = 0; i < prop_->UPSCALING; ++i) {
 		for (int j = 0; j < prop_->UPSCALING; ++j) {
 			RGBQUAD* pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
 
-			//pixel->rgbRed   = BYTE (color.x_ * 255);
-			//pixel->rgbGreen = BYTE (color.y_ * 255);
-			//pixel->rgbBlue  = BYTE (color.z_ * 255);
-			//сделать массив с float
-			pixel->rgbRed   = (BYTE) ROUND((pixel->rgbRed   * frames + color.x_ * 255.0) / (frames + 1));
-			pixel->rgbGreen = (BYTE) ROUND((pixel->rgbGreen * frames + color.y_ * 255.0) / (frames + 1)); //денойзер работает не правильно
-			pixel->rgbBlue  = (BYTE) ROUND((pixel->rgbBlue  * frames + color.z_ * 255.0) / (frames + 1));
+			int ind = (height_ - 1 - px.y) * width_ + px.x;
+
+			prev[ind].x_ = (prev[ind].x_ * frames + color.x_ * 255) / (frames + 1);
+			prev[ind].y_ = (prev[ind].y_ * frames + color.y_ * 255) / (frames + 1);
+			prev[ind].z_ = (prev[ind].z_ * frames + color.z_ * 255) / (frames + 1);
+
+			pixel->rgbRed   = (BYTE) ROUND(prev[ind].x_);
+			pixel->rgbGreen = (BYTE) ROUND(prev[ind].y_);
+			pixel->rgbBlue  = (BYTE) ROUND(prev[ind].z_);
 		}
 	}
 }
