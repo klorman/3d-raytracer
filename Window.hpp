@@ -33,12 +33,11 @@ public:
 	Interface   interf_;
 	HWND        window_;
 	bool        should_close_;
-	Properties* prop_;
 	int         canvas_width_, canvas_height_;
 	RGBQUAD*    canvas_video_memory_;
 	HDC         canvas_;
 
-	Window(int width, int height, LONG bottom_size_, LONG right_size_, Properties* prop, int canvas_width = 150, int canvas_height = 100);
+	Window(int width, int height, LONG bottom_size_, LONG right_size_, int canvas_width = 150, int canvas_height = 100);
 	~Window();
 
 	void draw_pixel          (const POINT& px, const Vector& color, int frames);

@@ -167,6 +167,7 @@ void TextButton::pressed() {
     if (val_ != nullptr) {
         *val_ = val / mult_;
     }
+
 }
 
 double* getParam(int id, Object* obj) {

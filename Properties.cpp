@@ -1,8 +1,11 @@
 #include "Properties.hpp"
 
+Properties prop;
+
 Properties::Properties() :
     UPSCALING       (0),
-    BACKGROUNDCOLOR (NULLVEC)
+    BACKGROUNDCOLOR (NULLVEC),
+    MAXGEN          (0)
 {
     loadProperties();
 }
@@ -12,10 +15,11 @@ void Properties::loadProperties() {
     std::ifstream file(getExeDir() + "\\properties.txt");
 
     if (!file) {
-        std::cerr << "properties.txt does not exist!"; //загрузка настроек по умолчанию
+        printf("properties.txt does not exist!"); //загрузка настроек по умолчанию
 
-        UPSCALING = 1;
+        UPSCALING       = 1;
         BACKGROUNDCOLOR = {0.5, 0.5, 1.0};
+        MAXGEN          = 8;
     }
 
     else while(getline(file, line)) {
@@ -30,6 +34,8 @@ void Properties::loadProperties() {
         else if (wordsVector[0] == "BACKGROUNDCOLOR") BACKGROUNDCOLOR = {std::stod(wordsVector[1]), 
                                                                          std::stod(wordsVector[2]), 
                                                                          std::stod(wordsVector[3])};
+        else if (wordsVector[0] == "MAXGEN")          MAXGEN          =  std::stod(wordsVector[1]);
+        
     }
 
     file.close();
@@ -46,6 +52,7 @@ void Properties::saveProperties() {
 
     file << "UPSCALING       " << UPSCALING << std::endl;
     file << "BACKGROUNDCOLOR " << BACKGROUNDCOLOR.x_ << " " << BACKGROUNDCOLOR.y_ << " " << BACKGROUNDCOLOR.z_ << std::endl;
+    file << "MAXGEN          " << MAXGEN << std::endl;
 
     file.close();
 }

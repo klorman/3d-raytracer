@@ -2,7 +2,6 @@
 #include "Window.hpp"
 #include "Raytracer.hpp"
 #include "Camera.hpp"
-#include "Properties.hpp"
 
 #include <ctime>
 
@@ -23,8 +22,7 @@ void Load();
 void Screenshot();
 void Exit();
 
-Properties prop;
-Window wnd(800, 600, 50, 300, &prop);
+Window wnd(800, 600, 50, 300);
 Raytracer rt;
 
 int objectSelected = 0;
@@ -39,8 +37,6 @@ void createSettingsField();
 void createCreateField();
 
 void start() {
-    rt.prop_ = &prop;
-
     Camera cam = {100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0}};
     
     bool is_moved = false;
@@ -117,15 +113,17 @@ void createObjectsField() {
 }
 
 void createSettingsField() {
-    wnd.interf_.fields_[3].addButton(new TextButton {&wnd.prop_->UPSCALING,          -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 0  }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16});
-    wnd.interf_.fields_[3].addButton(new TextButton {&wnd.prop_->BACKGROUNDCOLOR.x_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[3].addButton(new TextButton {&wnd.prop_->BACKGROUNDCOLOR.y_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[3].addButton(new TextButton {&wnd.prop_->BACKGROUNDCOLOR.z_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.UPSCALING,          -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 0  }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 16});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.x_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.y_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.z_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.MAXGEN,             -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
 
-    wnd.interf_.fields_[3].addTextbox({{0, 0 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 30}, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           wnd.interf_.BACKGROUND});
 }
 
 void createCreateField() {
@@ -160,7 +158,7 @@ int main() {
     rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 0.0  },     50      , { 400, 400, 100}, { 1.0, 1.0, 1.0 }                            }); //матовый
     rt.addObject(new Box    {{ 0.9, 1.0, 0.0, 1.0  }, {50, 20, 50}, {   0, 400, 200}, { 0.3, 0.3, 1.0 }, (Vector { 1, 1, 1}).norm()}); //гладкий
     rt.addObject(new Plane  {{ 0.9, 1.0, 0.0, 0.1  }              , { 0  , 450, 0  }, { 1.0, 1.0, 0.0 }, { 0,-1, 0}                });
-    rt.addObject(new Sphere {{ 0.0, 1.0,-1.0, 0.0  },     200     , { 300, 200,-200}, { 0.9, 0.9, 0.9 }                            });  //источник
+    rt.addObject(new Sphere {{ 0.0, 1.0,-1.0, 0.0  },     200     , { 300, 200,-200}, { 0.9, 0.9, 0.9 }                            }); //источник
 
     createFields();
 

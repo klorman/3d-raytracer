@@ -2,14 +2,12 @@
 
 Raytracer::Raytracer() :
     object_count_ (0),
-    objects_      (std::vector<Object*>()),
-    prop_         (nullptr)
+    objects_      (std::vector<Object*>())
 {}
 
-Raytracer::Raytracer(int object_count, std::vector<Object*> objects, Properties* prop) :
+Raytracer::Raytracer(int object_count, std::vector<Object*> objects) :
     object_count_ (object_count),
-    objects_      (objects),
-    prop_         (prop)
+    objects_      (objects)
 {}
 
 Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
@@ -41,9 +39,9 @@ Vector Raytracer::color(const Ray& ray) {
     Vector norm = NULLVEC;
     Vector hit = trace(ray, &obj, &norm);
 
-    if (hit == NULLVEC)                       return prop_->BACKGROUNDCOLOR;//луч не пересекает объекты
+    if (hit == NULLVEC)                       return prop.BACKGROUNDCOLOR;  //луч не пересекает объекты
     if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_; //объект - источник 
-    if (ray.generation_ > MAXGEN)             return NULLVEC;               //достигнут лимит
+    if (ray.generation_ > prop.MAXGEN)             return NULLVEC;               //достигнут лимит
     
     return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection   ) +
             (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency)) * objects_[obj]->color(hit);

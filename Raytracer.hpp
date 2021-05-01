@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object.hpp"
-#include "Properties.hpp"
 
 #include <vector>
 
@@ -9,10 +8,9 @@ class Raytracer {
 public:
     int object_count_;
     std::vector<Object*> objects_;
-    Properties* prop_;
 
     Raytracer();
-    Raytracer(int object_count, std::vector<Object*> objects, Properties* prop);
+    Raytracer(int object_count, std::vector<Object*> objects);
 
     Vector trace(const Ray& ray, int* object = nullptr, Vector* norm = nullptr);
     Vector color(const Ray& ray);

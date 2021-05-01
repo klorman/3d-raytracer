@@ -1,7 +1,6 @@
 #pragma once
-#include "Vector.hpp"
-
-#define MAXGEN 8
+//#include "Vector.hpp"
+#include "Properties.hpp"
 
 class Ray {
 public:

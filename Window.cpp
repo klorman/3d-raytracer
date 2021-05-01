@@ -2,14 +2,13 @@
 
 #include <omp.h>
 
-Window::Window(int width, int height, LONG bottom_size, LONG right_size, Properties* prop, int canvas_width, int canvas_height) :
+Window::Window(int width, int height, LONG bottom_size, LONG right_size, int canvas_width, int canvas_height) :
 	width_               (width),
 	height_              (height),
 	Video_memory_        (nullptr),
 	interf_              ({bottom_size, right_size}),
 	window_              (NULL),
 	should_close_        (false),
-	prop_                (prop),
 	canvas_width_        (canvas_width),
 	canvas_height_       (canvas_height),
 	canvas_video_memory_ (nullptr),
@@ -32,8 +31,8 @@ Window::~Window() {
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
 	static std::vector<Vector> prev(canvas_width_ * canvas_height_);
 
-	for (int i = 0; i < prop_->UPSCALING; ++i) {
-		for (int j = 0; j < prop_->UPSCALING; ++j) {
+	for (int i = 0; i < prop.UPSCALING; ++i) {
+		for (int j = 0; j < prop.UPSCALING; ++j) {
 			RGBQUAD* pixel = &canvas_video_memory_[(canvas_height_ - 1 - px.y - i) * (canvas_width_) + px.x + j];
 
 			int ind = (canvas_height_ - 1 - px.y) * (canvas_width_) + px.x;
@@ -60,12 +59,12 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	{
 		int thread = omp_get_thread_num();
 
-		assert(prop_->UPSCALING > 0);
-		POINT start = { LONG (canvas_width_ * thread / THREADS / prop_->UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop_->UPSCALING), LONG (canvas_height_ / prop_->UPSCALING) };
+		assert(prop.UPSCALING > 0);
+		POINT start = { LONG (canvas_width_ * thread / THREADS / prop.UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop.UPSCALING), LONG (canvas_height_ / prop.UPSCALING) };
 
     	for (int x = start.x; x < end.x; ++x) {
     	    for (int y = start.y; y < end.y; ++y) {
-				POINT p = { LONG (x * prop_->UPSCALING), LONG (y * prop_->UPSCALING) };
+				POINT p = { LONG (x * prop.UPSCALING), LONG (y * prop.UPSCALING) };
 
 				Vector px = { (double) p.x - canvas_width_ / 2, (double) p.y - canvas_height_ / 2, 0};
 
