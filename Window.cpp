@@ -2,18 +2,20 @@
 
 #include <omp.h>
 
-Window::Window(int width, int height, LONG bottom_size, LONG right_size, Properties* prop) :
-	width_        (width),
-	height_       (height),
-	interf_       ({bottom_size, right_size}),
-	Video_memory_ (nullptr),
-	window_       (NULL),
-	should_close_ (false),
-	prop_         (prop)
-	
+Window::Window(int width, int height, LONG bottom_size, LONG right_size, Properties* prop, int canvas_width, int canvas_height) :
+	width_               (width),
+	height_              (height),
+	Video_memory_        (nullptr),
+	interf_              ({bottom_size, right_size}),
+	window_              (NULL),
+	should_close_        (false),
+	prop_                (prop),
+	canvas_width_        (canvas_width),
+	canvas_height_       (canvas_height),
+	canvas_video_memory_ (nullptr),
+	canvas_              (txCreateCompatibleDC(canvas_width_, canvas_height_, NULL, &canvas_video_memory_))
 {
 	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
-	_txWindowUpdateInterval = 60;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
 
 	Video_memory_ = txVideoMemory();
@@ -28,13 +30,13 @@ Window::~Window() {
 }
 
 void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
-	static std::vector<Vector> prev(width_ * height_);
+	static std::vector<Vector> prev(canvas_width_ * canvas_height_);
 
 	for (int i = 0; i < prop_->UPSCALING; ++i) {
 		for (int j = 0; j < prop_->UPSCALING; ++j) {
-			RGBQUAD* pixel = &Video_memory_[(height_ + (int) interf_.bottom_size_ - 1 - (int)px.y - i) * (width_ + (int)interf_.right_size_) + (int)px.x + j];
+			RGBQUAD* pixel = &canvas_video_memory_[(canvas_height_ - 1 - px.y - i) * (canvas_width_) + px.x + j];
 
-			int ind = (height_ - 1 - px.y) * width_ + px.x;
+			int ind = (canvas_height_ - 1 - px.y) * (canvas_width_) + px.x;
 
 			prev[ind].x_ = (prev[ind].x_ * frames + color.x_ * 255) / (frames + 1);
 			prev[ind].y_ = (prev[ind].y_ * frames + color.y_ * 255) / (frames + 1);
@@ -59,20 +61,22 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 		int thread = omp_get_thread_num();
 
 		assert(prop_->UPSCALING > 0);
-		POINT start = { LONG (width_ * thread / THREADS / prop_->UPSCALING), 0 }, end = { LONG (width_ * (thread + 1) / THREADS / prop_->UPSCALING), LONG (height_ / prop_->UPSCALING) };
+		POINT start = { LONG (canvas_width_ * thread / THREADS / prop_->UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop_->UPSCALING), LONG (canvas_height_ / prop_->UPSCALING) };
 
     	for (int x = start.x; x < end.x; ++x) {
     	    for (int y = start.y; y < end.y; ++y) {
 				POINT p = { LONG (x * prop_->UPSCALING), LONG (y * prop_->UPSCALING) };
 
-				Vector px = { (double) p.x - width_ / 2, (double) p.y - height_ / 2, 0};
+				Vector px = { (double) p.x - canvas_width_ / 2, (double) p.y - canvas_height_ / 2, 0};
 
-				Ray ray = { cam.pos_, ((Vector {0,0,1} * 1000 + px).norm()).rot(cam.angle_) };
+				Ray ray = { cam.pos_, ((Vector {0,0,1} * 100 + px).norm()).rot(cam.angle_) };
 
     	        draw_pixel(p, rt.color(ray), frames);
     	    }
     	}
 	}
+
+	StretchBlt(txDC(), 0, 0, width_, height_, canvas_, 0, 0, canvas_width_, canvas_height_, SRCCOPY);
 
 	show_fps();
 

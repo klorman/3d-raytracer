@@ -14,7 +14,7 @@ void Properties::loadProperties() {
     if (!file) {
         std::cerr << "properties.txt does not exist!"; //загрузка настроек по умолчанию
 
-        UPSCALING = 2;
+        UPSCALING = 1;
         BACKGROUNDCOLOR = {0.5, 0.5, 1.0};
     }
 
