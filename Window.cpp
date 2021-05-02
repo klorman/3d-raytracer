@@ -107,10 +107,12 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 		if (txMouseButtons() == 1) pressed = true;
 
 		else if (pressed) {
+			mouse.x = mouse.x * canvas_width_  / width_;
+			mouse.y = mouse.y * canvas_height_ / height_;
 
-	        Vector px = {(double) mouse.x - width_ / 2, (double) mouse.y - height_ / 2, 0};
+	        Vector px = {(double) mouse.x - canvas_width_ / 2, (double) mouse.y - canvas_height_ / 2, 0};
 
-			Ray ray = { cam.pos_, ((Vector {0,0,1} * 1000 + px).norm()).rot(cam.angle_) };
+			Ray ray = { cam.pos_, ((Vector {0,0,1} * 100 + px).norm()).rot(cam.angle_) };
 
 	        int obj;
 	        Vector hit = rt.trace(ray, &obj);

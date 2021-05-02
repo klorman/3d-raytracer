@@ -12,23 +12,23 @@ Vector Sphere::color(const Vector& hit) const {
 }
 
 Vector Sphere::trace(const Ray& ray, Vector* norm) const {
-    if ((center_ - ray.start_).length() < size_.x_) {
-        double r2 = size_.x_ * size_.x_;
-        double dist2 =  pow((center_ - ray.start_).length(), 2);
-        double projection = (center_ - ray.start_) ^ ray.dir_;
-     
-        double h2 = dist2 - projection * projection;
-     
-        if (h2 > r2) {
-            return NULLVEC;
-        }
-     
-        Vector hit = ray.start_ + ray.dir_ * (projection + sqrt(r2 - h2));
-
-        *norm = (hit - center_) / size_;
-
-        return hit;
-    }
+//    if ((center_ - ray.start_).length() < size_.x_) {
+//        double r2 = size_.x_ * size_.x_;
+//        double dist2 =  pow((center_ - ray.start_).length(), 2);
+//        double projection = (center_ - ray.start_) ^ ray.dir_;
+//     
+//        double h2 = dist2 - projection * projection;
+//     
+//        if (h2 > r2) {
+//            return NULLVEC;
+//        }
+//     
+//        Vector hit = ray.start_ + ray.dir_ * (projection + sqrt(r2 - h2));
+//
+//        *norm = (hit - center_) / size_;
+//
+//        return hit;
+//    }
 
     Vector  ocn = (ray.start_ - center_) / size_, 
             rdn = ray.dir_ / size_;
@@ -40,7 +40,11 @@ Vector Sphere::trace(const Ray& ray, Vector* norm) const {
 
     if (h < 0 || b > 0) return NULLVEC;
     
-    Vector hit = ray.start_ + ray.dir_ * ((-b - sqrt(h)) / a);
+    Vector hit = ray.start_;
+    double dist = (-b - sqrt(h)) / a;
+    
+    if (dist > 0) hit += ray.dir_ * dist;
+    else          hit += ray.dir_ * ((-b + sqrt(h)) / a);
 
     *norm =  ((hit - center_) / size_ / size_ * 2).norm();
 
