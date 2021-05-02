@@ -24,11 +24,11 @@ Vector Plane::trace(const Ray& ray, Vector* norm) const {
 
         Vector hit =  ray.start_ + ray.dir_ * dist;
 
-        if (status_) {
-            if ((int) abs(hit.x_) % 100 < 1 || (int) abs(hit.z_) % 100 < 1) return hit;
-
-            return NULLVEC;
-        }
+//        if (status_) {
+//            if ((int) abs(hit.x_) % 100 < 1 || (int) abs(hit.z_) % 100 < 1) return hit;
+//
+//            return NULLVEC;
+//        }
 
         return hit;
     }

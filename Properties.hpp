@@ -14,6 +14,7 @@ struct Properties {
     double UPSCALING;
     Vector BACKGROUNDCOLOR;
     double MAXGEN;
+    double FOV;
 
     Properties();
 

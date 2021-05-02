@@ -22,12 +22,14 @@ void Load();
 void Screenshot();
 void Exit();
 
-Window wnd(800, 600, 50, 300);
+Window wnd(800, 600, 50, 300, 800, 600);
 Raytracer rt;
+Camera cam(100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0});
 
 int objectSelected = 0;
 
 void start();
+bool getInput();
 void createFields();
 
 void createMenuField();
@@ -37,26 +39,40 @@ void createSettingsField();
 void createCreateField();
 
 void start() {
-    Camera cam = {100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0}};
-    
-    bool is_moved = false;
-    int  frames = 0;
+    int frames = 0;
 
     while (!wnd.should_close_) { 
         if (!isForeground()) continue;
 
-        is_moved       |= cam.move(wnd);
-        int selected    = wnd.selectObject(rt, cam);
+        bool moved = getInput();
 
-        if (selected) {
-            objectSelected = selected - 1;
-            Edit();
-        }
-
-        is_moved ? frames = 0, is_moved = false : ++frames;
+        moved ? frames = 0 : ++frames;
 
         wnd.update(rt, cam, frames);
     }
+}
+
+bool getInput() {
+    bool moved = false;
+    static double prevFOV = 0;
+
+    if ((int) prop.FOV != (int) prevFOV) {
+        wnd.distToScreen = wnd.canvas_width_ / tan(prop.FOV * txPI / 360);
+
+        prevFOV = prop.FOV;
+
+        moved = true;
+    }
+
+    moved |= cam.move(wnd);
+    int selected = wnd.selectObject(rt, cam);
+
+    if (selected) {
+        objectSelected = selected - 1;
+        Edit();
+    }
+
+    return moved;
 }
 
 void createMenuField() {
@@ -118,12 +134,14 @@ void createSettingsField() {
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.y_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.z_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.MAXGEN,             -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.FOV,                -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 179});
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
 
     wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND});
     wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND});
     wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              wnd.interf_.BACKGROUND});
 }
 
 void createCreateField() {
@@ -156,7 +174,7 @@ int main() {
     rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  },     50      , { 560, 400, 80 }, { 1.0, 1.0, 1.0 }                            }); //гладкий
     rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, {30, 30, 60}, { 600, 385, 10 }, { 1.0, 0.0, 0.0 }                            }); //гладкий
     rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 0.0  },     50      , { 400, 400, 100}, { 1.0, 1.0, 1.0 }                            }); //матовый
-    rt.addObject(new Box    {{ 0.9, 1.0, 0.0, 1.0  }, {50, 20, 50}, {   0, 400, 200}, { 0.3, 0.3, 1.0 }, (Vector { 1, 1, 1}).norm()}); //гладкий
+    rt.addObject(new Box    {{ 0.5, 1.5, 0.5, 0.0  }, {50, 20, 50}, {   0, 400, 200}, { 0.3, 0.3, 1.0 }, (Vector { 1, 1, 1}).norm()}); //прозрачный, матовый
     rt.addObject(new Plane  {{ 0.9, 1.0, 0.0, 0.1  }              , { 0  , 450, 0  }, { 1.0, 1.0, 0.0 }, { 0,-1, 0}                });
     rt.addObject(new Sphere {{ 0.0, 1.0,-1.0, 0.0  },     200     , { 300, 200,-200}, { 0.9, 0.9, 0.9 }                            }); //источник
 

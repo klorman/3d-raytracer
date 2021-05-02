@@ -51,7 +51,9 @@ Ray Ray::refract(const Vector& norm, const Vector& hit, double n2) const {
     }
     double D = 1 - a * a * (1 - nd * nd);
     if (D < 0) {
-        return {};
+        return reflect(norm, hit, 1.0);
+        //D *= -1;
+        //return {};
     }
     double b = nd * a + sqrt(D);
     Vector dir = (dir_ * a - norm * b).norm();

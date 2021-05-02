@@ -12,7 +12,8 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 	canvas_width_        (canvas_width),
 	canvas_height_       (canvas_height),
 	canvas_video_memory_ (nullptr),
-	canvas_              (txCreateCompatibleDC(canvas_width_, canvas_height_, NULL, &canvas_video_memory_))
+	canvas_              (txCreateCompatibleDC(canvas_width_, canvas_height_, NULL, &canvas_video_memory_)),
+	distToScreen         (0)
 {
 	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
@@ -22,14 +23,22 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 
 	txSelectFont("Consolas", 20, false, FW_BOLD);
 
+	
+
 }
 
 Window::~Window() {
 	txDisableAutoPause();
 }
 
-void Window::draw_pixel(const POINT& px, const Vector& color, int frames) {
+void Window::draw_pixel(const POINT& px, Vector color, int frames) {
 	static std::vector<Vector> prev(canvas_width_ * canvas_height_);
+
+	const double gamma = 2.2,
+		         exposure = 1;
+
+	color = Vector(1) - exp(-color * exposure);
+	color = pow(color, 1 / gamma);
 
 	for (int i = 0; i < prop.UPSCALING; ++i) {
 		for (int j = 0; j < prop.UPSCALING; ++j) {
@@ -68,7 +77,7 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 
 				Vector px = { (double) p.x - canvas_width_ / 2, (double) p.y - canvas_height_ / 2, 0};
 
-				Ray ray = { cam.pos_, ((Vector {0,0,1} * 100 + px).norm()).rot(cam.angle_) };
+				Ray ray = { cam.pos_, ((Vector {0,0,1} * distToScreen + px).norm()).rot(cam.angle_) };
 
     	        draw_pixel(p, rt.color(ray), frames);
     	    }
@@ -112,7 +121,7 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 
 	        Vector px = {(double) mouse.x - canvas_width_ / 2, (double) mouse.y - canvas_height_ / 2, 0};
 
-			Ray ray = { cam.pos_, ((Vector {0,0,1} * 100 + px).norm()).rot(cam.angle_) };
+			Ray ray = { cam.pos_, ((Vector {0,0,1} * distToScreen + px).norm()).rot(cam.angle_) };
 
 	        int obj;
 	        Vector hit = rt.trace(ray, &obj);

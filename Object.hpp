@@ -14,7 +14,7 @@ class Object {
 public:
     Material mat_;
     Vector size_, center_, color_, rotation_;
-    mat4 txx, txi;
+    //mat4 txx, txi;
     int type;
     bool status_;
 

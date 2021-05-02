@@ -6,13 +6,13 @@ Object::Object(const Material& mat, const Vector& size, const Vector& center, co
     center_  (center),
     color_   (color),
     rotation_(rotatio),
-    txx      (),
-    txi      (),
+    //txx      (),
+    //txi      (),
     type     (-1),
     status_  (false)
 {
-    mat4 rot = rotation(Vector {0,1,0}.norm(), 30);
-    mat4 tra = translate(center_);
-    txi = tra * rot;
-    txx = inverse(txi);
+    //mat4 rot = rotation(Vector {0,1,0}.norm(), 30);
+    //mat4 tra = translate(center_);
+    //txi = tra * rot;
+    //txx = inverse(txi);
 }

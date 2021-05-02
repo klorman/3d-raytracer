@@ -136,3 +136,11 @@ double step(double edge, double x) {
 Vector step(const Vector& edge, const Vector& vec) {
 	return { step(edge.x_, vec.x_), step(edge.y_, vec.y_), step(edge.z_, vec.z_) };
 }
+
+Vector exp (const Vector& vec) {
+	return { exp(vec.x_), exp(vec.y_), exp(vec.z_) };
+}
+
+Vector pow (const Vector& vec, const Vector& power) {
+	return { pow(vec.x_, power.x_), pow(vec.y_, power.y_), pow(vec.z_, power.z_) };
+}

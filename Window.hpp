@@ -37,10 +37,12 @@ public:
 	RGBQUAD*    canvas_video_memory_;
 	HDC         canvas_;
 
+	double distToScreen;
+
 	Window(int width, int height, LONG bottom_size_, LONG right_size_, int canvas_width = 150, int canvas_height = 100);
 	~Window();
 
-	void draw_pixel          (const POINT& px, const Vector& color, int frames);
+	void draw_pixel          (const POINT& px, Vector color, int frames);
 	void update              (Raytracer& rt, const Camera& cam, int frames);
 	void show_fps            ();
 	int  selectObject        (Raytracer& rt, const Camera& cam);
