@@ -28,6 +28,7 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 }
 
 Window::~Window() {
+	txDeleteDC(canvas_);
 	txDisableAutoPause();
 }
 
@@ -60,6 +61,8 @@ void Window::draw_pixel(const POINT& px, Vector color, int frames) {
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	interf_.update(*this, txMousePos());
 
+	prop.FOCUS = (rt.trace({cam.pos_, Vector {0, 0, 1}.rot(cam.angle_)}) - cam.pos_).length(); //автофокус
+
 	txBegin();
 
 	omp_set_num_threads(THREADS);
@@ -69,15 +72,21 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 		int thread = omp_get_thread_num();
 
 		assert(prop.UPSCALING > 0);
-		POINT start = { LONG (canvas_width_ * thread / THREADS / prop.UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop.UPSCALING), LONG (canvas_height_ / prop.UPSCALING) };
+		POINT begin = { LONG (canvas_width_ * thread / THREADS / prop.UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop.UPSCALING), LONG (canvas_height_ / prop.UPSCALING) };
 
-    	for (int x = start.x; x < end.x; ++x) {
-    	    for (int y = start.y; y < end.y; ++y) {
+
+    	for (int x = begin.x; x < end.x; ++x) {
+    	    for (int y = begin.y; y < end.y; ++y) {
 				POINT p = { LONG (x * prop.UPSCALING), LONG (y * prop.UPSCALING) };
 
 				Vector px = { (double) p.x - canvas_width_ / 2, (double) p.y - canvas_height_ / 2, 0};
+				Vector matr = random_on_box(1, (double) canvas_height_ / canvas_width_) * prop.BLURRADIUS / 100;
 
-				Ray ray = { cam.pos_, ((Vector {0,0,1} * distToScreen + px).norm()).rot(cam.angle_) };
+				Vector start = cam.pos_ + matr.rot(cam.angle_);
+
+				double focalSize   = prop.FOCUS * canvas_width_ / distToScreen;
+
+				Ray ray = { start, (((Vector {0,0,1} * prop.FOCUS + px * focalSize / canvas_width_) - matr).norm()).rot(cam.angle_)};
 
     	        draw_pixel(p, rt.color(ray), frames);
     	    }
@@ -127,6 +136,12 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 	        Vector hit = rt.trace(ray, &obj);
 
 			pressed = false;
+
+			if (rt.objects_[obj]->status_) {
+				rt.objects_[obj]->status_ = false;
+
+				return 1;
+			}
 
 			for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
 

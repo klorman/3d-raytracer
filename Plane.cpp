@@ -9,7 +9,7 @@ Plane::Plane(const Material& mat, const Vector& center, const Vector& color, con
 Vector Plane::color(const Vector& hit) const {
     if (((int) hit.x_ % 50 > 25 || (int) hit.x_ % 50 > -25) ^
         ((int) hit.z_ % 50 > 25 || (int) hit.z_ % 50 > -25))
-        return EVEC / 8;
+        return {0.1, 0.1, 0.1};
 
     return color_;
 }

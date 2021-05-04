@@ -95,22 +95,30 @@ Vector& Vector::limit(double left, double right) {
 	return (*this);
 }
 
-Vector& Vector::rot(const Vector& r) {
+Vector& Vector::rot(const Vector& r, const Vector& center) {
+	Vector res = (*this) - center;
+
 	double cx = cos(r.x_),
 		   sx = sin(r.x_),
 		   cy = cos(r.y_),
 		   sy = sin(r.y_),
-		   d = z_ * cy - y_ * sy;
+		   d = res.z_ * cy - res.y_ * sy;
 
-	Vector res = {
-		x_ * cx + d * sx,
-		z_ * sy + y_ * cy,
-		-x_ * sx + d * cx
+	res = {
+		res.x_  * cx + d      * sx,
+		res.z_  * sy + res.y_ * cy,
+		-res.x_ * sx + d      * cx
 	};
+
+	res += center;
 
 	*this = res;
 
 	return (*this);
+}
+
+Vector Vector::getContrastColor() {
+	return {x_ > 0.5 ? 0.0 : 1.0, y_ > 0.5 ? 0.0 : 1.0, z_ > 0.5 ? 0.0 : 1.0};
 }
 
 Vector mix(const Vector& x, const Vector& y, double a) {

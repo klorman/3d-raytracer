@@ -75,3 +75,9 @@ Vector random_on_sphere() {
 
     return rnd;
 }
+
+Vector random_on_box(double sizeX, double sizeY) {
+    assert(sizeX > 0 && sizeY > 0);
+
+    return { unif(re) * sizeX, unif(re) * sizeY, 0 };
+}

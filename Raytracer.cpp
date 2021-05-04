@@ -39,9 +39,10 @@ Vector Raytracer::color(const Ray& ray) {
     Vector norm = NULLVEC;
     Vector hit = trace(ray, &obj, &norm);
 
-    if (hit == NULLVEC)                       return prop.BACKGROUNDCOLOR;  //луч не пересекает объекты
-    if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_; //объект - источник 
-    if (ray.generation_ > prop.MAXGEN)        return NULLVEC;               //достигнут лимит
+    if (hit == NULLVEC)                       return prop.BACKGROUNDCOLOR;                         //луч не пересекает объекты
+    if (objects_[obj]->status_ && 1)          return objects_[obj]->color(hit).getContrastColor(); //объект выделен
+    if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_;                        //объект - источник 
+    if (ray.generation_ > prop.MAXGEN)        return NULLVEC;                                      //достигнут лимит
 
     return ((reflection(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.reflection   ) +
             (refraction(objects_[obj], hit, norm, ray) * objects_[obj]->mat_.transparency)) * objects_[obj]->color(hit);

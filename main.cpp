@@ -22,7 +22,7 @@ void Load();
 void Screenshot();
 void Exit();
 
-Window wnd(800, 600, 50, 300, 800, 600);
+Window wnd(800, 600, 50, 300, 400, 300);
 Raytracer rt;
 Camera cam(100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0});
 
@@ -40,6 +40,10 @@ void createCreateField();
 
 void start() {
     int frames = 0;
+
+    Vector matr = Vector {0, 0, 0}.rot({txPI / 2, txPI / 2, 0}, {0,0,1});
+
+    std::cout << matr.x_ << " " << matr.y_ << " " << matr.z_ << std::endl;
 
     while (!wnd.should_close_) { 
         if (!isForeground()) continue;
@@ -135,6 +139,8 @@ void createSettingsField() {
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.BACKGROUNDCOLOR.z_, -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.MAXGEN,             -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.FOV,                -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, 179});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.FOCUS,              -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 180}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0});
+    wnd.interf_.fields_[3].addButton(new TextButton {&prop.BLURRADIUS,         -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0});
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
 
@@ -142,6 +148,8 @@ void createSettingsField() {
     wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND});
     wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           wnd.interf_.BACKGROUND});
     wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 180}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOCUS",            wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 210}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "BLURRADIUS",       wnd.interf_.BACKGROUND});
 }
 
 void createCreateField() {

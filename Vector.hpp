@@ -38,7 +38,9 @@ public:
 	double  length() const;
 	Vector& norm();
 	Vector& limit(double left, double right);
-	Vector& rot(const Vector& r);
+	Vector& rot(const Vector& r, const Vector& center = NULLVEC);
+
+	Vector  getContrastColor();
 };
 
 double sign(double x);

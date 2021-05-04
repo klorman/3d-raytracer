@@ -6,7 +6,9 @@ Properties::Properties() :
     UPSCALING       (1),
     BACKGROUNDCOLOR ({0.2, 0.2, 0.8}),
     MAXGEN          (8),
-    FOV             (90)
+    FOV             (90),
+    FOCUS           (10),
+    BLURRADIUS      (100)
 {
     loadProperties();
 }
@@ -35,6 +37,8 @@ void Properties::loadProperties() {
                                                                          std::stod(wordsVector[3])};
         else if (wordsVector[0] == "MAXGEN")          MAXGEN          =  std::stod(wordsVector[1]);
         else if (wordsVector[0] == "FOV")             FOV             =  std::stod(wordsVector[1]);
+        else if (wordsVector[0] == "FOCAL")           FOCUS           =  std::stod(wordsVector[1]);
+        else if (wordsVector[0] == "BLURRADIUS")      BLURRADIUS      =  std::stod(wordsVector[1]);
         
     }
 
@@ -54,6 +58,8 @@ void Properties::saveProperties() {
     file << "BACKGROUNDCOLOR " << BACKGROUNDCOLOR.x_ << " " << BACKGROUNDCOLOR.y_ << " " << BACKGROUNDCOLOR.z_ << std::endl;
     file << "MAXGEN          " << MAXGEN << std::endl;
     file << "FOV             " << FOV << std::endl;
+    file << "FOCAL           " << FOCUS << std::endl;
+    file << "BLURRADIUS      " << BLURRADIUS << std::endl;
 
     file.close();
 }

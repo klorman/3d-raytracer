@@ -16,3 +16,4 @@ public:
 };
 
 Vector random_on_sphere();
+Vector random_on_box(double sizeX, double sizeY);

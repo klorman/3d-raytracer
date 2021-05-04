@@ -15,6 +15,8 @@ struct Properties {
     Vector BACKGROUNDCOLOR;
     double MAXGEN;
     double FOV;
+    double FOCUS;
+    double BLURRADIUS;
 
     Properties();
 

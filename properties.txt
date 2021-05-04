@@ -2,3 +2,5 @@ UPSCALING       1
 BACKGROUNDCOLOR 0.2 0.2 0.8
 MAXGEN          8
 FOV             90
+FOCUS           10
+BLURRADIUS      100
