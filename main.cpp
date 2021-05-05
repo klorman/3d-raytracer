@@ -37,6 +37,8 @@ void createEditField();
 void createObjectsField();
 void createSettingsField();
 void createCreateField();
+void createDeleteField();
+void createCreateTextbox();
 
 void start() {
     int frames = 0;
@@ -88,47 +90,44 @@ void createMenuField() {
 }
 
 void createEditField() {
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posX, {LONG (wnd.interf_.right_size_ / 3), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posY, {LONG (wnd.interf_.right_size_ / 3), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posZ, {LONG (wnd.interf_.right_size_ / 3), 120}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotX, {LONG (wnd.interf_.right_size_ / 3), 180}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotY, {LONG (wnd.interf_.right_size_ / 3), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotZ, {LONG (wnd.interf_.right_size_ / 3), 240}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szX , {LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szY , {LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szZ , {LONG (wnd.interf_.right_size_ / 3), 360}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colX, {LONG (wnd.interf_.right_size_ / 3), 420}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colY, {LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ, {LONG (wnd.interf_.right_size_ / 3), 480}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG (wnd.interf_.right_size_ / 3), 540}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG (wnd.interf_.right_size_ / 3), 570}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG (wnd.interf_.right_size_ / 3), 600}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG (wnd.interf_.right_size_ / 3), 630}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posX, {LONG (wnd.interf_.right_size_ / 3), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posY, {LONG (wnd.interf_.right_size_ / 3), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posZ, {LONG (wnd.interf_.right_size_ / 3), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotX, {LONG (wnd.interf_.right_size_ / 3), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotY, {LONG (wnd.interf_.right_size_ / 3), 180}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotZ, {LONG (wnd.interf_.right_size_ / 3), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szX , {LONG (wnd.interf_.right_size_ / 3), 270}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szY , {LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szZ , {LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colX, {LONG (wnd.interf_.right_size_ / 3), 390}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colY, {LONG (wnd.interf_.right_size_ / 3), 420}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ, {LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG (wnd.interf_.right_size_ / 3), 510}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG (wnd.interf_.right_size_ / 3), 540}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG (wnd.interf_.right_size_ / 3), 570}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG (wnd.interf_.right_size_ / 3), 600}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
 
-    wnd.interf_.fields_[1].addButton(new BasicButton{{0, 0               }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create});
-    wnd.interf_.fields_[1].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete});
-
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 60 }, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 120}, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      150}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Rotation"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 180}, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 210}, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 240}, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      270}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Size"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 300}, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 330}, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 360}, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      390}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Color"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 420}, {30, 30}, "R:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "G:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "B:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      510}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Material"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 540}, {30, 30}, "reflection:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 570}, {30, 30}, "n:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 600}, {30, 30}, "transparency:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 630}, {30, 30}, "roughness:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      0  }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 30 }, {30, 30}, "X:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 60 }, {30, 30}, "Y:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "Z:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      120}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Rotation"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 150}, {30, 30}, "X:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 180}, {30, 30}, "Y:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 210}, {30, 30}, "Z:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      240}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Size"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 270}, {30, 30}, "X:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 300}, {30, 30}, "Y:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 330}, {30, 30}, "Z:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      360}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Color"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 390}, {30, 30}, "R:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 420}, {30, 30}, "G:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "B:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      480}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Material"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 510}, {30, 30}, "reflection:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 540}, {30, 30}, "n:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 570}, {30, 30}, "transparency:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 600}, {30, 30}, "roughness:"});
 }
 
 void createObjectsField() {
@@ -161,28 +160,39 @@ void createSettingsField() {
 
 void createCreateField() {
     wnd.interf_.fields_[4].addButton(new BasicButton{{0, 0}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create});
+}
 
-    wnd.interf_.fields_[4].addTextbox({{0, wnd.height_ >> 1}, {wnd.interf_.right_size_, 60}, "Create or select an object", -EVEC, EVEC * 150});  
+void createDeleteField() {
+    wnd.interf_.fields_[5].addButton(new BasicButton{{0, 0}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete});
+}
+
+void createCreateTextbox() {
+    wnd.interf_.fields_[6].addTextbox({{0, 0}, {wnd.interf_.right_size_, 30}, "Create or select an object", -EVEC, EVEC * 150});  
 }
 
 void createFields() {
     wnd.interf_.fields_.clear();
     wnd.interf_.field_count_ = 0;
 
-    wnd.interf_.addField(1, {wnd.width_, 0 }, {wnd.interf_.right_size_, wnd.height_ + wnd.interf_.bottom_size_}); //right menu
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //edit
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
-    wnd.interf_.addField(1, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //create
-    wnd.interf_.addField(1, {0, wnd.height_}, {wnd.width_, wnd.interf_.bottom_size_                           }); //bottom menu
+    wnd.interf_.addField(1, {wnd.width_, 0                     }, {wnd.interf_.right_size_, wnd.height_ + wnd.interf_.bottom_size_}); //right menu
+    wnd.interf_.addField(1, {wnd.width_, 60                    }, {wnd.interf_.right_size_, wnd.height_ - 90                      }); //edit
+    wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
+    wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
+    wnd.interf_.addField(1, {wnd.width_, 30                    }, {wnd.interf_.right_size_, 30                                    }); //create   <--|
+    wnd.interf_.addField(0, {wnd.width_, wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ???
+    wnd.interf_.addField(1, {wnd.width_, LONG (wnd.height_ / 2)}, {wnd.interf_.right_size_, 30                                    }); //textbox  <--|
+    wnd.interf_.addField(1, {0,          wnd.height_           }, {wnd.width_,              wnd.interf_.bottom_size_              }); //bottom menu
     
     createMenuField();
     createEditField();
     createObjectsField();
     createSettingsField();
     createCreateField();     
+    createDeleteField();
+    createCreateTextbox();
 
-    wnd.interf_.draw();                                                                                                                            
+    Edit();
+    //wnd.interf_.draw();                                                                                                                            
 }
 
 int main() {
@@ -202,12 +212,16 @@ int main() {
 void Edit() {
     if (objectSelected) {
         wnd.interf_.fields_[1].visible_ = true;
-        wnd.interf_.fields_[4].visible_ = false;
+        wnd.interf_.fields_[4].visible_ = true;
+        wnd.interf_.fields_[5].visible_ = true;
+        wnd.interf_.fields_[6].visible_ = false;
     }
 
     else {
         wnd.interf_.fields_[1].visible_ = false;
         wnd.interf_.fields_[4].visible_ = true;
+        wnd.interf_.fields_[5].visible_ = false;
+        wnd.interf_.fields_[6].visible_ = true;
     }
 
     wnd.interf_.fields_[2].visible_ = false;
@@ -225,6 +239,8 @@ void Objects() {
     wnd.interf_.fields_[2].visible_ = true;
     wnd.interf_.fields_[3].visible_ = false;
     wnd.interf_.fields_[4].visible_ = false;
+    wnd.interf_.fields_[5].visible_ = false;
+    wnd.interf_.fields_[6].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
@@ -238,6 +254,8 @@ void Settings() {
     wnd.interf_.fields_[2].visible_ = false;
     wnd.interf_.fields_[3].visible_ = true;
     wnd.interf_.fields_[4].visible_ = false;
+    wnd.interf_.fields_[5].visible_ = false;
+    wnd.interf_.fields_[6].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;

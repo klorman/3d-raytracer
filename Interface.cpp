@@ -28,7 +28,7 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
         for (int field = 0; field < field_count_; ++field) {
             if (!fields_[field].visible_) continue;
 
-            copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
+            //copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
 
             for (int button = 0; button < fields_[field].button_count_; ++button) {
                 bool mob = fields_[field].buttons_[button]->mouse_on_button(mouse_pos);

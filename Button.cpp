@@ -69,7 +69,7 @@ bool TextButton::pinched(HDC dc) {
 
     bool res = false;
 
-    while (GetAsyncKeyState(VK_LBUTTON)) { //можно реализовать лучше
+    while (GetAsyncKeyState(VK_LBUTTON) & 0x8000) { //можно реализовать лучше
         GetCursorPos(&mouse2);
         LONG offset = mouse2.x - mouse1.x;
 
@@ -118,7 +118,7 @@ bool TextButton::pinched(HDC dc) {
 void TextButton::pressed(HDC dc) {
     while (!GetAsyncKeyState(VK_RETURN) && !GetAsyncKeyState(VK_ESCAPE)) {
         for (int index = 48; index <= 57 && text_.length() < 6; ++index) {
-            if (GetAsyncKeyState(index)) {
+            if (GetAsyncKeyState(index) & 0x8000) {
                 if (text_[0] == '0') text_.erase(text_.begin());
 
                 text_ += (char) index;
@@ -128,14 +128,14 @@ void TextButton::pressed(HDC dc) {
             }
         }
 
-        if (text_[0] == '0' && GetAsyncKeyState(189)) {
+        if (text_[0] == '0' && GetAsyncKeyState(189) & 0x8000) {
             text_ = '-';
             draw(dc);
 
             while (GetAsyncKeyState(189)) {}
         }
 
-        if (GetAsyncKeyState(VK_BACK) && !text_.empty()) {
+        if ((GetAsyncKeyState(VK_BACK) & 0x8000) && !text_.empty()) {
             text_.pop_back();
 
             if (text_.empty()) text_ += '0';
@@ -145,7 +145,7 @@ void TextButton::pressed(HDC dc) {
             while (GetAsyncKeyState(VK_BACK)) {}
         }
 
-        if (GetAsyncKeyState(VK_LBUTTON) && !mouse_on_button(mousePos())) {
+        if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !mouse_on_button(mousePos())) {
             while (GetAsyncKeyState(VK_BACK)) {}
 
             break;

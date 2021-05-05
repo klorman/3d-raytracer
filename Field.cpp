@@ -8,7 +8,8 @@ Field::Field(bool visible, POINT pos, POINT size) :
     textbox_count_(0),
     buttons_      (std::vector<AbstractButton*>()),
     textboxes_    (std::vector<Textbox>()),
-    canvas_       (txCreateCompatibleDC(size.x, size.y))
+    canvas_       (txCreateCompatibleDC(size.x, size.y)),
+    scroll_       (false)
 {}
 
 Field::Field(const Field& field) :
@@ -19,7 +20,8 @@ Field::Field(const Field& field) :
     textbox_count_ (field.textbox_count_),
     buttons_       (field.buttons_),
     textboxes_     (field.textboxes_),
-    canvas_        (txCreateCompatibleDC(field.size_.x, field.size_.y))
+    canvas_        (txCreateCompatibleDC(field.size_.x, field.size_.y)),
+    scroll_        (field.scroll_)
 {
     txBitBlt(canvas_, 0, 0, size_.x, size_.y, field.canvas_);
 
@@ -37,6 +39,11 @@ void Field::addButton(AbstractButton* button) {
 
     buttons_.back()->wndPos_.x += pos_.x;
     buttons_.back()->wndPos_.y += pos_.y;
+
+    if (!scroll_ && (button->fieldPos_.y + button->size_.y > size_.y)) {
+        scroll_ = true;
+        size_.x -= 20;
+    }
 }
 
 void Field::addTextbox(const Textbox& textbox) {
@@ -46,6 +53,11 @@ void Field::addTextbox(const Textbox& textbox) {
 
     textboxes_.back().wndPos_.x += pos_.x;
     textboxes_.back().wndPos_.y += pos_.y;
+
+    if (!scroll_ && (textbox.fieldPos_.y + textbox.size_.y > size_.y)) {
+        scroll_ = true;
+        size_.x -= 20;
+    }
 }
 
 void Field::draw() {

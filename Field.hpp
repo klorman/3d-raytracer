@@ -17,6 +17,7 @@ public:
     std::vector<AbstractButton*> buttons_;
     std::vector<Textbox>         textboxes_;
     HDC                          canvas_;
+    bool                         scroll_;
 
     Field(bool visible, POINT pos, POINT size);
     Field(const Field& field);
