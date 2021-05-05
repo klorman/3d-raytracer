@@ -27,5 +27,7 @@ public:
     void addTextbox(const Textbox& textbox);
     void draw();
 
+    bool mouse_on_field();
+
     Field& operator=(const Field&) = delete;
 };

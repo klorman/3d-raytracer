@@ -74,3 +74,9 @@ void Field::draw() {
         textboxes_[textbox].draw(canvas_);
     }
 }
+
+bool Field::mouse_on_field() {
+    POINT mouse = mousePos();
+
+    return (mouse.x > pos_.x && mouse.x < pos_.x + size_.x && mouse.y > pos_.y && mouse.y < pos_.y + size_.y) ? true : false;
+}

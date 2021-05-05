@@ -146,7 +146,7 @@ void TextButton::pressed(HDC dc) {
         }
 
         if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !mouse_on_button(mousePos())) {
-            while (GetAsyncKeyState(VK_BACK)) {}
+            while (GetAsyncKeyState(VK_LBUTTON)) {}
 
             break;
         }
