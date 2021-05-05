@@ -60,8 +60,8 @@ bool Camera::move(Window& wnd) {
 
     if (moved) dir_ = Vector {0,0,1}.rot(angle_);
     
-    if (GetAsyncKeyState(   'A'  )) { pos_ -= Vector {  dir_.z_, 0, -dir_.x_ } * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(   'D'  )) { pos_ -= Vector { -dir_.z_, 0,  dir_.x_ } * speed_ / fps; moved = true; };
+    if (GetAsyncKeyState(   'A'  )) { pos_ -= Vector {  dir_.z_, 0, -dir_.x_ }.norm() * speed_ / fps; moved = true; };
+    if (GetAsyncKeyState(   'D'  )) { pos_ -= Vector { -dir_.z_, 0,  dir_.x_ }.norm() * speed_ / fps; moved = true; };
     if (GetAsyncKeyState(   'W'  )) { pos_ += dir_ * speed_ / fps; moved = true; };
     if (GetAsyncKeyState(   'S'  )) { pos_ -= dir_ * speed_ / fps; moved = true; };
     if (GetAsyncKeyState(VK_SPACE)) { pos_ -= Vector { 0,  1, 0 } * speed_ / fps; moved = true; };

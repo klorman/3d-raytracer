@@ -11,6 +11,7 @@
 class Vector;
 
 struct Properties {
+    Vector INTERFACECOLOR;
     double UPSCALING;
     Vector BACKGROUNDCOLOR;
     double MAXGEN;

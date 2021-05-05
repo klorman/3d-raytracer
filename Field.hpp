@@ -16,10 +16,15 @@ public:
                                  textbox_count_;
     std::vector<AbstractButton*> buttons_;
     std::vector<Textbox>         textboxes_;
+    HDC                          canvas_;
 
     Field(bool visible, POINT pos, POINT size);
+    Field(const Field& field);
+    ~Field();
 
     void addButton(AbstractButton* button);
     void addTextbox(const Textbox& textbox);
     void draw();
+
+    Field& operator=(const Field&) = delete;
 };

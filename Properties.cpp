@@ -3,6 +3,7 @@
 Properties prop;
 
 Properties::Properties() :
+    INTERFACECOLOR  ({ 70, 70, 70 }),
     UPSCALING       (1),
     BACKGROUNDCOLOR ({0.2, 0.2, 0.8}),
     MAXGEN          (8),

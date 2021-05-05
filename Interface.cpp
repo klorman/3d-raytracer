@@ -13,15 +13,13 @@ void Interface::addField(bool visible, POINT pos, POINT size) {
     fields_.push_back({visible, pos, size});
 }
 
-void Interface::draw(Window& wnd) {
-    setColor    (VEC2RGB((BACKGROUND * 0.9)));
-    setFillColor(VEC2RGB(BACKGROUND));
-
-    rectangle(0,          wnd.height_, wnd.width_,               wnd.height_ + bottom_size_);
-    rectangle(wnd.width_, 0,           wnd.width_ + right_size_, wnd.height_ + bottom_size_);
-
+void Interface::draw() {
     for (int field = 0; field < field_count_; ++field) {
-        if (fields_[field].visible_) fields_[field].draw();
+        if (fields_[field].visible_) {
+            fields_[field].draw();
+
+            copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
+        }
     }
 }
 
@@ -29,6 +27,8 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
     if (mouse_on_interface(wnd, mouse_pos)) {        
         for (int field = 0; field < field_count_; ++field) {
             if (!fields_[field].visible_) continue;
+
+            copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
 
             for (int button = 0; button < fields_[field].button_count_; ++button) {
                 bool mob = fields_[field].buttons_[button]->mouse_on_button(mouse_pos);
@@ -38,24 +38,24 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
 
                 if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 0) {
                     fields_[field].buttons_[button]->status_ = 1;
-                    fields_[field].buttons_[button]->draw();
+                    fields_[field].buttons_[button]->draw(fields_[field].canvas_);
                 }
 
                 if (mob && mouse_button == 1 && fields_[field].buttons_[button]->status_ != 2) {
                     fields_[field].buttons_[button]->status_ = 2;
-                    if (fields_[field].buttons_[button]->pinched()) fields_[field].buttons_[button]->status_ = 1;
-                    fields_[field].buttons_[button]->draw();
+                    if (fields_[field].buttons_[button]->pinched(fields_[field].canvas_)) fields_[field].buttons_[button]->status_ = 1;
+                    fields_[field].buttons_[button]->draw(fields_[field].canvas_);
                 }
 
                 if (mob && mouse_button == 0 && fields_[field].buttons_[button]->status_ == 2) {
                     fields_[field].buttons_[button]->status_ = 1;
-                    fields_[field].buttons_[button]->pressed();
-                    if (fields_[field].visible_) fields_[field].buttons_[button]->draw();
+                    fields_[field].buttons_[button]->pressed(fields_[field].canvas_);
+                    if (fields_[field].visible_) fields_[field].buttons_[button]->draw(fields_[field].canvas_);
                 }
 
                 else if (fields_[field].buttons_[button]->status_ != 0 && !mob) {
                     fields_[field].buttons_[button]->status_ = 0;
-                    fields_[field].buttons_[button]->draw();
+                    fields_[field].buttons_[button]->draw(fields_[field].canvas_);
                 }
             }
         }

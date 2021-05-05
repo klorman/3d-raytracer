@@ -1,21 +1,22 @@
 #include "Textbox.hpp"
 
 Textbox::Textbox(const POINT& pos, const POINT& size, std::string text, const Vector& fill_color, const Vector& text_color) :
-    pos_(pos),
-    size_(size),
-    text_(text),
-    fill_color_(fill_color),
-    text_color_(text_color)
+    wndPos_     (pos),
+    fieldPos_   (pos),
+    size_       (size),
+    text_       (text),
+    fill_color_ (fill_color),
+    text_color_ (text_color)
 {}
 
-void Textbox::draw() {
+void Textbox::draw(HDC dc) {
     if (fill_color_ != -EVEC) {
-        setColor    (VEC2RGB((fill_color_ * 0.8)));
-        setFillColor(VEC2RGB(fill_color_));
-        rectangle   (pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
+        txSetColor    (VEC2RGB((fill_color_ * 0.8)), 1, dc);
+        txSetFillColor(VEC2RGB(fill_color_), dc);
+        txRectangle   (fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, dc);
     }
 
-    setColor (VEC2RGB(text_color_));
+    txSetColor (VEC2RGB(text_color_), 1, dc);
     
-    drawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER);
+    txDrawText(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
 }

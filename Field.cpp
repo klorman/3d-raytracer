@@ -7,17 +7,36 @@ Field::Field(bool visible, POINT pos, POINT size) :
     button_count_ (0),
     textbox_count_(0),
     buttons_      (std::vector<AbstractButton*>()),
-    textboxes_    (std::vector<Textbox>())
+    textboxes_    (std::vector<Textbox>()),
+    canvas_       (txCreateCompatibleDC(size.x, size.y))
 {}
 
+Field::Field(const Field& field) :
+    visible_       (field.visible_),
+    pos_           (field.pos_),
+    size_          (field.size_),
+    button_count_  (field.button_count_),
+    textbox_count_ (field.textbox_count_),
+    buttons_       (field.buttons_),
+    textboxes_     (field.textboxes_),
+    canvas_        (txCreateCompatibleDC(field.size_.x, field.size_.y))
+{
+    txBitBlt(canvas_, 0, 0, size_.x, size_.y, field.canvas_);
+
+    txSelectFont("Consolas", 20, false, FW_BOLD, false, false, false, 0, canvas_);
+}
+
+Field::~Field() {
+    txDeleteDC(canvas_);
+}
 
 void Field::addButton(AbstractButton* button) {
     button_count_++;
 
     buttons_.push_back(button);
 
-    buttons_.back()->pos_.x += pos_.x;
-    buttons_.back()->pos_.y += pos_.y;
+    buttons_.back()->wndPos_.x += pos_.x;
+    buttons_.back()->wndPos_.y += pos_.y;
 }
 
 void Field::addTextbox(const Textbox& textbox) {
@@ -25,16 +44,21 @@ void Field::addTextbox(const Textbox& textbox) {
 
     textboxes_.push_back(textbox);
 
-    textboxes_.back().pos_.x += pos_.x;
-    textboxes_.back().pos_.y += pos_.y;
+    textboxes_.back().wndPos_.x += pos_.x;
+    textboxes_.back().wndPos_.y += pos_.y;
 }
 
 void Field::draw() {
+    txSetColor    (VEC2RGB((prop.INTERFACECOLOR * 0.9)), 1, canvas_);
+    txSetFillColor(VEC2RGB(prop.INTERFACECOLOR), canvas_);
+
+    txRectangle(0, 0, size_.x, size_.y, canvas_);
+
     for (int button = 0; button < button_count_; ++button) {
-        buttons_[button]->draw();
+        buttons_[button]->draw(canvas_);
     }
 
     for (int textbox = 0; textbox < textbox_count_; ++textbox) {
-        textboxes_[textbox].draw();
+        textboxes_[textbox].draw(canvas_);
     }
 }

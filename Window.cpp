@@ -61,7 +61,8 @@ void Window::draw_pixel(const POINT& px, Vector color, int frames) {
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	interf_.update(*this, txMousePos());
 
-	prop.FOCUS = (rt.trace({cam.pos_, Vector {0, 0, 1}.rot(cam.angle_)}) - cam.pos_).length(); //автофокус
+	Vector hit = rt.trace({cam.pos_, Vector {0, 0, 1}.rot(cam.angle_)});
+	prop.FOCUS = ((hit == NULLVEC) ? INF : hit - cam.pos_).length(); //автофокус
 
 	txBegin();
 
@@ -74,7 +75,6 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 		assert(prop.UPSCALING > 0);
 		POINT begin = { LONG (canvas_width_ * thread / THREADS / prop.UPSCALING), 0 }, end = { LONG (canvas_width_ * (thread + 1) / THREADS / prop.UPSCALING), LONG (canvas_height_ / prop.UPSCALING) };
 
-
     	for (int x = begin.x; x < end.x; ++x) {
     	    for (int y = begin.y; y < end.y; ++y) {
 				POINT p = { LONG (x * prop.UPSCALING), LONG (y * prop.UPSCALING) };
@@ -84,9 +84,9 @@ void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 
 				Vector start = cam.pos_ + matr.rot(cam.angle_);
 
-				double focalSize   = prop.FOCUS * canvas_width_ / distToScreen;
+				//double focalSize = prop.FOCUS * canvas_width_ / distToScreen;
 
-				Ray ray = { start, (((Vector {0,0,1} * prop.FOCUS + px * focalSize / canvas_width_) - matr).norm()).rot(cam.angle_)};
+				Ray ray = { start, ((Vector {0,0,1} * prop.FOCUS + px * prop.FOCUS / distToScreen) - matr).norm().rot(cam.angle_) };
 
     	        draw_pixel(p, rt.color(ray), frames);
     	    }
@@ -161,20 +161,20 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 }
 
 void Window::bindButtonsToObject(Object* obj) {
-	for (int button = posX; button <= colZ; ++button) {
+	for (int button = posX; button <= matRough; ++button) {
 		TextButton* editTextButton = reinterpret_cast<TextButton*>(interf_.fields_[1].buttons_[button]);
 
 		editTextButton->val_  = getParam(editTextButton->bind_, obj);
 		editTextButton->text_ = std::to_string(int (*getParam(button, obj) * editTextButton->mult_));
 
-		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw();
+		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw(interf_.fields_[1].canvas_);
 	}
 }
 
-HPEN   setColor (COLORREF color, double thickness) {return txSetColor(color, thickness);}
-HBRUSH setFillColor (COLORREF color) {return txSetFillColor(color);}
-bool   rectangle (double x0, double y0, double x1, double y1) {return txRectangle(x0, y0, x1, y1);}
-bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format) {return txDrawText(x0, y0, x1, y1, text, format);}
+HPEN   setColor (COLORREF color, double thickness, HDC dc) {if (dc == NULL) dc = txDC(); return txSetColor(color, thickness, dc);}
+HBRUSH setFillColor (COLORREF color, HDC dc) {if (dc == NULL) dc = txDC(); return txSetFillColor(color, dc);}
+bool   rectangle (double x0, double y0, double x1, double y1, HDC dc) {if (dc == NULL) dc = txDC(); return txRectangle(x0, y0, x1, y1, dc);}
+bool   drawText (double x0, double y0, double x1, double y1, const char text[], unsigned format, HDC dc) {if (dc == NULL) dc = txDC(); return txDrawText(x0, y0, x1, y1, text, format, dc);}
 bool   copyFromWnd (HDC destImage,   double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(destImage, xDest, yDest, width, height, txDC(), xSource, ySource);}
 bool   copyToWnd   (HDC SourceImage, double xDest, double yDest, double width, double height, double xSource, double ySource) {return txBitBlt(txDC(), xDest, yDest, width, height,SourceImage, xSource, ySource);}
 bool   isIconic () {return IsIconic(txWindow());}

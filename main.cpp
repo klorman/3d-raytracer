@@ -41,10 +41,6 @@ void createCreateField();
 void start() {
     int frames = 0;
 
-    Vector matr = Vector {0, 0, 0}.rot({txPI / 2, txPI / 2, 0}, {0,0,1});
-
-    std::cout << matr.x_ << " " << matr.y_ << " " << matr.z_ << std::endl;
-
     while (!wnd.should_close_) { 
         if (!isForeground()) continue;
 
@@ -74,6 +70,8 @@ bool getInput() {
     if (selected) {
         objectSelected = selected - 1;
         Edit();
+
+        moved = true;
     }
 
     return moved;
@@ -102,6 +100,10 @@ void createEditField() {
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colX, {LONG (wnd.interf_.right_size_ / 3), 420}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colY, {LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ, {LONG (wnd.interf_.right_size_ / 3), 480}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG (wnd.interf_.right_size_ / 3), 540}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG (wnd.interf_.right_size_ / 3), 570}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG (wnd.interf_.right_size_ / 3), 600}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG (wnd.interf_.right_size_ / 3), 630}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
 
     wnd.interf_.fields_[1].addButton(new BasicButton{{0, 0               }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create", Create});
     wnd.interf_.fields_[1].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Delete", Delete});
@@ -122,6 +124,11 @@ void createEditField() {
     wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 420}, {30, 30}, "R:"});
     wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "G:"});
     wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 480}, {30, 30}, "B:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      510}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Material"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 540}, {30, 30}, "reflection:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 570}, {30, 30}, "n:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 600}, {30, 30}, "transparency:"});
+    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 630}, {30, 30}, "roughness:"});
 }
 
 void createObjectsField() {
@@ -144,12 +151,12 @@ void createSettingsField() {
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
 
-    wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 180}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOCUS",            wnd.interf_.BACKGROUND});
-    wnd.interf_.fields_[3].addTextbox({{0, 210}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "BLURRADIUS",       wnd.interf_.BACKGROUND});
+    wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 180}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOCUS",            prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 210}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "BLURRADIUS",       prop.INTERFACECOLOR});
 }
 
 void createCreateField() {
@@ -162,11 +169,12 @@ void createFields() {
     wnd.interf_.fields_.clear();
     wnd.interf_.field_count_ = 0;
 
-    wnd.interf_.addField(1, {wnd.width_, 0 }, {wnd.interf_.right_size_, wnd.height_      }); //menu
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}); //edit
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}); //objects
-    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}); //settings
-    wnd.interf_.addField(1, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 110}); //create
+    wnd.interf_.addField(1, {wnd.width_, 0 }, {wnd.interf_.right_size_, wnd.height_ + wnd.interf_.bottom_size_}); //right menu
+    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //edit
+    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
+    wnd.interf_.addField(0, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
+    wnd.interf_.addField(1, {wnd.width_, 30}, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //create
+    wnd.interf_.addField(1, {0, wnd.height_}, {wnd.width_, wnd.interf_.bottom_size_                           }); //bottom menu
     
     createMenuField();
     createEditField();
@@ -174,7 +182,7 @@ void createFields() {
     createSettingsField();
     createCreateField();     
 
-    wnd.interf_.draw(wnd);                                                                                                                            
+    wnd.interf_.draw();                                                                                                                            
 }
 
 int main() {
@@ -209,7 +217,7 @@ void Edit() {
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[2]->status_ = 0;
 
-    wnd.interf_.draw(wnd);
+    wnd.interf_.draw();
 }
 
 void Objects() {
@@ -222,7 +230,7 @@ void Objects() {
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
     wnd.interf_.fields_[0].buttons_[2]->status_ = 0;
 
-    wnd.interf_.draw(wnd);
+    wnd.interf_.draw();
 }
 
 void Settings() {
@@ -235,12 +243,15 @@ void Settings() {
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[2]->status_ = 3;
 
-    wnd.interf_.draw(wnd);
+    wnd.interf_.draw();
 }
 
 void Create() {
     rt.objects_.push_back(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
     rt.object_count_++;
+
+    for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
+    rt.objects_.back()->status_ = true;
 
     wnd.bindButtonsToObject(rt.objects_.back());
     objectSelected = (int) rt.objects_.size();

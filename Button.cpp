@@ -1,7 +1,8 @@
 #include "Button.hpp"
 
 AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, func_t func) :
-    pos_        (pos),
+    wndPos_     (pos),
+    fieldPos_   (pos),
     size_       (size),
     fill_color_ (fill_color),
     text_color_ (text_color),
@@ -9,11 +10,13 @@ AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector
     func_       (func)
 {}
 
-bool BasicButton::pinched() {
+bool BasicButton::pinched(HDC dc) {
+    (void) dc;
     return false;//??? тут могла быть ваша функция
 }
 
-void BasicButton::pressed() {
+void BasicButton::pressed(HDC dc) {
+    (void) dc;
     if (func_ != nullptr) func_();
 }
 
@@ -22,26 +25,28 @@ BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill
     text_          (text)
 {}
 
-void BasicButton::draw() {
+void BasicButton::draw(HDC dc) {
     if (fill_color_ != -EVEC) {
-        setColor    (VEC2RGB((fill_color_ * 0.8)));
-        setFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))));
+        txSetColor    (VEC2RGB((fill_color_ * 0.8)), 1, dc);
+        txSetFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))), dc);
 
-        rectangle(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y);
+        txRectangle(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, dc);
     }
 
     if (text_color_ != -EVEC) {
-        setColor(VEC2RGB(text_color_), 1);
+        txSetColor(VEC2RGB(text_color_), 1, dc);
     
-        drawText(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER);
+        txDrawText(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
     }
+
+    copyToWnd(dc, wndPos_.x, wndPos_.y, size_.x, size_.y, fieldPos_.x, fieldPos_.y);
 }
 
 bool BasicButton::mouse_on_button(const POINT& mouse_pos) {
-    return (mouse_pos.x > pos_.x           &&
-            mouse_pos.x < pos_.x + size_.x &&
-            mouse_pos.y > pos_.y           &&
-            mouse_pos.y < pos_.y + size_.y);
+    return (mouse_pos.x > wndPos_.x           &&
+            mouse_pos.x < wndPos_.x + size_.x &&
+            mouse_pos.y > wndPos_.y           &&
+            mouse_pos.y < wndPos_.y + size_.y);
 }
 
 TextButton::TextButton(double* val, int bind, const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, int minv, int maxv, int mult) :
@@ -57,7 +62,7 @@ TextButton::TextButton(double* val, int bind, const POINT& pos, const POINT& siz
     if (val_ != nullptr) text_ = std::to_string(int (*val_ * mult_));
 }
 
-bool TextButton::pinched() {    
+bool TextButton::pinched(HDC dc) {    
     POINT mouse1, mouse2;
     GetCursorPos(&mouse1);
     double shift = 0;
@@ -80,7 +85,7 @@ bool TextButton::pinched() {
 
                 if (val >= minv_ && val <= maxv_) {
                     text_ = std::to_string((int) val);
-                    draw();
+                    draw(dc);
                 }
 
                 shift -= 1;
@@ -91,7 +96,7 @@ bool TextButton::pinched() {
 
                 if (val >= minv_ && val <= maxv_) {
                     text_ = std::to_string((int) val);
-                    draw();
+                    draw(dc);
                 }
 
                 shift += 1;
@@ -110,14 +115,14 @@ bool TextButton::pinched() {
     return res;
 }
 
-void TextButton::pressed() {
+void TextButton::pressed(HDC dc) {
     while (!GetAsyncKeyState(VK_RETURN) && !GetAsyncKeyState(VK_ESCAPE)) {
         for (int index = 48; index <= 57 && text_.length() < 6; ++index) {
             if (GetAsyncKeyState(index)) {
                 if (text_[0] == '0') text_.erase(text_.begin());
 
                 text_ += (char) index;
-                draw();
+                draw(dc);
                 
                 while (GetAsyncKeyState(index)) {}
             }
@@ -125,7 +130,7 @@ void TextButton::pressed() {
 
         if (text_[0] == '0' && GetAsyncKeyState(189)) {
             text_ = '-';
-            draw();
+            draw(dc);
 
             while (GetAsyncKeyState(189)) {}
         }
@@ -135,7 +140,7 @@ void TextButton::pressed() {
 
             if (text_.empty()) text_ += '0';
 
-            draw();
+            draw(dc);
 
             while (GetAsyncKeyState(VK_BACK)) {}
         }
@@ -150,7 +155,8 @@ void TextButton::pressed() {
     if (text_.length() == 1 && text_[0] == '-') {
         text_ = std::to_string((int) *val_ * mult_);
 
-        draw();
+        draw(dc);
+
         return;
     }
 
@@ -161,7 +167,7 @@ void TextButton::pressed() {
 
         text_ = std::to_string((int) val);
 
-        draw();
+        draw(dc);
     }
 
     if (val_ != nullptr) {
@@ -207,6 +213,18 @@ double* getParam(int id, Object* obj) {
         
     case colZ:
         return &obj->color_.z_;
+    
+    case matRefl:
+        return &obj->mat_.reflection;
+
+    case matRefr:
+        return &obj->mat_.n;
+
+    case matTr:
+         return &obj->mat_.transparency;
+    
+    case matRough:
+        return &obj->mat_.roughness;
 
     default:
         break;

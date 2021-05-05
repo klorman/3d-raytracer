@@ -9,8 +9,6 @@ class Field;
 
 class Interface {
 public:
-	const Vector BACKGROUND = { 70, 70, 70 };
-
     LONG               bottom_size_, right_size_;
     int                field_count_;
     std::vector<Field> fields_; 
@@ -19,7 +17,7 @@ public:
 
 	void addField(bool visible, POINT pos, POINT size);
     bool mouse_on_interface (const Window& wnd, const POINT& mouse_pos);
-	void draw               (Window& wnd);
+	void draw               ();
     void update             (Window& wnd, const POINT& mouse_pos);
 };
 
@@ -52,10 +50,10 @@ public:
 	Window& operator=(const Window&) = delete;
 };
 
-HPEN   setColor       (COLORREF color, double thickness = 1);
-HBRUSH setFillColor   (COLORREF color);
-bool   rectangle      (double x0, double y0, double x1, double y1);
-bool   drawText       (double x0, double y0, double x1, double y1, const char text[], unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS);
+HPEN   setColor       (COLORREF color, double thickness = 1, HDC dc = NULL);
+HBRUSH setFillColor   (COLORREF color, HDC dc = NULL);
+bool   rectangle      (double x0, double y0, double x1, double y1, HDC dc = NULL);
+bool   drawText       (double x0, double y0, double x1, double y1, const char text[], unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS, HDC dc = NULL);
 bool   copyFromWnd    (HDC destImage,   double xDest, double yDest, double width, double height, double xSource = 0, double ySource = 0);
 bool   copyToWnd      (HDC SourceImage, double xDest, double yDest, double width, double height, double xSource = 0, double ySource = 0);
 bool   isIconic       ();
