@@ -37,6 +37,7 @@ void BasicButton::draw(HDC dc) {
         txSetColor(VEC2RGB(text_color_), 1, dc);
     
         txDrawText(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
+        //txDrawText(fieldPos_.x + 16, fieldPos_.y + 5, fieldPos_.x + 16 + size_.x, fieldPos_.y + 5 + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
     }
 
     copyToWnd(dc, wndPos_.x, wndPos_.y, size_.x, size_.y, fieldPos_.x, fieldPos_.y);

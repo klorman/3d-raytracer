@@ -4,6 +4,7 @@
 #include "Camera.hpp"
 
 #include <ctime>
+#include <clocale>
 
 #define LEN(arr) sizeof(arr) / sizeof(arr[0])
 
@@ -39,6 +40,7 @@ void createSettingsField();
 void createCreateField();
 void createDeleteField();
 void createCreateTextbox();
+void createScrollBar();
 
 void start() {
     int frames = 0;
@@ -132,9 +134,9 @@ void createEditField() {
 
 void createObjectsField() {
     for (int obj = 0; obj < rt.object_count_; ++obj) {
-        wnd.interf_.fields_[2].addButton(new BasicButton{{0,                                      50 * obj}, {wnd.interf_.right_size_,                     50}, -EVEC,    -EVEC,       "",    SelectObj});
-        wnd.interf_.fields_[2].addButton(new BasicButton{{50,                                     50 * obj}, {LONG (wnd.interf_.right_size_ / 3 * 2 - 50), 50}, EVEC * 70, EVEC * 255, std::to_string(rt.objects_[obj]->type)});
-        wnd.interf_.fields_[2].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3 * 2), 50 * obj}, {LONG (wnd.interf_.right_size_ / 3),          50}, EVEC * 70, EVEC * 255, "Del", Delete});
+        wnd.interf_.fields_[2].addButton(new BasicButton{{0,                                      50 * obj}, {wnd.interf_.right_size_ - 20,            50}, -EVEC,    -EVEC,       "",    SelectObj});
+        wnd.interf_.fields_[2].addButton(new BasicButton{{0,                                      50 * obj}, {LONG (wnd.interf_.right_size_ / 3 * 2),  50}, EVEC * 70, EVEC * 255, std::to_string(rt.objects_[obj]->type)});
+        wnd.interf_.fields_[2].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3 * 2), 50 * obj}, {LONG (wnd.interf_.right_size_ / 3 - 20), 50}, EVEC * 70, EVEC * 255, "Del", Delete});
     }
 }
 
@@ -149,7 +151,7 @@ void createSettingsField() {
     wnd.interf_.fields_[3].addButton(new TextButton {&prop.BLURRADIUS,         -1, {LONG (wnd.interf_.right_size_ / 3 * 2), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0});
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
-
+    
     wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , prop.INTERFACECOLOR});
     wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", prop.INTERFACECOLOR});
     wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           prop.INTERFACECOLOR});
@@ -170,6 +172,18 @@ void createCreateTextbox() {
     wnd.interf_.fields_[6].addTextbox({{0, 0}, {wnd.interf_.right_size_, 30}, "Create or select an object", -EVEC, EVEC * 150});  
 }
 
+void createScrollBar() {
+    wnd.interf_.fields_[8].buttons_.clear();
+    wnd.interf_.fields_[8].button_count_ = 0;
+
+    txDeleteDC(wnd.interf_.fields_[8].canvas_);
+    wnd.interf_.fields_[8].canvas_ = txCreateCompatibleDC(wnd.interf_.fields_[8].size_.x, wnd.interf_.fields_[8].size_.y);
+
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 0                                  }, {20, 20},                                  EVEC * 80, EVEC * 255, "-"});
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, wnd.interf_.fields_[8].size_.y - 20}, {20, 20},                                  EVEC * 80, EVEC * 255, "-"});
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 20                                 }, {20, wnd.interf_.fields_[8].size_.y - 40}, EVEC * 80, EVEC * 255, ""});
+}
+
 void createFields() {
     wnd.interf_.fields_.clear();
     wnd.interf_.field_count_ = 0;
@@ -182,6 +196,8 @@ void createFields() {
     wnd.interf_.addField(0, {wnd.width_, wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ???
     wnd.interf_.addField(1, {wnd.width_, LONG (wnd.height_ / 2)}, {wnd.interf_.right_size_, 30                                    }); //textbox  <--|
     wnd.interf_.addField(1, {0,          wnd.height_           }, {wnd.width_,              wnd.interf_.bottom_size_              }); //bottom menu
+
+    wnd.interf_.addField(0, {wnd.width_ + wnd.interf_.right_size_ - 20, 60}, {20, wnd.height_ - 90}); //scrollbar нужно сделать для каждого поля свой скроллбар, но пока пусть будет так
     
     createMenuField();
     createEditField();
@@ -190,6 +206,7 @@ void createFields() {
     createCreateField();     
     createDeleteField();
     createCreateTextbox();
+    createScrollBar();
 
     Edit();
     //wnd.interf_.draw();                                                                                                                            
@@ -215,6 +232,12 @@ void Edit() {
         wnd.interf_.fields_[4].visible_ = true;
         wnd.interf_.fields_[5].visible_ = true;
         wnd.interf_.fields_[6].visible_ = false;
+        wnd.interf_.fields_[8].visible_ = true;
+
+        wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 60};
+        wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 90};
+        createScrollBar();
+        //wnd.interf_.fields_[8].buttons_[2]->size_.y = std::max((int) wnd.interf_.fields_[8].size_.y - 40, int ((wnd.interf_.fields_[8].size_.y - 40) / wnd.interf_.fields_[1].size_.y));
     }
 
     else {
@@ -222,6 +245,7 @@ void Edit() {
         wnd.interf_.fields_[4].visible_ = true;
         wnd.interf_.fields_[5].visible_ = false;
         wnd.interf_.fields_[6].visible_ = true;
+        wnd.interf_.fields_[8].visible_ = false;
     }
 
     wnd.interf_.fields_[2].visible_ = false;
@@ -241,6 +265,12 @@ void Objects() {
     wnd.interf_.fields_[4].visible_ = false;
     wnd.interf_.fields_[5].visible_ = false;
     wnd.interf_.fields_[6].visible_ = false;
+    wnd.interf_.fields_[8].visible_ = true;
+
+    wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 30};
+    wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 30};
+    createScrollBar();
+    //wnd.interf_.fields_[8].buttons_[2]->size_.y = std::max((int) wnd.interf_.fields_[8].size_.y - 40, int ((wnd.interf_.fields_[8].size_.y - 40) / wnd.interf_.fields_[2].size_.y));
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
@@ -256,6 +286,7 @@ void Settings() {
     wnd.interf_.fields_[4].visible_ = false;
     wnd.interf_.fields_[5].visible_ = false;
     wnd.interf_.fields_[6].visible_ = false;
+    wnd.interf_.fields_[8].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "TXLib.h"
 #include "Ray.hpp"
 #include "Matrix.hpp"
