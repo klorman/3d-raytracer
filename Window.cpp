@@ -169,7 +169,7 @@ void Window::bindButtonsToObject(Object* obj) {
 		editTextButton->val_  = getParam(editTextButton->bind_, obj);
 		editTextButton->text_ = std::to_string(int (*getParam(button, obj) * editTextButton->mult_));
 
-		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw(interf_.fields_[1].canvas_);
+		if (interf_.fields_[0].buttons_[0]->status_ == 3) editTextButton->draw(interf_.fields_[1].canvas_, false);
 	}
 }
 
@@ -182,6 +182,13 @@ bool   copyToWnd   (HDC SourceImage, double xDest, double yDest, double width, d
 bool   isIconic () {return IsIconic(txWindow());}
 bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}
+int    beginWnd () {return txBegin();}
+int    endWnd   () {return txEnd();}
+
+void redrawWnd() {
+	HWND wnd = txWindow();
+	if (wnd) RedrawWindow (wnd, NULL, NULL, RDW_INVALIDATE | RDW_INTERNALPAINT | RDW_UPDATENOW);
+}
 
 HCURSOR cursor_ = NULL;
 

@@ -305,7 +305,7 @@ void ScrollDown() {
 void Thumb() {
     POINT pos1 = mousePos(), pos2 = {0, 0};
 
-    txBegin();
+    //txBegin();
 
     while(GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
         pos2 = mousePos();
@@ -326,7 +326,7 @@ void Thumb() {
             }
         }
 
-    txEnd();
+    //txEnd();
         
     }
 }
@@ -464,18 +464,23 @@ void Settings() {
 }
 
 void Create() {
+    beginWnd();
+
     rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
-    //rt.object_count_++;
 
     for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
     rt.objects_.back()->status_ = true;
 
+    createFields();
+
     wnd.bindButtonsToObject(rt.objects_.back());
     objectSelected = (int) rt.objects_.size();
 
-    createObjectsField();
+    //createObjectsField();
     
     Edit();
+
+    endWnd();
 }
 
 void Delete() {

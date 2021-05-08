@@ -59,6 +59,9 @@ bool   copyToWnd      (HDC SourceImage, double xDest, double yDest, double width
 bool   isIconic       ();
 bool   isForeground   ();
 POINT  mousePos       ();
+int    beginWnd       ();
+int    endWnd         ();
 
+void   redrawWnd      ();
 void   drawCursor     (HCURSOR cursor);
 LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);
