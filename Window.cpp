@@ -15,8 +15,10 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 	canvas_              (txCreateCompatibleDC(canvas_width_, canvas_height_, NULL, &canvas_video_memory_)),
 	distToScreen         (0)
 {
-	_txWindowStyle |= WS_MINIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME;
+	_txWindowStyle |= WS_MINIMIZEBOX;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
+
+	txTextCursor(false);
 
 	Video_memory_ = txVideoMemory();
 	window_       = txWindow();

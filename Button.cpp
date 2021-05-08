@@ -1,18 +1,30 @@
 #include "Button.hpp"
 
-AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, func_t func) :
-    wndPos_     (pos),
-    fieldPos_   (pos),
-    size_       (size),
-    fill_color_ (fill_color),
-    text_color_ (text_color),
-    status_     (0),
-    func_       (func)
+AbstractButton::AbstractButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, func_t func, func_t pinched_func) :
+    wndPos_       (pos),
+    fieldPos_     (pos),
+    size_         (size),
+    fieldCoords_  ({0, 0}),
+    fieldSize_    ({0, 0}),
+    fill_color_   (fill_color),
+    text_color_   (text_color),
+    status_       (0),
+    func_         (func),
+    pinched_func_ (pinched_func)
 {}
 
 bool BasicButton::pinched(HDC dc) {
     (void) dc;
-    return false;//??? тут могла быть ваша функция
+
+    if (pinched_func_ != nullptr) {
+        status_ = 1;
+
+        pinched_func_();
+
+        return true;
+    }
+
+    return false;
 }
 
 void BasicButton::pressed(HDC dc) {
@@ -20,12 +32,12 @@ void BasicButton::pressed(HDC dc) {
     if (func_ != nullptr) func_();
 }
 
-BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func) :
-    AbstractButton (pos, size, fill_color, text_color, func),
+BasicButton::BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color, const Vector& text_color, std::string text, func_t func, func_t pinched_func) :
+    AbstractButton (pos, size, fill_color, text_color, func, pinched_func),
     text_          (text)
 {}
 
-void BasicButton::draw(HDC dc) {
+void BasicButton::draw(HDC dc, bool needToCopy) {
     if (fill_color_ != -EVEC) {
         txSetColor    (VEC2RGB((fill_color_ * 0.8)), 1, dc);
         txSetFillColor(VEC2RGB((fill_color_ * (1 - status_ * 0.1))), dc);
@@ -40,7 +52,22 @@ void BasicButton::draw(HDC dc) {
         //txDrawText(fieldPos_.x + 16, fieldPos_.y + 5, fieldPos_.x + 16 + size_.x, fieldPos_.y + 5 + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
     }
 
-    copyToWnd(dc, wndPos_.x, wndPos_.y, size_.x, size_.y, fieldPos_.x, fieldPos_.y);
+    if (needToCopy) {
+        int upperOffset = wndPos_.y - fieldCoords_.y,
+            lowerOffset = wndPos_.y + size_.y - fieldCoords_.y - fieldSize_.y;
+        if (upperOffset > 0) upperOffset = 0;
+        if (lowerOffset < 0) lowerOffset = 0;
+
+        copyToWnd(dc, 
+                  wndPos_.x, 
+                  wndPos_.y - upperOffset, 
+                  size_.x,
+                  size_.y - upperOffset - lowerOffset, 
+                  fieldPos_.x, 
+                  fieldPos_.y - upperOffset);
+    }
+
+    //if (needToCopy) copyToWnd(dc, wndPos_.x, wndPos_.y, size_.x, size_.y, fieldPos_.x, fieldPos_.y);
 }
 
 bool BasicButton::mouse_on_button(const POINT& mouse_pos) {
@@ -147,7 +174,7 @@ void TextButton::pressed(HDC dc) {
         }
 
         if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !mouse_on_button(mousePos())) {
-            while (GetAsyncKeyState(VK_LBUTTON)) {}
+            //while (GetAsyncKeyState(VK_LBUTTON)) {}
 
             break;
         }

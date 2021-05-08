@@ -18,13 +18,17 @@ void Interface::draw() {
         if (fields_[field].visible_) {
             fields_[field].draw();
 
-            copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
+            if      (field == 1) copyToWnd(fields_[1].canvas_, fields_[1].pos_.x, fields_[1].pos_.y, fields_[1].size_.x, fields_[1].size_.y, 0, fields_[8].buttons_[2]->wndPos_.y - fields_[8].pos_.y - 20);
+            else if (field == 2) copyToWnd(fields_[2].canvas_, fields_[2].pos_.x, fields_[2].pos_.y, fields_[2].size_.x, fields_[2].size_.y, 0, fields_[8].buttons_[2]->wndPos_.y - fields_[8].pos_.y - 20);
+            else                 copyToWnd(fields_[field].canvas_, fields_[field].pos_.x, fields_[field].pos_.y, fields_[field].size_.x, fields_[field].size_.y);
         }
     }
 }
 
 void Interface::update(Window& wnd, const POINT& mouse_pos) {
     if (mouse_on_interface(wnd, mouse_pos)) {        
+        txBegin();
+
         for (int field = 0; field < field_count_; ++field) {
             if (!fields_[field].visible_) continue;
 
@@ -69,6 +73,8 @@ void Interface::update(Window& wnd, const POINT& mouse_pos) {
                 }
             }
         }
+
+        txEnd();
     }
 }
 

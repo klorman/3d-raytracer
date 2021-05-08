@@ -1,12 +1,13 @@
 #include "Textbox.hpp"
 
-Textbox::Textbox(const POINT& pos, const POINT& size, std::string text, const Vector& fill_color, const Vector& text_color) :
+Textbox::Textbox(const POINT& pos, const POINT& size, std::string text, const Vector& fill_color, const Vector& text_color, unsigned format) :
     wndPos_     (pos),
     fieldPos_   (pos),
     size_       (size),
     text_       (text),
     fill_color_ (fill_color),
-    text_color_ (text_color)
+    text_color_ (text_color),
+    format_     (format)
 {}
 
 void Textbox::draw(HDC dc) {
@@ -18,5 +19,5 @@ void Textbox::draw(HDC dc) {
 
     txSetColor (VEC2RGB(text_color_), 1, dc);
     
-    txDrawText(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, text_.c_str(), DT_CENTER | DT_VCENTER, dc);
+    txDrawText(fieldPos_.x, fieldPos_.y, fieldPos_.x + size_.x, fieldPos_.y + size_.y, text_.c_str(), format_, dc);
 }

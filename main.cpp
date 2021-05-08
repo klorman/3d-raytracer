@@ -23,9 +23,14 @@ void Load();
 void Screenshot();
 void Exit();
 
+void ScrollUp();
+void ScrollDown();
+void Thumb();
+void Scroll(int offset);
+
 Window wnd(800, 600, 50, 300, 400, 300);
 Raytracer rt;
-Camera cam(100, {600 ,385, -100}, {0, 0, 1}, {0, 0, 0});
+Camera cam(100, {0 ,0, 0}, {0, 0, 1}, {0, 0, 0});
 
 int objectSelected = 0;
 
@@ -34,6 +39,7 @@ bool getInput();
 void createFields();
 
 void createMenuField();
+void createBottomMenuField();
 void createEditField();
 void createObjectsField();
 void createSettingsField();
@@ -60,6 +66,22 @@ bool getInput() {
     bool moved = false;
     static double prevFOV = 0;
 
+    moved |= cam.move(wnd);
+
+    if (moved) {
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[0])->text_ = std::to_string(int (cam.pos_.x_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[0])->mult_));
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[1])->text_ = std::to_string(int (cam.pos_.y_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[1])->mult_));
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[2])->text_ = std::to_string(int (cam.pos_.z_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[2])->mult_));
+
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[3])->text_ = std::to_string(int (cam.angle_.x_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[3])->mult_) % 360);
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[4])->text_ = std::to_string(int (cam.angle_.y_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[4])->mult_) % 360);
+        reinterpret_cast<BasicButton*>(wnd.interf_.fields_[7].buttons_[5])->text_ = std::to_string(int (cam.angle_.z_ * reinterpret_cast<TextButton*>(wnd.interf_.fields_[7].buttons_[5])->mult_) % 360);
+
+        for (int button = 0; button < wnd.interf_.fields_[7].button_count_; ++button) {
+            wnd.interf_.fields_[7].buttons_[button]->draw(wnd.interf_.fields_[7].canvas_);
+        }
+    } 
+
     if ((int) prop.FOV != (int) prevFOV) {
         wnd.distToScreen = wnd.canvas_width_ / tan(prop.FOV * txPI / 360);
 
@@ -68,7 +90,6 @@ bool getInput() {
         moved = true;
     }
 
-    moved |= cam.move(wnd);
     int selected = wnd.selectObject(rt, cam);
 
     if (selected) {
@@ -87,49 +108,68 @@ void createMenuField() {
     wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3) * 2, 0          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings",   Settings});
     wnd.interf_.fields_[0].addButton(new BasicButton{{0                                     , wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save",       Save});
     wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4)    , wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load",       Load});
-    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Screenshot", Screenshot});
+    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save\nImage", Screenshot});
     wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit",       Exit});
 }
 
-void createEditField() {
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posX, {LONG (wnd.interf_.right_size_ / 3), 30 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posY, {LONG (wnd.interf_.right_size_ / 3), 60 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posZ, {LONG (wnd.interf_.right_size_ / 3), 90 }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotX, {LONG (wnd.interf_.right_size_ / 3), 150}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotY, {LONG (wnd.interf_.right_size_ / 3), 180}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotZ, {LONG (wnd.interf_.right_size_ / 3), 210}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szX , {LONG (wnd.interf_.right_size_ / 3), 270}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szY , {LONG (wnd.interf_.right_size_ / 3), 300}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szZ , {LONG (wnd.interf_.right_size_ / 3), 330}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colX, {LONG (wnd.interf_.right_size_ / 3), 390}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colY, {LONG (wnd.interf_.right_size_ / 3), 420}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ, {LONG (wnd.interf_.right_size_ / 3), 450}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG (wnd.interf_.right_size_ / 3), 510}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG (wnd.interf_.right_size_ / 3), 540}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG (wnd.interf_.right_size_ / 3), 570}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG (wnd.interf_.right_size_ / 3), 600}, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+void createBottomMenuField() {
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.pos_.x_,   -1, {58 , 25}, {75, 25}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.pos_.y_,   -1, {191, 25}, {75, 25}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.pos_.z_,   -1, {324, 25}, {75, 25}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.angle_.x_, -1, {458, 25}, {75, 25}, EVEC * 90, EVEC * 255, 0, 360, int (180 / txPI)});
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.angle_.y_, -1, {591, 25}, {75, 25}, EVEC * 90, EVEC * 255, 0, 360, int (180 / txPI)});
+    wnd.interf_.fields_[7].addButton(new TextButton {&cam.angle_.z_, -1, {724, 25}, {75, 25}, EVEC * 90, EVEC * 255, 0, 360, int (180 / txPI)});
 
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      0  }, {LONG (wnd.interf_.right_size_ / 3), 30}, "Coords"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 30 }, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 60 }, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 90 }, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      120}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Rotation"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 150}, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 180}, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 210}, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      240}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Size"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 270}, {30, 30}, "X:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 300}, {30, 30}, "Y:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 330}, {30, 30}, "Z:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      360}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Color"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 390}, {30, 30}, "R:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 420}, {30, 30}, "G:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 450}, {30, 30}, "B:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3),      480}, {LONG (wnd.interf_.right_size_ / 3), 30}, "Material"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 510}, {30, 30}, "reflection:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 540}, {30, 30}, "n:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 570}, {30, 30}, "transparency:"});
-    wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 600}, {30, 30}, "roughness:"});
+    wnd.interf_.fields_[7].addTextbox({{0  , 0 }, {400, 25}, "Coords",   prop.INTERFACECOLOR});
+    wnd.interf_.fields_[7].addTextbox({{0  , 25}, {58 , 25}, "X:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[7].addTextbox({{133, 25}, {58 , 25}, "Y:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[7].addTextbox({{266, 25}, {58 , 25}, "Z:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[7].addTextbox({{400, 0 }, {400, 25}, "Rotation", prop.INTERFACECOLOR});
+    wnd.interf_.fields_[7].addTextbox({{400, 25}, {58 , 25}, "X:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[7].addTextbox({{533, 25}, {58 , 25}, "Y:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[7].addTextbox({{666, 25}, {58 , 25}, "Z:",       -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});
+}
+
+void createEditField() {
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posX,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 30 }, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posY,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 60 }, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, posZ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 90 }, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotX,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 150}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotY,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 180}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, rotZ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 210}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szX ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 270}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szY ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 300}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, szZ ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 330}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 1});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colX,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 390}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colY,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 420}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 450}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG ((wnd.interf_.right_size_ - 20) / 2), 510}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG ((wnd.interf_.right_size_ - 20) / 2), 540}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG ((wnd.interf_.right_size_ - 20) / 2), 570}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG ((wnd.interf_.right_size_ - 20) / 2), 600}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+
+    wnd.interf_.fields_[1].addTextbox({{0,  0},   {       wnd.interf_.right_size_ - 20,            30}, "Coords",        prop.INTERFACECOLOR});
+    wnd.interf_.fields_[1].addTextbox({{10, 30 }, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "X:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 60 }, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Y:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 90 }, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Z:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{0,  120}, {       wnd.interf_.right_size_ - 20,            30}, "Rotation",      prop.INTERFACECOLOR});
+    wnd.interf_.fields_[1].addTextbox({{10, 150}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "X:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 180}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Y:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 210}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Z:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{0,  240}, {       wnd.interf_.right_size_ - 20,            30}, "Size",          prop.INTERFACECOLOR});
+    wnd.interf_.fields_[1].addTextbox({{10, 270}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "X:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 300}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Y:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 330}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "Z:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{0,  360}, {       wnd.interf_.right_size_ - 20,            30}, "Color",         prop.INTERFACECOLOR});
+    wnd.interf_.fields_[1].addTextbox({{10, 390}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "R:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 420}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "G:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 450}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "B:",            -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{0,  480}, {       wnd.interf_.right_size_ - 20,            30}, "Material",      prop.INTERFACECOLOR});
+    wnd.interf_.fields_[1].addTextbox({{10, 510}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "reflection:  ", -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 540}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "n:           ", -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 570}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "transparency:", -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    wnd.interf_.fields_[1].addTextbox({{10, 600}, {LONG ((wnd.interf_.right_size_ - 20) / 2) - 20, 30}, "smoothness:  ", -EVEC, EVEC * 150, DT_LEFT | DT_VCENTER});
+    //wnd.interf_.fields_[1].addTextbox({{LONG (wnd.interf_.right_size_ / 3 - 30), 991}, {30, 30}, "A:"});
 }
 
 void createObjectsField() {
@@ -152,12 +192,12 @@ void createSettingsField() {
 
     wnd.interf_.fields_[3].addButton(new BasicButton{{0, wnd.height_ - 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Save settings", SaveSettings});
     
-    wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , prop.INTERFACECOLOR});
-    wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", prop.INTERFACECOLOR});
-    wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           prop.INTERFACECOLOR});
-    wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              prop.INTERFACECOLOR});
-    wnd.interf_.fields_[3].addTextbox({{0, 180}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOCUS",            prop.INTERFACECOLOR});
-    wnd.interf_.fields_[3].addTextbox({{0, 210}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "BLURRADIUS",       prop.INTERFACECOLOR});
+    wnd.interf_.fields_[3].addTextbox({{0, 0  }, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "UPSCALING"       , prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[3].addTextbox({{0, 30 }, {LONG (wnd.interf_.right_size_ / 3 * 2), 90}, "BACKGROUND COLOR", prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[3].addTextbox({{0, 120}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "MAXGEN",           prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[3].addTextbox({{0, 150}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOV",              prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[3].addTextbox({{0, 180}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "FOCUS",            prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
+    wnd.interf_.fields_[3].addTextbox({{0, 210}, {LONG (wnd.interf_.right_size_ / 3 * 2), 30}, "BLURRADIUS",       prop.INTERFACECOLOR, EVEC * 255, DT_CENTER | DT_VCENTER});
 }
 
 void createCreateField() {
@@ -169,7 +209,7 @@ void createDeleteField() {
 }
 
 void createCreateTextbox() {
-    wnd.interf_.fields_[6].addTextbox({{0, 0}, {wnd.interf_.right_size_, 30}, "Create or select an object", -EVEC, EVEC * 150});  
+    wnd.interf_.fields_[6].addTextbox({{0, 0}, {wnd.interf_.right_size_, 30}, "Create or select an object", -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});  
 }
 
 void createScrollBar() {
@@ -179,9 +219,14 @@ void createScrollBar() {
     txDeleteDC(wnd.interf_.fields_[8].canvas_);
     wnd.interf_.fields_[8].canvas_ = txCreateCompatibleDC(wnd.interf_.fields_[8].size_.x, wnd.interf_.fields_[8].size_.y);
 
-    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 0                                  }, {20, 20},                                  EVEC * 80, EVEC * 255, "-"});
-    wnd.interf_.fields_[8].addButton(new BasicButton{{0, wnd.interf_.fields_[8].size_.y - 20}, {20, 20},                                  EVEC * 80, EVEC * 255, "-"});
-    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 20                                 }, {20, wnd.interf_.fields_[8].size_.y - 40}, EVEC * 80, EVEC * 255, ""});
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 0                                  }, {20, 20},                                  EVEC * 90, EVEC * 255, "-", ScrollUp});
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, wnd.interf_.fields_[8].size_.y - 20}, {20, 20},                                  EVEC * 90, EVEC * 255, "-", ScrollDown});
+    wnd.interf_.fields_[8].addButton(new BasicButton{{0, 20                                 }, {20, wnd.interf_.fields_[8].size_.y - 40}, EVEC * 90, EVEC * 255, "",  nullptr, Thumb});
+
+    for (int button = 0; button < wnd.interf_.fields_[8].button_count_; ++button) {
+        wnd.interf_.fields_[8].buttons_[button]->fieldCoords_ = wnd.interf_.fields_[8].pos_;
+        wnd.interf_.fields_[8].buttons_[button]->fieldSize_   = wnd.interf_.fields_[8].size_;
+    }
 }
 
 void createFields() {
@@ -193,13 +238,14 @@ void createFields() {
     wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
     wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
     wnd.interf_.addField(1, {wnd.width_, 30                    }, {wnd.interf_.right_size_, 30                                    }); //create   <--|
-    wnd.interf_.addField(0, {wnd.width_, wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ???
+    wnd.interf_.addField(0, {wnd.width_, wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ??? хотя мб и нормально?
     wnd.interf_.addField(1, {wnd.width_, LONG (wnd.height_ / 2)}, {wnd.interf_.right_size_, 30                                    }); //textbox  <--|
     wnd.interf_.addField(1, {0,          wnd.height_           }, {wnd.width_,              wnd.interf_.bottom_size_              }); //bottom menu
 
     wnd.interf_.addField(0, {wnd.width_ + wnd.interf_.right_size_ - 20, 60}, {20, wnd.height_ - 90}); //scrollbar нужно сделать для каждого поля свой скроллбар, но пока пусть будет так
     
     createMenuField();
+    createBottomMenuField();
     createEditField();
     createObjectsField();
     createSettingsField();
@@ -208,8 +254,112 @@ void createFields() {
     createCreateTextbox();
     createScrollBar();
 
+    for (int field = 0; field < wnd.interf_.field_count_; ++field) {
+        wnd.interf_.fields_[field].canvas_ = txCreateCompatibleDC(wnd.interf_.fields_[field].canvas_size_.x,  wnd.interf_.fields_[field].canvas_size_.y);
+        txSelectFont("Consolas", 20, false, FW_BOLD, false, false, false, 0, wnd.interf_.fields_[field].canvas_);
+
+        for (int button = 0; button < wnd.interf_.fields_[field].button_count_; ++button) {
+            wnd.interf_.fields_[field].buttons_[button]->fieldCoords_ = wnd.interf_.fields_[field].pos_;
+            wnd.interf_.fields_[field].buttons_[button]->fieldSize_   = wnd.interf_.fields_[field].size_;
+        }
+    }
+
     Edit();
     //wnd.interf_.draw();                                                                                                                            
+}
+
+void ScrollUp() {
+    int offset = 10;
+
+    int prev = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y;
+
+    wnd.interf_.fields_[8].buttons_[2]->wndPos_.y = std::max(wnd.interf_.fields_[8].pos_.y + 20, wnd.interf_.fields_[8].buttons_[2]->wndPos_.y - offset);
+
+    offset = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y - prev;
+    
+    if (offset != 0) {
+        Scroll(offset);
+    }
+
+    //wnd.interf_.fields_[8].draw();
+    //copyToWnd(wnd.interf_.fields_[8].canvas_, wnd.interf_.fields_[8].pos_.x, wnd.interf_.fields_[8].pos_.y, wnd.interf_.fields_[8].size_.x, wnd.interf_.fields_[8].size_.y);
+}
+
+void ScrollDown() {
+    int offset = -10;
+
+    int prev = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y;
+
+    wnd.interf_.fields_[8].buttons_[2]->wndPos_.y = std::min(wnd.interf_.fields_[8].pos_.y + wnd.interf_.fields_[8].size_.y - wnd.interf_.fields_[8].buttons_[2]->size_.y - 20, wnd.interf_.fields_[8].buttons_[2]->wndPos_.y + 10);
+
+    offset = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y - prev;
+    
+    if (offset != 0) {
+        Scroll(offset);
+    }
+
+    //wnd.interf_.fields_[8].draw();
+    //copyToWnd(wnd.interf_.fields_[8].canvas_, wnd.interf_.fields_[8].pos_.x, wnd.interf_.fields_[8].pos_.y, wnd.interf_.fields_[8].size_.x, wnd.interf_.fields_[8].size_.y);
+}
+
+void Thumb() {
+    POINT pos1 = mousePos(), pos2 = {0, 0};
+
+    txBegin();
+
+    while(GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+        pos2 = mousePos();
+
+        int offset = pos2.y - pos1.y;
+
+        if (offset != 0) {
+            int prev = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y;
+
+            wnd.interf_.fields_[8].buttons_[2]->wndPos_.y = std::max(wnd.interf_.fields_[8].pos_.y + 20, std::min(wnd.interf_.fields_[8].pos_.y + wnd.interf_.fields_[8].size_.y - wnd.interf_.fields_[8].buttons_[2]->size_.y - 20, wnd.interf_.fields_[8].buttons_[2]->wndPos_.y + offset));
+            
+            offset = wnd.interf_.fields_[8].buttons_[2]->wndPos_.y - prev;
+
+            if (offset != 0) {
+                Scroll(offset);
+
+                pos1 = pos2;
+            }
+        }
+
+    txEnd();
+        
+    }
+}
+
+void Scroll(int offset) { //работает не совсем корректно, нужно сделать свою структуру POINT, в которой хранятся нецелые цисла (POFLOAT? PODOUBLE?), чтобы хранить координаты и размер кнопок, полей
+    setColor    (VEC2RGB((prop.INTERFACECOLOR * 0.9)), 1);
+    setFillColor(VEC2RGB(prop.INTERFACECOLOR));
+    rectangle   (wnd.interf_.fields_[8].pos_.x, wnd.interf_.fields_[8].pos_.y + 20, wnd.interf_.fields_[8].pos_.x + 20, wnd.interf_.fields_[8].pos_.y + wnd.interf_.fields_[8].size_.y - 20);
+
+    wnd.interf_.fields_[8].buttons_[2]->draw(wnd.interf_.fields_[8].canvas_);
+
+    int field = 0;
+
+    if      (wnd.interf_.fields_[1].visible_) field = 1;
+    else if (wnd.interf_.fields_[2].visible_) field = 2;
+
+    offset = std::min(wnd.interf_.fields_[field].canvas_size_.y - wnd.interf_.fields_[field].size_.y, LONG (wnd.interf_.fields_[8].size_.y * (wnd.interf_.fields_[8].buttons_[2]->wndPos_.y - wnd.interf_.fields_[8].pos_.y - 20.0) / wnd.interf_.fields_[8].buttons_[2]->size_.y));
+
+    copyToWnd(wnd.interf_.fields_[field].canvas_, 
+              wnd.interf_.fields_[field].pos_.x, 
+              wnd.interf_.fields_[field].pos_.y, 
+              wnd.interf_.fields_[field].size_.x, 
+              wnd.interf_.fields_[field].size_.y, 
+              0, 
+              offset);
+
+    for (int button = 0; button < wnd.interf_.fields_[field].button_count_; ++button) {
+        wnd.interf_.fields_[field].buttons_[button]->wndPos_.y = wnd.interf_.fields_[field].pos_.y + wnd.interf_.fields_[field].buttons_[button]->fieldPos_.y - offset;
+    }
+
+    for (int textbox = 0; textbox < wnd.interf_.fields_[field].textbox_count_; ++textbox) {
+        wnd.interf_.fields_[field].textboxes_[textbox].wndPos_.y = wnd.interf_.fields_[field].pos_.y + wnd.interf_.fields_[field].textboxes_[textbox].fieldPos_.y - offset;
+    }
 }
 
 int main() {
@@ -237,7 +387,16 @@ void Edit() {
         wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 60};
         wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 90};
         createScrollBar();
-        //wnd.interf_.fields_[8].buttons_[2]->size_.y = std::max((int) wnd.interf_.fields_[8].size_.y - 40, int ((wnd.interf_.fields_[8].size_.y - 40) / wnd.interf_.fields_[1].size_.y));
+
+        for (int button = 0; button < wnd.interf_.fields_[1].button_count_; ++button) {                                                                    //
+            wnd.interf_.fields_[1].buttons_[button]->wndPos_.y = wnd.interf_.fields_[1].buttons_[button]->fieldPos_.y + wnd.interf_.fields_[1].pos_.y;     //
+        }                                                                                                                                                  //
+                                                                                                                                                           // стоит вынести в функцию
+        for (int textbox = 0; textbox < wnd.interf_.fields_[1].textbox_count_; ++textbox) {                                                                //
+            wnd.interf_.fields_[1].textboxes_[textbox].wndPos_.y = wnd.interf_.fields_[1].textboxes_[textbox].fieldPos_.y + wnd.interf_.fields_[1].pos_.y; //
+        }                                                                                                                                                  //
+        
+        wnd.interf_.fields_[8].buttons_[2]->size_.y = LONG ((wnd.interf_.fields_[8].size_.y - 40) * wnd.interf_.fields_[1].size_.y / wnd.interf_.fields_[1].canvas_size_.y);
     }
 
     else {
@@ -270,13 +429,22 @@ void Objects() {
     wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 30};
     wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 30};
     createScrollBar();
-    //wnd.interf_.fields_[8].buttons_[2]->size_.y = std::max((int) wnd.interf_.fields_[8].size_.y - 40, int ((wnd.interf_.fields_[8].size_.y - 40) / wnd.interf_.fields_[2].size_.y));
+
+    for (int button = 0; button < wnd.interf_.fields_[2].button_count_; ++button) {                                                                     //
+        wnd.interf_.fields_[2].buttons_[button]->wndPos_.y = wnd.interf_.fields_[2].buttons_[button]->fieldPos_.y + wnd.interf_.fields_[2].pos_.y;      //
+    }                                                                                                                                                   //
+                                                                                                                                                        // стоит вынести в функцию
+    for (int textbox = 0; textbox < wnd.interf_.fields_[2].textbox_count_; ++textbox) {                                                                 //
+        wnd.interf_.fields_[2].textboxes_[textbox].wndPos_.y = wnd.interf_.fields_[2].textboxes_[textbox].fieldPos_.y + wnd.interf_.fields_[2].pos_.y;  //
+    }                                                                                                                                                   //
+
+    wnd.interf_.fields_[8].buttons_[2]->size_.y = LONG ((wnd.interf_.fields_[8].size_.y - 40) * wnd.interf_.fields_[2].size_.y / wnd.interf_.fields_[2].canvas_size_.y);
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 3;
     wnd.interf_.fields_[0].buttons_[2]->status_ = 0;
 
-    wnd.interf_.draw();
+    wnd.interf_.draw(); //холст всегда перерисовывается заново. надо перересовывать, когда удалется или создается новый объект, а здесь нужно копировать их холста в окно 
 }
 
 void Settings() {
@@ -296,8 +464,8 @@ void Settings() {
 }
 
 void Create() {
-    rt.objects_.push_back(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
-    rt.object_count_++;
+    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
+    //rt.object_count_++;
 
     for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
     rt.objects_.back()->status_ = true;

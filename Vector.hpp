@@ -13,6 +13,8 @@
 
 #define VEC2RGB(vec) ((COLORREF)(((BYTE)(vec.x_)|((WORD)((BYTE)(vec.y_))<<8))|(((DWORD)(BYTE)(vec.z_))<<16)))
 
+const double PIx2 = 2 * txPI;
+
 class Vector {
 public:
 	double x_, y_, z_;

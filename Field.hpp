@@ -11,7 +11,8 @@ class Field {
 public:
     bool                         visible_;
     POINT                        pos_,
-                                 size_;
+                                 size_,
+                                 canvas_size_;
     int                          button_count_, 
                                  textbox_count_;
     std::vector<AbstractButton*> buttons_;

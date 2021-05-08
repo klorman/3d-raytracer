@@ -22,7 +22,7 @@ bool Camera::move(Window& wnd) {
 
     POINT mouse_pos = mousePos();
 
-    if (GetAsyncKeyState(VK_RBUTTON) && ((mouse_pos.x < wnd.width_ && mouse_pos.y < wnd.height_) || rotWithMouse)) {
+    if ((GetAsyncKeyState(VK_RBUTTON) & 0x8000) && ((mouse_pos.x < wnd.width_ && mouse_pos.y < wnd.height_) || rotWithMouse)) {
         if (mouse_.x == 0 && mouse_.y == 0) {
             GetCursorPos(&mouse_);
 
@@ -51,21 +51,23 @@ bool Camera::move(Window& wnd) {
         drawCursor(LoadCursor(0, IDC_ARROW));
     }
 
-    if (GetAsyncKeyState(VK_UP   )) { angle_.y_ -= a; moved = true; };
-    if (GetAsyncKeyState(VK_DOWN )) { angle_.y_ += a; moved = true; };
-    if (GetAsyncKeyState(VK_LEFT )) { angle_.x_ -= a; moved = true; }; 
-    if (GetAsyncKeyState(VK_RIGHT)) { angle_.x_ += a; moved = true; };
+    if (GetAsyncKeyState(VK_UP   ) & 0x8000) { angle_.y_ -= a; moved = true; };
+    if (GetAsyncKeyState(VK_DOWN ) & 0x8000) { angle_.y_ += a; moved = true; };
+    if (GetAsyncKeyState(VK_LEFT ) & 0x8000) { angle_.x_ -= a; moved = true; }; 
+    if (GetAsyncKeyState(VK_RIGHT) & 0x8000) { angle_.x_ += a; moved = true; };
 
+    if (angle_.x_ > PIx2) angle_.x_ -= PIx2;
+    if (angle_.x_ < 0   ) angle_.x_ += PIx2;
     angle_.y_ = std::max(std::min(angle_.y_, txPI / 2), -txPI / 2); 
 
     if (moved) dir_ = Vector {0,0,1}.rot(angle_);
     
-    if (GetAsyncKeyState(   'A'  )) { pos_ -= Vector {  dir_.z_, 0, -dir_.x_ }.norm() * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(   'D'  )) { pos_ -= Vector { -dir_.z_, 0,  dir_.x_ }.norm() * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(   'W'  )) { pos_ += dir_ * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(   'S'  )) { pos_ -= dir_ * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(VK_SPACE)) { pos_ -= Vector { 0,  1, 0 } * speed_ / fps; moved = true; };
-    if (GetAsyncKeyState(VK_SHIFT)) { pos_ -= Vector { 0, -1, 0 } * speed_ / fps; moved = true; };
+    if (GetAsyncKeyState(   'A'  ) & 0x8000) { pos_ -= Vector {  dir_.z_, 0, -dir_.x_ }.norm() * speed_ / fps; moved = true; };
+    if (GetAsyncKeyState(   'D'  ) & 0x8000) { pos_ -= Vector { -dir_.z_, 0,  dir_.x_ }.norm() * speed_ / fps; moved = true; };
+    if (GetAsyncKeyState(   'W'  ) & 0x8000) { pos_ += dir_ * speed_ / fps;                                    moved = true; };
+    if (GetAsyncKeyState(   'S'  ) & 0x8000) { pos_ -= dir_ * speed_ / fps;                                    moved = true; };
+    if (GetAsyncKeyState(VK_SPACE) & 0x8000) { pos_ -= Vector { 0,  1, 0 } * speed_ / fps;                     moved = true; };
+    if (GetAsyncKeyState(VK_SHIFT) & 0x8000) { pos_ -= Vector { 0, -1, 0 } * speed_ / fps;                     moved = true; };
     
     return moved;
 }
