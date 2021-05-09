@@ -47,6 +47,11 @@ void createCreateField();
 void createDeleteField();
 void createCreateTextbox();
 void createScrollBar();
+void createCreateObjectField();
+
+void createSphere();
+void createCube();
+void createPlane();
 
 void start() {
     int frames = 0;
@@ -213,6 +218,30 @@ void createCreateTextbox() {
     wnd.interf_.fields_[6].addTextbox({{0, 0}, {wnd.interf_.right_size_, 30}, "Create or select an object", -EVEC, EVEC * 150, DT_CENTER | DT_VCENTER});  
 }
 
+void createCreateObjectField() {
+    wnd.interf_.fields_[9].addButton(new BasicButton{{0, 0 }, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create Sphere", createSphere});
+    wnd.interf_.fields_[9].addButton(new BasicButton{{0, 30}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create Box"   , createCube  });
+    wnd.interf_.fields_[9].addButton(new BasicButton{{0, 60}, {wnd.interf_.right_size_, 30}, EVEC * 70, EVEC * 255, "Create Plane" , createPlane });
+}
+
+void createSphere() {
+    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
+    
+    Create();
+}
+
+void createCube() {
+    rt.addObject(new Box    {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
+
+    Create();
+}
+
+void createPlane() {
+    rt.addObject(new Plane  {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
+
+    Create();
+}
+
 void createScrollBar() {
     wnd.interf_.fields_[8].buttons_.clear();
     wnd.interf_.fields_[8].button_count_ = 0;
@@ -234,16 +263,16 @@ void createFields() {
     wnd.interf_.fields_.clear();
     wnd.interf_.field_count_ = 0;
 
-    wnd.interf_.addField(1, {wnd.width_, 0                     }, {wnd.interf_.right_size_, wnd.height_ + wnd.interf_.bottom_size_}); //right menu
-    wnd.interf_.addField(1, {wnd.width_, 60                    }, {wnd.interf_.right_size_, wnd.height_ - 90                      }); //edit
-    wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
-    wnd.interf_.addField(0, {wnd.width_, 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
-    wnd.interf_.addField(1, {wnd.width_, 30                    }, {wnd.interf_.right_size_, 30                                    }); //create   <--|
-    wnd.interf_.addField(0, {wnd.width_, wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ??? хотя мб и нормально?
-    wnd.interf_.addField(1, {wnd.width_, LONG (wnd.height_ / 2)}, {wnd.interf_.right_size_, 30                                    }); //textbox  <--|
-    wnd.interf_.addField(1, {0,          wnd.height_           }, {wnd.width_,              wnd.interf_.bottom_size_              }); //bottom menu
-
-    wnd.interf_.addField(0, {wnd.width_ + wnd.interf_.right_size_ - 20, 60}, {20, wnd.height_ - 90}); //scrollbar нужно сделать для каждого поля свой скроллбар, но пока пусть будет так
+    wnd.interf_.addField(1, {wnd.width_                               , 0                     }, {wnd.interf_.right_size_, wnd.height_ + wnd.interf_.bottom_size_}); //right menu
+    wnd.interf_.addField(1, {wnd.width_                               , 60                    }, {wnd.interf_.right_size_, wnd.height_ - 90                      }); //edit
+    wnd.interf_.addField(0, {wnd.width_                               , 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //objects
+    wnd.interf_.addField(0, {wnd.width_                               , 30                    }, {wnd.interf_.right_size_, wnd.height_ - 30                      }); //settings
+    wnd.interf_.addField(1, {wnd.width_                               , 30                    }, {wnd.interf_.right_size_, 30                                    }); //create   <--|
+    wnd.interf_.addField(0, {wnd.width_                               , wnd.height_ - 30      }, {wnd.interf_.right_size_, 30                                    }); //delete   <--|---- ??? хотя мб и нормально?
+    wnd.interf_.addField(1, {wnd.width_                               , LONG (wnd.height_ / 2)}, {wnd.interf_.right_size_, 30                                    }); //textbox  <--|
+    wnd.interf_.addField(1, {0                                        , wnd.height_           }, {wnd.width_,              wnd.interf_.bottom_size_              }); //bottom menu
+    wnd.interf_.addField(0, {wnd.width_ + wnd.interf_.right_size_ - 20, 60                    }, {20,                      wnd.height_ - 90                      }); //scrollbar нужно сделать для каждого поля свой скроллбар, но пока пусть будет так
+    wnd.interf_.addField(0, {wnd.width_                               , 30                    }, {wnd.interf_.right_size_, 90                                    }); //createObject
     
     createMenuField();
     createBottomMenuField();
@@ -254,6 +283,7 @@ void createFields() {
     createDeleteField();
     createCreateTextbox();
     createScrollBar();
+    createCreateObjectField();
 
     for (int field = 0; field < wnd.interf_.field_count_; ++field) {
         wnd.interf_.fields_[field].canvas_ = txCreateCompatibleDC(wnd.interf_.fields_[field].canvas_size_.x,  wnd.interf_.fields_[field].canvas_size_.y);
@@ -384,6 +414,7 @@ void Edit() {
         wnd.interf_.fields_[5].visible_ = true;
         wnd.interf_.fields_[6].visible_ = false;
         wnd.interf_.fields_[8].visible_ = true;
+        wnd.interf_.fields_[9].visible_ = false;
 
         wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 60};
         wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 90};
@@ -406,6 +437,7 @@ void Edit() {
         wnd.interf_.fields_[5].visible_ = false;
         wnd.interf_.fields_[6].visible_ = true;
         wnd.interf_.fields_[8].visible_ = false;
+        wnd.interf_.fields_[9].visible_ = false;
     }
 
     wnd.interf_.fields_[2].visible_ = false;
@@ -426,6 +458,7 @@ void Objects() {
     wnd.interf_.fields_[5].visible_ = false;
     wnd.interf_.fields_[6].visible_ = false;
     wnd.interf_.fields_[8].visible_ = true;
+    wnd.interf_.fields_[9].visible_ = false;
 
     wnd.interf_.fields_[8].pos_  = {wnd.width_ + wnd.interf_.right_size_ - 20, 30};
     wnd.interf_.fields_[8].size_ = {20, wnd.height_ - 30};
@@ -456,6 +489,7 @@ void Settings() {
     wnd.interf_.fields_[5].visible_ = false;
     wnd.interf_.fields_[6].visible_ = false;
     wnd.interf_.fields_[8].visible_ = false;
+    wnd.interf_.fields_[9].visible_ = false;
 
     wnd.interf_.fields_[0].buttons_[0]->status_ = 0;
     wnd.interf_.fields_[0].buttons_[1]->status_ = 0;
@@ -465,9 +499,24 @@ void Settings() {
 }
 
 void Create() {
+    if (!wnd.interf_.fields_[9].visible_) {
+        wnd.interf_.fields_[1].visible_ = false;
+        wnd.interf_.fields_[2].visible_ = false;
+        wnd.interf_.fields_[3].visible_ = false;
+        wnd.interf_.fields_[4].visible_ = false;
+        wnd.interf_.fields_[5].visible_ = false;
+        wnd.interf_.fields_[6].visible_ = false;
+        wnd.interf_.fields_[8].visible_ = false;
+        wnd.interf_.fields_[9].visible_ = true;
+
+        wnd.interf_.draw();
+
+        return;
+    }
+
     beginWnd();
 
-    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
+    //rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, 50, { 0, 0, 0 }, { 1.0, 1.0, 1.0 }});
 
     for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
     rt.objects_.back()->status_ = true;
@@ -482,6 +531,8 @@ void Create() {
     Edit();
 
     endWnd();
+
+    //wnd.interf_.fields_[9].visible_ = false;
 }
 
 void Delete() {
@@ -508,7 +559,7 @@ void SelectObj() {
     POINT pos = mousePos();
     pos.y -= 30;
 
-    objectSelected = int (pos.y / 50) + 1; //??? временно. надо сделать класс кнопки, в которой хранится id объекта
+    objectSelected = int ((pos.y + wnd.interf_.fields_[2].pos_.y - wnd.interf_.fields_[2].buttons_[0]->wndPos_.y) / 50) + 1; //??? временно. надо сделать класс кнопки, в которой хранится id объекта //очень классный костыль(нет)
 
     for (int i = 0; i < rt.object_count_; ++i) rt.objects_[i]->status_ = false;
     rt.objects_[objectSelected - 1]->status_ = true;
