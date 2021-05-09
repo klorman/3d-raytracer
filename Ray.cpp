@@ -29,34 +29,20 @@ Ray Ray::reflect(const Vector& norm, const Vector& hit, double roughness) const 
 }
 
 Ray Ray::refract(const Vector& norm, const Vector& hit, double n2) const {
-//    assert(n1 != 0 && n2 != 0);
-//
-//    if ((norm ^ dir_) > 0) {
-//        return refract(-norm, hit, n2);
-//    }
-//
-//    Vector S1 = -hit + start_;
-//    double n = n2 / n1, cos = S1 ^ norm, len = 1 + n * n * (cos * cos - 1);
-//
-//    if (len < 0) return {};
-//
-//    Vector dir = (norm * n * cos - S1 * n - norm * sqrt(len)).norm();
-//
-//    return { hit + dir * EPS, dir, generation_ + 1, n2 };
-
     assert(n1 > 0 && n2 > 0);
-    double nd = norm ^ dir_, a = 1 / n2;
+
+    double nd = norm ^ dir_;
+
     if (nd > 0) {
-        return refract(-norm, hit, a);
+        return refract(-norm, hit, 1 / n2);
     }
-    double D = 1 - a * a * (1 - nd * nd);
-    if (D < 0) {
-        return reflect(norm, hit, 1.0);
-        //D *= -1;
-        //return {};
-    }
-    double b = nd * a + sqrt(D);
-    Vector dir = (dir_ * a - norm * b).norm();
+
+    double eta = n1 / n2,
+           k = 1 - eta * eta * (1 - pow(nd, 2));
+
+    Vector dir = EVEC;
+
+    if (k >= 0) dir = dir_ * eta - norm * (eta * nd + sqrt(k));
 
     return { hit + dir * EPS, dir, generation_ + 1 };
 }

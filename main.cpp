@@ -52,6 +52,7 @@ void start() {
     int frames = 0;
 
     while (!wnd.should_close_) { 
+        if (isClosed()) break;
         if (!isForeground()) continue;
 
         bool moved = getInput();
@@ -106,10 +107,10 @@ void createMenuField() {
     wnd.interf_.fields_[0].addButton(new BasicButton{{0                                     , 0          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Edit",       Edit});
     wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3)    , 0          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Objects",    Objects});
     wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3) * 2, 0          }, {LONG (wnd.interf_.right_size_ / 3), 30}, EVEC * 70, EVEC * 255, "Settings",   Settings});
-    wnd.interf_.fields_[0].addButton(new BasicButton{{0                                     , wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save",       Save});
-    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4)    , wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Load",       Load});
-    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 2, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Save\nImage", Screenshot});
-    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit",       Exit});
+    wnd.interf_.fields_[0].addButton(new BasicButton{{0                                     , wnd.height_}, {LONG (wnd.interf_.right_size_ / 3), 50}, EVEC * 70, EVEC * 255, "Save",       Save});
+    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3)    , wnd.height_}, {LONG (wnd.interf_.right_size_ / 3), 50}, EVEC * 70, EVEC * 255, "Load",       Load});
+    wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 3) * 2, wnd.height_}, {LONG (wnd.interf_.right_size_ / 3), 50}, EVEC * 70, EVEC * 255, "Save Image", Screenshot});
+    //wnd.interf_.fields_[0].addButton(new BasicButton{{LONG (wnd.interf_.right_size_ / 4) * 3, wnd.height_}, {LONG (wnd.interf_.right_size_ / 4), 50}, EVEC * 70, EVEC * 255, "Exit",       Exit});
 }
 
 void createBottomMenuField() {

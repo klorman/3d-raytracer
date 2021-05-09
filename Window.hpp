@@ -61,7 +61,9 @@ bool   isForeground   ();
 POINT  mousePos       ();
 int    beginWnd       ();
 int    endWnd         ();
+bool   isDestroyed    ();
 
 void   redrawWnd      ();
+bool   isClosed       ();
 void   drawCursor     (HCURSOR cursor);
-LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK myProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam);

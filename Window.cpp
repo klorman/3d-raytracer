@@ -184,19 +184,28 @@ bool   isForeground() {return GetForegroundWindow() == txWindow();}
 POINT  mousePos () {return txMousePos();}
 int    beginWnd () {return txBegin();}
 int    endWnd   () {return txEnd();}
+bool   isDestroyed () {return _txMain;}
 
 void redrawWnd() {
 	HWND wnd = txWindow();
 	if (wnd) RedrawWindow (wnd, NULL, NULL, RDW_INVALIDATE | RDW_INTERNALPAINT | RDW_UPDATENOW);
 }
 
-HCURSOR cursor_ = NULL;
+HCURSOR cursor_ = LoadCursor(0, IDC_ARROW);
+bool    closed = false;
 
-void   drawCursor (HCURSOR cursor) {cursor_ = cursor; txSetWindowsHook(drawCursorProc);}
+void   drawCursor (HCURSOR cursor) {cursor_ = cursor; txSetWindowsHook(myProc);}
+bool   isClosed   () {txSetWindowsHook(myProc); return closed;}
 
-LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK myProc (HWND window, UINT message, WPARAM wParam, LPARAM lParam) {
 	(void) window;
 	(void) wParam;
+
+	if (message == WM_NCLBUTTONDOWN && wParam == HTCLOSE) {
+		closed = true;
+
+		return true;
+	}
 
 	if (message == WM_SETCURSOR && LOWORD (lParam) == HTCLIENT) {
 	    SetCursor (cursor_);
@@ -204,5 +213,5 @@ LRESULT CALLBACK drawCursorProc (HWND window, UINT message, WPARAM wParam, LPARA
 		return true;
 	}
 
-    return false;
+	return false;
 }
