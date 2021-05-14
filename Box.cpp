@@ -11,7 +11,7 @@ Vector Box::color(const Vector& hit) const {
     return color_;
 }
 
-Vector Box::trace(const Ray& ray, Vector* norm) const {
+VectorPair Box::trace(const Ray& ray, Vector* norm) const {
     //double d1[] = {ray.dir_.x_,   ray.dir_.y_,   ray.dir_.z_,   0.0},
     //       d2[] = {ray.start_.x_, ray.start_.y_, ray.start_.z_, 1.0};
 
@@ -27,18 +27,13 @@ Vector Box::trace(const Ray& ray, Vector* norm) const {
     double tN = std::max(std::max(t1.x_, t1.y_), t1.z_),
            tF = std::min(std::min(t2.x_, t2.y_), t2.z_);
 
-    if (tN > tF || tF < 0) return NULLVEC;
+    if (tN > tF || tF < 0) return {NULLVEC, NULLVEC};
 
     *norm = -sign(ray.dir_) * step({ t1.y_, t1.z_, t1.x_ }, { t1.x_, t1.y_, t1.z_ }) * step({ t1.z_, t1.x_, t1.y_ }, { t1.x_, t1.y_, t1.z_ });
-    //double d[] = {norm->x_, norm->y_, norm->z_, 0.0};
-    //*norm = (vec4) d * txi;
-    
-//    if (status_) {
-//        if (abs(tF - tN) < 10) return ray.start_ + ray.dir_ * tN;
-//
-//        return NULLVEC;
-//    } 
-    if (tN < 0) return ray.start_ + ray.dir_ * tF;
 
-    return ray.start_ + ray.dir_ * tN;
+    //if (tN < 0) return ray.start_ + ray.dir_ * tF;
+
+    //return ray.start_ + ray.dir_ * tN;
+
+    return {ray.start_ + ray.dir_ * tN, ray.start_ + ray.dir_ * tF};
 }

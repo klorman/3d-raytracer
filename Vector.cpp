@@ -71,6 +71,14 @@ bool Vector::operator != (const Vector& vec) const {
 	return !(vec == *this);
 }
 
+bool Vector::operator > (const Vector& vec) const {
+	return this->x_ > vec.x_ && this->y_ > vec.y_ && this->z_ > vec.z_;
+}
+	
+bool Vector::operator < (const Vector& vec) const {
+	return this->x_ < vec.x_ && this->y_ < vec.y_ && this->z_ < vec.z_;
+}
+
 double Vector::length() const {
 	return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 }

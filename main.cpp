@@ -30,7 +30,7 @@ void Scroll(int offset);
 
 Window wnd(800, 600, 50, 300, 400, 300);
 Raytracer rt;
-Camera cam(100, {0 ,0, 0}, {0, 0, 1}, {0, 0, 0});
+Camera cam(100, {0, 0, 0}, {0, 0, 1}, {0, 0, 0});
 
 int objectSelected = 0;
 

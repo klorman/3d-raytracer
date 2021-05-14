@@ -14,7 +14,7 @@ Vector Plane::color(const Vector& hit) const {
     return color_;
 }
 
-Vector Plane::trace(const Ray& ray, Vector* norm) const {
+VectorPair Plane::trace(const Ray& ray, Vector* norm) const {
     *norm = rotation_ * sign((ray.start_ - center_) ^ rotation_);
 
     double D = -center_ ^ *norm, den = ray.dir_ ^ *norm;
@@ -22,16 +22,10 @@ Vector Plane::trace(const Ray& ray, Vector* norm) const {
     if (den < 0) {
         double dist = -(D + (ray.start_ ^ *norm)) / den;
 
-        Vector hit =  ray.start_ + ray.dir_ * dist;
+        Vector hit = ray.start_ + ray.dir_ * dist;
 
-//        if (status_) {
-//            if ((int) abs(hit.x_) % 100 < 1 || (int) abs(hit.z_) % 100 < 1) return hit;
-//
-//            return NULLVEC;
-//        }
-
-        return hit;
+        return {hit, hit}; //???
     }
 
-    return NULLVEC;
+    return {NULLVEC, NULLVEC};
 }

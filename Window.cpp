@@ -63,7 +63,7 @@ void Window::draw_pixel(const POINT& px, Vector color, int frames) {
 void Window::update(Raytracer& rt, const Camera& cam, int frames) {
 	interf_.update(*this, txMousePos());
 
-	Vector hit = rt.trace({cam.pos_, Vector {0, 0, 1}.rot(cam.angle_)});
+	Vector hit = rt.trace({cam.pos_, Vector {0, 0, 1}.rot(cam.angle_)}).first;
 	prop.FOCUS = ((hit == NULLVEC) ? INF : hit - cam.pos_).length(); //автофокус
 
 	txBegin();
@@ -135,7 +135,7 @@ int Window::selectObject(Raytracer& rt, const Camera& cam) {
 			Ray ray = { cam.pos_, ((Vector {0,0,1} * distToScreen + px).norm()).rot(cam.angle_) };
 
 	        int obj;
-	        Vector hit = rt.trace(ray, &obj);
+	        Vector hit = rt.trace(ray, &obj).first;
 
 			pressed = false;
 

@@ -11,7 +11,7 @@ Vector Sphere::color(const Vector& hit) const {
     return color_;
 }
 
-Vector Sphere::trace(const Ray& ray, Vector* norm) const {
+VectorPair Sphere::trace(const Ray& ray, Vector* norm) const {
     Vector  ocn = (ray.start_ - center_) / size_, 
             rdn = ray.dir_ / size_;
 
@@ -20,21 +20,17 @@ Vector Sphere::trace(const Ray& ray, Vector* norm) const {
             c = ocn ^ ocn, 
             h = b * b - a * (c - 1);
 
-    if (h < 0 || b > 0) return NULLVEC;
+    if (h < 0 || b > 0) return {NULLVEC, NULLVEC};
     
-    Vector hit = ray.start_;
-    double dist = (-b - sqrt(h)) / a;
+    //Vector hit = ray.start_;
+    //double dist = (-b - sqrt(h)) / a;
+    double tN = (-b - sqrt(h)) / a,
+           tF = (-b + sqrt(h)) / a;
     
-    if (dist > 0) hit += ray.dir_ * dist;
-    else          hit += ray.dir_ * ((-b + sqrt(h)) / a);
+    //if (dist > 0) hit += ray.dir_ * dist;
+    //else          hit += ray.dir_ * ((-b + sqrt(h)) / a);
 
-    *norm =  ((hit - center_) / size_ / size_ * 2).norm();
+    *norm =  ((ray.start_ + ray.dir_ * (tN > 0 ? tN : tF) - center_) / size_ / size_ * 2).norm();
 
-//    if (status_) {
-//        if (2 * sqrt(h) / a < 20) return hit;
-//
-//        return NULLVEC;
-//    } 
-
-    return hit;
+    return {ray.start_ + ray.dir_ * tN, ray.start_ + ray.dir_ * tF};
 }

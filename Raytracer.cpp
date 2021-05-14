@@ -10,21 +10,25 @@ Raytracer::Raytracer(int object_count, std::vector<Object*> objects) :
     objects_      (objects)
 {}
 
-Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
-    Vector hit_near = NULLVEC, hit = NULLVEC, n = NULLVEC;
-    double min_length = INF;
+VectorPair Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
+    Vector     n             = NULLVEC;
+    VectorPair intersections = {NULLVEC, NULLVEC},
+               hit_near      = {NULLVEC, NULLVEC};
+    double     min_length    = INF;
 
     for (int obj = 0; obj < object_count_; ++obj) {
-        hit = objects_[obj]->trace(ray, &n);
-        if (hit == NULLVEC) {
-            continue;
-        }
+        intersections = objects_[obj]->trace(ray, &n);
 
-        double length = (hit - ray.start_).length();
+        if (intersections.first == NULLVEC && intersections.second == NULLVEC) continue;
+
+        //Vector hit = (((intersections.first - ray.start_) ^ (intersections.second - ray.start_)) > 0) ? intersections.first : intersections.second;
+        if (((intersections.first - ray.start_) ^ (intersections.second - ray.start_)) < 0) std::swap(intersections.first, intersections.second);
+
+        double length = (intersections.first - ray.start_).length();
 
         if (length <= min_length) {
             min_length = length;
-            hit_near = hit;
+            hit_near = intersections;
 
             if (object != nullptr) *object = obj;
             if (norm   != nullptr) *norm   = n;
@@ -35,12 +39,13 @@ Vector Raytracer::trace(const Ray& ray, int* object, Vector* norm) {
 }
 
 Vector Raytracer::color(const Ray& ray) {
-    int obj;
-    Vector norm = NULLVEC;
-    Vector hit = trace(ray, &obj, &norm);
+    int        obj           = 0;
+    Vector     norm          = NULLVEC;
+    VectorPair intersections = trace(ray, &obj, &norm);
+    Vector     hit           = intersections.first;
 
     if (hit == NULLVEC)                       return prop.BACKGROUNDCOLOR;                         //луч не пересекает объекты
-    if (objects_[obj]->status_ && 1)          return objects_[obj]->color(hit).getContrastColor(); //объект выделен
+    if (objects_[obj]->status_ && abs(intersections.second - intersections.first) < objects_[obj]->size_ * 0.2) return objects_[obj]->color(hit).getContrastColor(); //объект выделен
     if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_;                        //объект - источник 
     if (ray.generation_ > prop.MAXGEN)        return NULLVEC;                                      //достигнут лимит
 

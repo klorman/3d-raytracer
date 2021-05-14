@@ -36,6 +36,8 @@ public:
 
 	bool operator == (const Vector& vec) const;
 	bool operator != (const Vector& vec) const;
+	bool operator >  (const Vector& vec) const;
+	bool operator <  (const Vector& vec) const;
 
 	double  length() const;
 	Vector& norm();
@@ -44,6 +46,8 @@ public:
 
 	Vector  getContrastColor();
 };
+
+typedef std::pair<Vector, Vector> VectorPair;
 
 double sign(double x);
 double step(double edge, double x);

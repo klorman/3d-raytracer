@@ -23,30 +23,30 @@ public:
     Object(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotatio = {0,-1,0});
     virtual ~Object() = default;
 
-    virtual Vector color(const Vector& hit              ) const = 0;
-    virtual Vector trace(const Ray&    ray, Vector* norm) const = 0;
+    virtual Vector     color(const Vector& hit              ) const = 0;
+    virtual VectorPair trace(const Ray&    ray, Vector* norm) const = 0;
 };
 
 class Box : public Object {
 public:
     Box   (const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation = NULLVEC);
 
-    virtual Vector color(const Vector& hit              ) const override;
-    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+    virtual Vector     color(const Vector& hit              ) const override;
+    virtual VectorPair trace(const Ray&    ray, Vector* norm) const override;
 };
 
 class Sphere : public Object {
 public:
     Sphere(const Material& mat, const Vector& size, const Vector& center, const Vector& color, const Vector& rotation = NULLVEC);
 
-    virtual Vector color(const Vector& hit              ) const override;
-    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+    virtual Vector     color(const Vector& hit              ) const override;
+    virtual VectorPair trace(const Ray&    ray, Vector* norm) const override;
 };
 
 class Plane : public Object {
 public:
     Plane (const Material& mat, const Vector& center, const Vector& color, const Vector& rotation);
 
-    virtual Vector color(const Vector& hit              ) const override;
-    virtual Vector trace(const Ray&    ray, Vector* norm) const override;
+    virtual Vector     color(const Vector& hit              ) const override;
+    virtual VectorPair trace(const Ray&    ray, Vector* norm) const override;
 };
