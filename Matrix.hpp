@@ -42,7 +42,7 @@ public:
 };
 
 typedef matrix<4,4> mat4;
-typedef matrix<1,4> vec4;
+//typedef matrix<1,4> vec4;
 
 mat4 inverse(mat4& m);
 mat4 rotation(const Vector& v, double angle);

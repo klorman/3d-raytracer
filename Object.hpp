@@ -50,3 +50,15 @@ public:
     virtual Vector     color(const Vector& hit              ) const override;
     virtual VectorPair trace(const Ray&    ray, Vector* norm) const override;
 };
+
+class Lens : public Object {
+public:
+    Sphere sphere1_, sphere2_;
+
+    Lens (const Material& mat, const Vector& size1, const Vector& size2, const Vector& center1, const Vector& center2, const Vector& color, const Vector& rotation = NULLVEC);
+
+    virtual Vector     color(const Vector& hit              ) const override;
+    virtual VectorPair trace(const Ray&    ray, Vector* norm) const override;
+};
+
+std::vector<double> sortFour(double a, double b, double c, double d);

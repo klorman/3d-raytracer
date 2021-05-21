@@ -28,9 +28,6 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 	window_       = txWindow();
 
 	txSelectFont("Consolas", 20, false, FW_BOLD);
-
-	
-
 }
 
 Window::~Window() {

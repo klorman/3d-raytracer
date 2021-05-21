@@ -151,7 +151,7 @@ void createEditField() {
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, colZ,     {LONG ((wnd.interf_.right_size_ - 20) / 2), 450}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 255, 255});
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefl,  {LONG ((wnd.interf_.right_size_ - 20) / 2), 510}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRefr,  {LONG ((wnd.interf_.right_size_ - 20) / 2), 540}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 1, INF, 100});
-    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG ((wnd.interf_.right_size_ - 20) / 2), 570}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
+    wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matTr,    {LONG ((wnd.interf_.right_size_ - 20) / 2), 570}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255,-1, 100, 100});
     wnd.interf_.fields_[1].addButton(new TextButton {nullptr, matRough, {LONG ((wnd.interf_.right_size_ - 20) / 2), 600}, {LONG ((wnd.interf_.right_size_ - 20) / 2), 30}, EVEC * 90, EVEC * 255, 0, 100, 100});
 
     wnd.interf_.fields_[1].addTextbox({{0,  0},   {       wnd.interf_.right_size_ - 20,            30}, "Coords",        prop.INTERFACECOLOR});
@@ -394,13 +394,14 @@ void Scroll(int offset) { //работает не совсем корректн�
 }
 
 int main() {
-    rt.addObject(new Sphere {{ 0.0, 1.5, 0.9, 1.0  },     50      , { 300, 400, 60 }, { 1.0, 1.0, 1.0 }                            }); //прозрачный
-    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  },     50      , { 560, 400, 80 }, { 1.0, 1.0, 1.0 }                            }); //гладкий
-    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, {30, 30, 60}, { 600, 385, 10 }, { 1.0, 0.0, 0.0 }                            }); //гладкий
-    rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 0.0  },     50      , { 400, 400, 100}, { 1.0, 1.0, 1.0 }                            }); //матовый
-    rt.addObject(new Box    {{ 0.5, 1.5, 0.5, 0.0  }, {50, 20, 50}, {   0, 400, 200}, { 0.3, 0.3, 1.0 }, (Vector { 1, 1, 1}).norm()}); //прозрачный, матовый
-    rt.addObject(new Plane  {{ 0.9, 1.0, 0.0, 0.1  }              , { 0  , 450, 0  }, { 1.0, 1.0, 0.0 }, { 0,-1, 0}                });
-    rt.addObject(new Sphere {{ 0.0, 1.0,-1.0, 0.0  },     200     , { 300, 200,-200}, { 0.9, 0.9, 0.9 }                            }); //источник
+    //rt.addObject(new Sphere {{ 0.0, 1.5, 0.9, 1.0  },     50      , { 300, 400, 60 }, { 1.0, 1.0, 1.0 }                            }); //прозрачный
+    //rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  },     50      , { 560, 400, 80 }, { 1.0, 1.0, 1.0 }                            }); //гладкий
+    //rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 1.0  }, {30, 30, 60}, { 600, 385, 10 }, { 1.0, 0.0, 0.0 }                            }); //гладкий
+    //rt.addObject(new Sphere {{ 0.9, 1.0, 0.0, 0.0  },     50      , { 400, 400, 100}, { 1.0, 1.0, 1.0 }                            }); //матовый
+    //rt.addObject(new Box    {{ 0.5, 1.5, 0.5, 0.0  }, {50, 20, 50}, {   0, 400, 200}, { 0.3, 0.3, 1.0 }, (Vector { 1, 1, 1}).norm()}); //прозрачный, матовый
+    //rt.addObject(new Plane  {{ 0.9, 1.0, 0.0, 0.1  }              , { 0  , 450, 0  }, { 1.0, 1.0, 0.0 }, { 0,-1, 0}                });
+    //rt.addObject(new Sphere {{ 0.0, 1.0,-1.0, 0.0  },     200     , { 300, 200,-200}, { 0.9, 0.9, 0.9 }                            }); //источник
+    //rt.addObject(new Lens   {{ 0.5, 1.5, 0.5, 0.0  },     50, 50  , { 0,   0,   0  }, { 50,  0,   0   }, { 1.0, 1.0, 1.0 }         });
 
     createFields();
 

@@ -35,8 +35,8 @@ public:
 
     BasicButton(const POINT& pos, const POINT& size, const Vector& fill_color = EVEC * 255, const Vector& text_color = NULLVEC, std::string text = "", func_t func = nullptr, func_t pinched_func = nullptr);
 
-    virtual bool mouse_on_button(const POINT& mouse_pos) override;
-    virtual void draw   (HDC dc, bool needToCopy = true) override;
+    virtual bool mouse_on_button(const POINT& mouse_pos) override final;
+    virtual void draw   (HDC dc, bool needToCopy = true) override final;
     virtual bool pinched(HDC dc) override;
     virtual void pressed(HDC dc) override;
 
