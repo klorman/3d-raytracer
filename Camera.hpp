@@ -11,6 +11,7 @@ public:
     Vector pos_, dir_, angle_;
     POINT  mouse_;
 
+    Camera();
     Camera(double speed, const Vector& pos, const Vector& dir, const Vector& angle);
 
     bool move(Window& wnd);

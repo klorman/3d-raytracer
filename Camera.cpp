@@ -1,16 +1,37 @@
 #include "Camera.hpp"
 
+Camera::Camera() :
+    speed_     (0),
+    pos_       (NULLVEC),
+    dir_       (NULLVEC),
+    angle_     (NULLVEC),
+    mouse_     ({0, 0})
+{}
+
 Camera::Camera(double speed, const Vector& pos, const Vector& dir, const Vector& angle) :
-    speed_ (speed),
-    pos_   (pos),
-    dir_   (dir),
-    angle_ (angle),
-    mouse_ ({0, 0})
+    speed_     (speed),
+    pos_       (pos),
+    dir_       (dir),
+    angle_     (angle),
+    mouse_     ({0, 0})
 {}
 
 bool Camera::move(Window& wnd) {
     bool moved = false;
     static bool rotWithMouse = false;
+    static std::vector<Camera> templates(10);
+
+    if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
+        for (int index = 48; index <= 57; ++index) {
+            if (GetAsyncKeyState(index) & 0x8000) templates[index - 48] = *this;
+        }
+    }
+
+    else {
+        for (int index = 48; index <= 57; ++index) {
+            if ((GetAsyncKeyState(index) & 0x8000) && templates[index - 48].dir_ != NULLVEC) {*this = templates[index - 48]; moved = true;}
+        }
+    }
 
     double fps = txGetFPS();
 

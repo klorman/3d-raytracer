@@ -1,4 +1,10 @@
 #pragma once
+
+#define __MODULE      ""
+#define __VERSION     "1.0"
+#define __DESCRIPTION "Raytracing"
+#define __AUTHOR      "Nikita Manchuk"
+
 #include "Raytracer.hpp"
 #include "Camera.hpp"
 #include "Field.hpp"

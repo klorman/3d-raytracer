@@ -45,7 +45,7 @@ Vector Raytracer::color(const Ray& ray) {
     Vector     hit           = intersections.first;
 
     if (hit == NULLVEC)                       return prop.BACKGROUNDCOLOR;                         //луч не пересекает объекты
-    if (objects_[obj]->status_ && abs(intersections.second - intersections.first) < objects_[obj]->size_ * 0.2) return objects_[obj]->color(hit).getContrastColor(); //объект выделен
+    if (objects_[obj]->status_ && 1) return objects_[obj]->color(hit).getContrastColor(); //объект выделен
     if (objects_[obj]->mat_.transparency < 0) return objects_[obj]->color_;                        //объект - источник 
     if (ray.generation_ > prop.MAXGEN)        return NULLVEC;                                      //достигнут лимит
 

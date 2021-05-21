@@ -18,6 +18,10 @@ Window::Window(int width, int height, LONG bottom_size, LONG right_size, int can
 	_txWindowStyle |= WS_MINIMIZEBOX;
 	txCreateWindow(width_ + interf_.right_size_, height_ + interf_.bottom_size_);
 
+	//::DWORD styles = ::GetWindowLongA(txWindow(), GWL_STYLE);
+	//styles &= ~(WS_SYSMENU);
+	//styles = ::SetWindowLongA(txWindow(), GWL_STYLE, styles);
+
 	txTextCursor(false);
 
 	Video_memory_ = txVideoMemory();
