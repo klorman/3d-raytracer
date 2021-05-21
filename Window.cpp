@@ -116,6 +116,8 @@ void Window::show_fps() {
 }
 
 int Window::selectObject(Raytracer& rt, const Camera& cam) {
+	if (rt.objects_.empty()) return 0;
+
 	POINT mouse = txMousePos();
 
 	static bool pressed = false;
